@@ -4,8 +4,8 @@ var _pie = {};
 
 //预先读取模板文件
 var templates = {
-    baseHtml: $fs.readFileSync(__path + '/web/templates/base.html', 'utf-8').replace(/\[\{codeHere_*\w*\}\]/g, ''),
-    baseJs: $fs.readFileSync(__path + '/web/templates/base.js', 'utf-8').replace(/\[\{codeHere_*\w*\}\]/g, ''),
+    baseHtml: $fs.readFileSync(__path + '/www/pie/templates/base.html', 'utf-8').replace(/\[\{codeHere_*\w*\}\]/g, ''),
+    baseJs: $fs.readFileSync(__path + '/www/pie/templates/base.js', 'utf-8').replace(/\[\{codeHere_*\w*\}\]/g, ''),
 };
 
 

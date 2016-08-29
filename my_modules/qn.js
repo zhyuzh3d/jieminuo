@@ -6,8 +6,8 @@ var cfg = {
     Port: 19110,
     Uptoken_Url: "/uptoken",
     Domain: "http://qiniu-plupload.qiniudn.com/",
-    BucketName: "daimapai",
-    BucketDomain: "http://files.m.xmgc360.com/",
+    BucketName: _xcfg.qiniu.BucketName,
+    BucketDomain: _xcfg.qiniu.BucketDomain,
 };
 
 _qn.cfg = cfg;

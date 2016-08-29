@@ -1,0 +1,124 @@
+<!--控制器界面部分-->
+<div id='acc_profile' ng-controller='acc_profile' class='container-fluid acc_profile'>
+    <style>
+        .acc_profile label {
+            font-size: 2rem;
+            font-family: inherit;
+        }
+        .acc_profile input {
+            font-size: 2rem;
+            font-family: inherit;
+        }
+        .acc_profile md-input-container {
+            margin-top: 3rem
+        }
+        .acc_profile .avatarBox {
+            background-color: rgb(170, 0, 255);
+            text-align: center;
+            height: 68px;
+            width: 68px;
+            border-radius: 100px;
+            display: inline-block;
+            overflow: hidden
+        }
+        .acc_profile .avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 100px;
+            background-size: cover;
+            margin: 2px;
+        }
+        /*覆盖toast位置*/
+        md-toast {
+            left: 0;
+            right: 0;
+            width: 80%;
+            margin-left: 10%;
+            margin-bottom: 7rem;
+            margin-top: 1rem;
+            border-radius: 0;
+            padding: 0;
+            position: fixed;
+        }
+    </style>
+    <div class="demo-md-panel md-padding col-xs-12 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+        <div style='margin-top:3rem;margin-bottom:2rem'>
+            <span class='h2' style="margin-top:4rem">个人设置</span>
+            <md-button md-no-ink class="md-primary" ng-click='loginOut()'>退出登录</md-button>
+        </div>
+
+        <md-content>
+            <div class="avatarBox" ng-style='{"background-color":user.color}' ng-click='uploadAvatar($event)'>
+                <div class='avatar' ng-style='{"background-image":user.avatarCss}'>
+                    <div style='color:#FFF;height:100%;padding-top:16px;opacity:0.5' ng-show='uploading'>
+                        <i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <span style='color:#AAA'>点击更换头像</span>
+        </md-content>
+
+
+        <form name="userForm" style="margin-top:12px">
+            <md-content class="md-no-momentum">
+                <div style='margin-top:12px;margin-bottom:24px'>
+                    <span class="fa fa-phone fa-lg" ng-style='{"color":user.color}'></i>
+                    <span ng-bind='user.phone' style='color:#444;margin-left:10px'>...</span>
+                </div>
+                <md-input-container class="md-block" flex-gt-sm style='margin-top:4rem'>
+                    <md-icon ng-style='{"color":user.color}'>
+                        <i class="fa fa-user fa-lg"></i>
+                    </md-icon>
+                    <label>昵称</label>
+                    <input name="nick" ng-model="user.nick" ng-pattern="/^[a-zA-Z\u0391-\uFFE5]+[0-9a-zA-Z\u0391-\uFFE5\.]{2,17}$/" />
+                    <div ng-messages="usrForm.nick.$error">
+                        <div ng-if="userForm.nick.$error.pattern">中文,数字,字母都可以,3~18位非数字开头</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm style='margin-top:2rem'>
+                    <md-icon ng-style='{"color":user.color}'>
+                        <i class="fa fa-paint-brush fa-lg"></i>
+                    </md-icon>
+                    <label>颜色</label>
+                    <input name="color" ng-model="user.color" ng-pattern="/^#[a-fA-F0-9]{6}$/" />
+                    <div class="hint">十六进制，如#FF0000</div>
+                </md-input-container>
+
+
+
+                <!--md-input-container class="md-block" flex-gt-sm style='margin-top:3rem'>
+                    <md-icon ng-style='{"color":user.color}'>
+                        <i ng-class="{true: 'fa '+user.icon+' fa-lg', false: 'fa fa-ban fa-lg'}[user.icon!=undefined]" class=""></i>
+                    </md-icon>
+                    <label>图标</label>
+                    <input name="icon" ng-model="user.icon" ng-pattern="/^fa-[\w-]{1,32}$/" />
+                    <div class="hint">fontawesome图标,如fa-leaf,其他将不显示</div>
+                </md-input-container-->
+
+                <md-button md-no-ink class="md-primary" ng-click='gotoChangePw()'>修改密码</md-button>
+
+                <div style="margin-top:1rem">
+                    <md-button class="md-raised md-accent btn-lg col-xs-6" ng-click='saveProfile()'>保存并返回</md-button>
+                    <md-button class="md-raised md-default btn-lg" ng-click='cancel()'>取消</md-button>
+                </div>
+            </md-content>
+        </form>
+    </div>
+</div>
+
+<!--加载外部控制器js文件-->
+<script>
+    _fns.addCtrlrJs('acc_profile');
+</script>
+
+
+
+
+
+
+
+
+
+
+<!---->

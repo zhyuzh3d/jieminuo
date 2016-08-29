@@ -1,0 +1,85 @@
+<!--控制器界面部分-->
+<div id='acc_login' ng-controller='acc_login' class='container-fluid acc_login' layout="column" layout-padding ng-cloak>
+    <style>
+        .acc_login label {
+            font-size: 2rem;
+            font-family: inherit;
+        }
+        .acc_login input {
+            font-size: 2rem;
+            font-family: inherit;
+        }
+        .acc_login md-input-container {
+            margin-top: 3rem;
+            font-family: inherit;
+        }
+        /*覆盖toast位置*/
+        md-toast {
+            left: 0;
+            right: 0;
+            width: 80%;
+            margin-left: 10%;
+            margin-bottom: 7rem;
+            margin-top: 1rem;
+            border-radius: 0;
+            padding: 0;
+            position: fixed;
+        }
+    </style>
+    <div class="demo-md-panel md-padding col-xs-12 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+        <div style='margin-top:3rem;margin-bottom:4rem'>
+            <span class='h2' style="margin-top:4rem">账号登录</span>
+            <md-button md-no-ink class="md-primary" ng-click='goPage("acc_register")'>还没账号？立即注册</md-button>
+<!--            <li><a href="#/profile">设置资料</a></li>-->
+        </div>
+        <form name="userForm">
+            <md-content class="md-no-momentum">
+                <md-input-container class="md-block" flex-gt-sm style='margin-top:2rem'>
+                    <md-icon>
+                        <i class="fa fa-phone fa-lg"></i>
+                    </md-icon>
+                    <label>电话号码</label>
+                    <input name="phone" ng-model="user.phone" ng-pattern="/^1+\d{10}$/" />
+                    <div ng-messages="usrForm.phone.$error">
+                        <div ng-if="userForm.phone.$error.pattern">必须使用真实号码，请确认输入正确</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <md-icon>
+                        <i class="fa fa-lock fa-lg"></i>
+                    </md-icon>
+                    <label>密码</label>
+                    <input name="pw" type='password' ng-model="user.pw" ng-pattern="/^.{6,18}$/" />
+                    <div ng-messages="usrForm.pw.$error">
+                        <div ng-if="userForm.pw.$error.pattern">6~18位任意数字</div>
+                    </div>
+                </md-input-container>
+                <md-button md-no-ink class="md-primary" ng-click='goPage("acc_changePw")'>忘记密码了？点这里重置</md-button>
+                <br>
+                <div style="margin-top:3rem">
+                    <md-button class="md-raised md-accent btn-lg col-xs-6" ng-click='loginByPhone()'>登陆</md-button>
+                    <md-button class="md-raised md-default btn-lg" ng-click='cancel()'>取消</md-button>
+                </div>
+            </md-content>
+        </form>
+    </div>
+
+
+</div>
+
+
+<!--加载外部控制器js文件-->
+<script>
+    _fns.addCtrlrJs('acc_login');
+</script>
+
+
+
+
+
+
+
+
+
+
+<!---->

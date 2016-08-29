@@ -1,0 +1,23 @@
+{
+    "name": "account",
+    "path": "start/web/account/",
+    "author": "zhyuzh",
+    "time": "2016-07-29 16:47",
+    "pages": [{
+        "name": "register",
+        "desc": "新用户注册页面",
+        "url": "?page=acc_register"
+    }, {
+        "name": "login",
+        "desc": "用户登陆页面",
+        "url": "?page=acc_login"
+    },{
+        "name": "changePw",
+        "desc": "用户修改密码页面",
+        "url": "?page=acc_changePw"
+    },{
+        "name": "profile",
+        "desc": "用户修改自己信息的页面",
+        "url": "?page=acc_profile"
+    }]
+}

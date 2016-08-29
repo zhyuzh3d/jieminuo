@@ -24,15 +24,15 @@ var $qiniu = global.$qiniu = require('qiniu');
 global._mime = require('./my_modules/mime.js');
 global._ctnu = require('./my_modules/ctnu.js');
 global._cfg = require('./my_modules/cfg.js');
-global._xcfg = require('../daimapai_xcfg.js');
+global._xcfg = require('../jieminuo_xcfg.js');
 global._fns = require('./my_modules/fns.js');
 global._mdwr = require('./my_modules/mdwr.js');
 global._rotr = require('./my_modules/rotr.js');
 global._rds = require('./my_modules/rds.js');
 global._qn = require('./my_modules/qn.js');
 
-
-
+//功能模块引入
+global._account = require('./my_modules/account.js');
 global._pie = require('./my_modules/pie.js');
 
 //服务器对象
@@ -41,8 +41,8 @@ var httpSvr = _app.httpSvr = $http.createServer(koaSvr.callback());
 
 //https服务器
 var httpsOpt = {
-    key: $fs.readFileSync(__path + '/ssl/privatekey.pem'),
-    cert: $fs.readFileSync(__path + '/ssl/certificate.pem')
+    key: $fs.readFileSync(__path + '/conf/ssl/privatekey.pem'),
+    cert: $fs.readFileSync(__path + '/conf/ssl/certificate.pem')
 };
 var httpsSvr = _app.httpsSvr = $https.createServer(httpsOpt, koaSvr.callback());
 //httpSvr =httpsSvr;
