@@ -30,7 +30,7 @@ _qn.start = function () {
 随机文件名，不锁定路径
 req:{fpath:'...'}
 */
-_rotr.apis.getUploadToken2 = function () {
+_rotr.apis.qn_getUploadToken2 = function () {
     var ctx = this;
 
     var co = $co(function* () {
@@ -39,7 +39,7 @@ _rotr.apis.getUploadToken2 = function () {
         var uid = yield _fns.getUidByCtx(ctx);
 
         //根据uid授权路径的token
-        var token = _qn.genUploadToken2();
+        var token = _qn.qn_genUploadToken2();
         var respdat = {
             uid: uid,
             domain: _qn.cfg.BucketDomain,
@@ -54,9 +54,9 @@ _rotr.apis.getUploadToken2 = function () {
 
 /*生成uptoken的函数
 随机key*/
-_qn.genUploadToken2 = genUploadToken2;
+_qn.qn_genUploadToken2 = qn_genUploadToken2;
 
-function genUploadToken2() {
+function qn_genUploadToken2() {
     var pubPutPolicy = new $qiniu.rs.PutPolicy(_qn.cfg.BucketName);
     pubPutPolicy.returnBody = '{"name": $(fname),"size": $(fsize),"type": $(mimeType),"color": $(exif.ColorSpace.val),"key":$(key),"w": $(imageInfo.width),"h": $(imageInfo.height),"hash": $(etag)}';
     var token = pubPutPolicy.token();
@@ -71,7 +71,7 @@ function genUploadToken2() {
 每个用户单独的路径以用户id为编号，格式'../455/'
 req:{fpath:'...'},不包含uid，格式如 myapp/index.html
 */
-_rotr.apis.getUploadToken = function () {
+_rotr.apis.qn_getUploadToken = function () {
     var ctx = this;
 
     var co = $co(function* () {
@@ -83,7 +83,7 @@ _rotr.apis.getUploadToken = function () {
 
         //根据uid授权路径的token
         var path = uid + '/' + fpath;
-        var token = _qn.genUploadToken(path);
+        var token = _qn.qn_genUploadToken(path);
         var respdat = {
             uid: uid,
             path: path,
@@ -101,9 +101,9 @@ _rotr.apis.getUploadToken = function () {
 
 /*生成uptoken的函数
 指定key*/
-_qn.genUploadToken = genUploadToken;
+_qn.qn_genUploadToken = qn_genUploadToken;
 
-function genUploadToken(key) {
+function qn_genUploadToken(key) {
     var pubPutPolicy = new $qiniu.rs.PutPolicy(_qn.cfg.BucketName + ':' + key);
     pubPutPolicy.returnBody = '{"name": $(fname),"size": $(fsize),"type": $(mimeType),"color": $(exif.ColorSpace.val),"key":$(key),"w": $(imageInfo.width),"h": $(imageInfo.height),"hash": $(etag)}';
     var token = pubPutPolicy.token();
@@ -117,7 +117,7 @@ function genUploadToken(key) {
  * req:{path:'xxx'}
  * @returns {obj} {token:'xxx,path:'xxx',uid:'xxx',fpath:'xxx'}
  */
-_rotr.apis.getAccToken = function () {
+_rotr.apis.qn_getAccToken = function () {
     var ctx = this;
 
     var co = $co(function* () {
@@ -153,7 +153,7 @@ marker标识分页位置，即上一次显示到第几个
 req:{path:'myfolder/subfolder/',limit:100,marker:'eyJjIjowLCJrIjoiM...'};
 res:{domain:'xxx',items:[{hash:'xxx',key:'xxx',mimeType:'xxx',fsize:'xxx',putTime:'xxx'}]}
 */
-_rotr.apis.getFileList = function () {
+_rotr.apis.qn_getFileList = function () {
     var ctx = this;
 
     var co = $co(function* () {
@@ -166,10 +166,12 @@ _rotr.apis.getFileList = function () {
         var limit = ctx.query.limit || ctx.request.body.limit;
         var marker = ctx.query.marker || ctx.request.body.marker;
 
-        var res = yield _qn.getFileListCo(prefix, limit, marker);
+        var res = yield _qn.qn_getFileListCo(prefix, limit, marker);
 
         var dat = JSON.safeParse(res.body);
+        dat.res = res;
         dat.domain = _qn.cfg.BucketDomain;
+        dat.folder = prefix;
 
         ctx.body = __newMsg(1, 'OK', dat);
 
@@ -183,12 +185,12 @@ _rotr.apis.getFileList = function () {
 /*单独函数，获取任意人的文件列表
 prefix应该带uid，类似'4/myfolder/'
 */
-_qn.getFileListCo = getFileListCo;
+_qn.qn_getFileListCo = qn_getFileListCo;
 
-function getFileListCo(prefix, limit, marker) {
+function qn_getFileListCo(prefix, limit, marker) {
     var co = $co(function* () {
 
-        var optpath = '/list?bucket=daimapai&prefix=' + encodeURI(prefix);
+        var optpath = '/list?bucket=' + _qn.cfg.BucketName + '&prefix=' + encodeURI(prefix);
         if (!limit) limit = 100;
         optpath += '&limit=' + limit;
         if (marker && marker != '') optpath += '&marker=' + marker;
@@ -208,7 +210,6 @@ function getFileListCo(prefix, limit, marker) {
 
         //计算token
         options.headers.Authorization = $qiniu.util.generateAccessToken(options.path, null);
-
         var res = yield _fns.httpReqPrms(options);
 
         return res;
@@ -225,7 +226,7 @@ function getFileListCo(prefix, limit, marker) {
 req:{data,file};如果没有data则为空字符串，如果没有file则随机一个md5文件名;自动判断扩展名
 res:{url:'bucketdomain/uid/file}
 */
-_rotr.apis.uploadData = function () {
+_rotr.apis.qn_uploadData = function () {
     var ctx = this;
     var co = $co(function* () {
         //根据ukey获取uid
@@ -237,7 +238,7 @@ _rotr.apis.uploadData = function () {
         var filekey = uid + '/';
         (file) ? filekey += file: filekey += __md5();
 
-        var res = yield _qn.uploadDataCo(data, filekey);
+        var res = yield _qn.qn_uploadDataCo(data, filekey);
         if (!res || !res.key) throw Error('Upload data failed,cannot get url');
 
         ctx.ginfo.uploadData = res;
@@ -252,9 +253,9 @@ _rotr.apis.uploadData = function () {
 
 /*单独函数uploaddata
 返回七牛的结果*/
-_qn.uploadDataCo = uploadDataCo;
+_qn.qn_uploadDataCo = qn_uploadDataCo;
 
-function uploadDataCo(dat, filekey, extra) {
+function qn_uploadDataCo(dat, filekey, extra) {
     var co = $co(function* () {
         //mime文件类型
         var fext = /\.[^\.]+/.exec(filekey);
@@ -278,7 +279,7 @@ function uploadDataCo(dat, filekey, extra) {
 req:{key:'...'};
 res:{}
 */
-_rotr.apis.deleteFile = function () {
+_rotr.apis.qn_deleteFile = function () {
     var ctx = this;
     var co = $co(function* () {
         //根据ukey获取uid
@@ -287,7 +288,7 @@ _rotr.apis.deleteFile = function () {
         var fkey = ctx.request.body.key || ctx.query.key;
         if (fkey.indexOf(uid + '/') != 0) throw Error('You can delete only your own file.')
 
-        var res = yield _qn.deleteFileCo(fkey);
+        var res = yield _qn.qn_deleteFileCo(fkey);
         if (!res) throw Error('Delete file faild.');
 
         ctx.body = __newMsg(1, 'ok');
@@ -299,9 +300,9 @@ _rotr.apis.deleteFile = function () {
 
 
 /*单独函数deleteFileCo*/
-_qn.deleteFileCo = deleteFileCo;
+_qn.qn_deleteFileCo = qn_deleteFileCo;
 
-function deleteFileCo(fkey) {
+function qn_deleteFileCo(fkey) {
     var co = $co(function* () {
         var uri = $qiniu.util.urlsafeBase64Encode(cfg.BucketName + ':' + fkey);
         var optpath = '/delete/' + uri;
@@ -334,7 +335,7 @@ function deleteFileCo(fkey) {
 req:{key:'...'},key格式1/appname/filename;
 res:{fsize:'xx',hash:'xxx',mimeType:'xxx',putTime:'xxx'}
 */
-_rotr.apis.getFileInfo = function () {
+_rotr.apis.qn_getFileInfo = function () {
     var ctx = this;
     var co = $co(function* () {
         //根据ukey获取uid
@@ -343,7 +344,7 @@ _rotr.apis.getFileInfo = function () {
         var fkey = ctx.request.body.key || ctx.query.key;
         if (!fkey) throw Error('File cant be undefined.')
 
-        var res = yield _qn.getFileInfoCo(fkey);
+        var res = yield _qn.qn_getFileInfoCo(fkey);
         if (!res) throw Error('Delete file faild.');
         var dat = JSON.safeParse(res.body);
 
@@ -357,9 +358,9 @@ _rotr.apis.getFileInfo = function () {
 
 /*函数:只获取文件的信息，不读取文件，用来判断文件是否存在
  */
-_qn.getFileInfoCo = getFileInfoCo;
+_qn.qn_getFileInfoCo = qn_getFileInfoCo;
 
-function getFileInfoCo(fkey) {
+function qn_getFileInfoCo(fkey) {
     var co = $co(function* () {
         var uri = $qiniu.util.urlsafeBase64Encode(cfg.BucketName + ':' + fkey);
         var optpath = '/stat/' + uri;
@@ -393,7 +394,7 @@ req:{key:'...'},key格式1/appname/filename;
 res:七牛返回的数据
 */
 
-_rotr.apis.refreshFile = function () {
+_rotr.apis.qn_refreshFile = function () {
     var ctx = this;
     var co = $co(function* () {
         //根据ukey获取uid
@@ -402,7 +403,7 @@ _rotr.apis.refreshFile = function () {
         var fkey = ctx.request.body.key || ctx.query.key;
         if (!fkey) throw Error('File cant be undefined.');
 
-        var res = yield _qn.refreshFileCo(fkey);
+        var res = yield _qn.qn_refreshFileCo(fkey);
 
 
         if (!res) throw Error('refresh file faild.');
@@ -418,9 +419,9 @@ _rotr.apis.refreshFile = function () {
 
 /*刷新文件的函数
  */
-_qn.refreshFileCo = refreshFileCo;
+_qn.qn_refreshFileCo = qn_refreshFileCo;
 
-function refreshFileCo(fkey) {
+function qn_refreshFileCo(fkey) {
     var co = $co(function* () {
         var optpath = '/v2/tune/refresh';
 

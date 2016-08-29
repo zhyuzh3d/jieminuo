@@ -25,9 +25,11 @@
 
         //获取我的App列表
         $scope.getMyAppList = function () {
-            var api = 'http://m.xmgc360.com/pie/api/getMyApps';
-            $.post(api, undefined, function (res) {
-                console.log('POST', api, undefined, res);
+            var api = _global.api('pie_getMyApps');
+            var dat={};
+
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
                 if (res.code == 1) {
                     _fns.applyScope($scope, function () {
                         $scope.myApps = res.data;
@@ -43,6 +45,8 @@
                 };
             });
         };
+        $scope.getMyAppList();
+
 
         _fns.promiseRun(function (tm) {
             $scope.getMyAppList();
@@ -60,7 +64,7 @@
 
         //跳转到App首页
         $scope.editApp = function (appname) {
-            var str = 'http://m.xmgc360.com/pie/web/?page=pie_editor&app=' + appname;
+            var str = _global.hostUrl + '/pie/?page=pie_editor&app=' + appname;
             str = encodeURI(str);
             location.href = str;
         };
@@ -108,14 +112,14 @@
 
         //自动随机标识名
         function randAppName() {
-            return 'a' + Math.random().toString(36).substr(2,11).toLowerCase();
+            return 'a' + Math.random().toString(36).substr(2, 11).toLowerCase();
         };
 
         //创建一个应用
         $scope.newApp.alias = '';
         $scope.newApp.name = randAppName();
         $scope.createApp = function (appname, appalias) {
-            var api = 'http://m.xmgc360.com/pie/api/createApp';
+            var api = _global.api('pie_createApp');
             var dat = {
                 appName: appname,
                 appAlias: appalias,
@@ -173,7 +177,7 @@
 
         //执行修改名字的请求
         $scope.dorenameApp = function (id, alias) {
-            var api = 'http://m.xmgc360.com/pie/api/renameApps';
+            var api = _global.api('pie_renameApps');
             var dat = {
                 appId: id,
                 appAlias: alias,
@@ -199,8 +203,6 @@
         };
 
 
-
-
         //弹出提示窗口提示移除app
         $scope.doRemoveApp = function (appname) {
             var confirm = $mdDialog.confirm()
@@ -217,7 +219,7 @@
 
         //创建一个应用
         $scope.removeApp = function (appname) {
-            var api = 'http://m.xmgc360.com/pie/api/removeApp';
+            var api = _global.api('pie_removeApp');
             var dat = {
                 appName: appname,
             }
@@ -257,7 +259,7 @@
         //根据用户的颜色项目的背景
         $scope.genCardBg2 = function (n) {
             var css = {
-                'background-color': _pie.myUsrInfo.color,
+                'background-color': _global.myUsrInfo.color,
             };
 
             return css;

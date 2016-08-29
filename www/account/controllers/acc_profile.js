@@ -23,6 +23,7 @@
         _global.promiseRun(function (tm) {
             _fns.applyScope($scope, function () {
                 $scope.user = _global.myUsrInfo;
+                $scope.user.avatarCss = 'url(' + $scope.user.avatar + '-avatar128)';
             })
         }, function () {
             return _global.hasLogin;
@@ -70,7 +71,7 @@
                     //提示成功
                     _fns.applyScope($scope, function () {
                         $scope.user.avatar = res.file_path;
-                        $scope.user.avatarCss = 'url(' + res.file_path + '-avatarsm)';
+                        $scope.user.avatarCss = 'url(' + res.file_path + '-avatar128)';
                         $scope.uploading = false;
                     });
                     $mdToast.show(
@@ -151,9 +152,9 @@
                         .hideDelay(500)
                     ).then(function (result) {
                         if ($scope.args.okUrl) {
-                            window.location.href = encodeURI($scope.args.okUrl);
+                            //window.location.href = encodeURI($scope.args.okUrl);
                         } else {
-                            window.location.href = document.referrer;
+                            //window.location.href = document.referrer;
                         };
                     });
                 } else {
@@ -192,7 +193,7 @@
             } catch (err) {
                 console.log(ctrlrName + ':' + fn.name + ' auto run failed...');
             }
-        }
+        };
 
         //end
         console.log(ctrlrName + '.js loading...')

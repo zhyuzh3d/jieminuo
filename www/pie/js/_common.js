@@ -21,7 +21,7 @@ if (!_pie) {
     //强制刷新页面，用于开发阶段或特殊情况，默认刷新
     if (_pie.forceRefresh == true || _pie.forceRefresh === undefined) {
         var ts = _pie.getUrlParam('_');
-        var hst = (window.location.hostname == 'files.m.xmgc360.com');
+        var hst = (location.hostname == 'files.10knet.com' || location.hostname == 'files.jieminuoketang.com');
         if (!ts && hst) location.href = location.href + '?_=' + Math.random();
     };
 

@@ -68,7 +68,7 @@ var _app = {}; //最高全局变量，angular
         _fns.initCtrlr($rootScope, undefined, 'root', true);
 
         //使用锚点跳转控制器
-        $(window).on('hashchange', function(evt) {
+        $(window).on('hashchange', function (evt) {
             _fns.changeCtrlrByHash();
         });
 
@@ -76,7 +76,7 @@ var _app = {}; //最高全局变量，angular
         $rootScope.lastCtrlr; //上一个跳转的控制器
         $rootScope.ctlrHis = []; //上一个跳转的控制器
 
-        $rootScope.gotoCtrlr = function(ctrlrName, id, attr) {
+        $rootScope.gotoCtrlr = function (ctrlrName, id, attr) {
             if (!ctrlrName || ctrlrName == '') {
                 ctrlrName = _cfg.startPage;
             }
@@ -93,14 +93,14 @@ var _app = {}; //最高全局变量，angular
             var adom = $('<a href="#' + id + '#' + attr + '#@' + ctrlrName + '">...</a>');
             adom.hide();
             $('body').append(adom);
-            setTimeout(function() {
+            setTimeout(function () {
                 adom[0].click();
                 adom.remove();
             }, 50);
         };
 
         //跳转到默认起始页控制器
-        $(document).ready(function() {
+        $(document).ready(function () {
             var autohash = _fns.changeCtrlrByHash();
 
             //自动跳转也把控制器计入历史
@@ -118,7 +118,7 @@ var _app = {}; //最高全局变量，angular
         $rootScope.sideNavUrl = _fns.getCtrlrUrl('pie_sideNav');
 
         //显示左侧栏
-        $rootScope.tagLeftMenu = function() {
+        $rootScope.tagLeftMenu = function () {
             var tg = $mdSidenav('left').toggle();
         };
     });
@@ -136,8 +136,8 @@ var _app = {}; //最高全局变量，angular
         $scope.scrHei = $(window).height();
         $scope.scrWid = $(window).width();
 
-        $(window).resize(function() {
-            _fns.applyScope($scope, function() {
+        $(window).resize(function () {
+            _fns.applyScope($scope, function () {
                 $scope.scrHei = $(window).height();
                 $scope.scrWid = $(window).width();
             })
@@ -145,10 +145,12 @@ var _app = {}; //最高全局变量，angular
 
 
         //自动登陆获取自己信息记录到$root
-        $rootScope.getMyInfo = function() {
-            var api = 'http://m.xmgc360.com/start/api/getMyInfo';
-            $.post(api, undefined, function(res) {
-                console.log('POST', api, undefined, res);
+        $rootScope.getMyInfo = function () {
+            var api = _global.api('acc_getMyInfo');
+            var dat = {};
+
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
                 if (res.code == 1) {
                     $rootScope.myInfo = res.data;
                 } else {
@@ -163,15 +165,13 @@ var _app = {}; //最高全局变量，angular
             });
         };
         $rootScope.getMyInfo();
-
-
     };
 
     //filter：显示为html样式
     _app.filter(
         'toTrustHtml',
-        function($sce) {
-            return function(text) {
+        function ($sce) {
+            return function (text) {
                 return $sce.trustAsHtml(text);
             }
         }
@@ -180,8 +180,8 @@ var _app = {}; //最高全局变量，angular
     //filter：显示文件名
     _app.filter(
         'fileName',
-        function() {
-            return function(url) {
+        function () {
+            return function (url) {
                 return url.substring(url.lastIndexOf('/') + 1);
             }
         }
@@ -190,7 +190,7 @@ var _app = {}; //最高全局变量，angular
     //onlyBody：只截取<body></body>标签中间的部分
     _app.filter(
         'onlyBody',
-        function() {
+        function () {
             return _fns.getBody;
         }
     );
@@ -199,15 +199,15 @@ var _app = {}; //最高全局变量，angular
 
     //directive:上传文件的指令
     //<file name="image" ng-model="inputFile" accept="image/png,image/jpg,image/jpeg" />
-    _app.directive('file', function() {
+    _app.directive('file', function () {
         return {
             restrict: 'E',
             template: '<input type="file" />',
             replace: true,
             require: 'ngModel',
-            link: function(scope, element, attr, ctrl) {
-                var listener = function() {
-                    scope.$apply(function() {
+            link: function (scope, element, attr, ctrl) {
+                var listener = function () {
+                    scope.$apply(function () {
                         attr.multiple ? ctrl.$setViewValue(element[0].files) : ctrl.$setViewValue(element[0].files[0]);
                     });
                 }

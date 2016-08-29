@@ -86,7 +86,7 @@
         $scope.getAppInfo = function() {
             var appName = $scope.getAppArg();
 
-            var api = 'http://m.xmgc360.com/pie/api/getAppInfo';
+            var api = _global.api('pie_getAppInfo');
             var dat = {
                 appName: appName,
             };
@@ -116,7 +116,8 @@
         $scope.getFileList = function() {
             var appName = $scope.getAppArg();
 
-            var api = 'http://m.xmgc360.com/pie/api/getFileList';
+            var api = _global.api('qn_getFileList');
+
             var dat = {
                 path: appName + '/',
                 limit: 100,
@@ -212,7 +213,9 @@
         $scope.chkFileExist = function(fpath, yesfn, nofn) {
             var appName = $scope.getAppArg();
 
-            var api = 'http://m.xmgc360.com/pie/api/getFileInfo';
+            var api = _global.api('qn_getFileInfo');
+
+
             var dat = {
                 key: fpath,
             };
@@ -266,7 +269,9 @@
         $scope.doDeleteFile = function(fpath) {
             var appName = $scope.getAppArg();
 
-            var api = 'http://m.xmgc360.com/pie/api/deleteFile';
+            var api = _global.api('qn_deleteFile');
+
+
             var dat = {
                 key: fpath,
             };
@@ -543,10 +548,11 @@
         };
 
 
+        //登录成功后自动读取index.html
         _fns.promiseRun(function(tm) {
             $scope.openFile();
         }, function() {
-            return _pie.myInfo;
+            return _global.hasLogin;
         });
 
 
@@ -683,7 +689,7 @@
             var ext = _fns.getFileExt($scope.curFileKey);
             var mime = _fns.getMimeByExt(ext);
 
-            var api = 'http://m.xmgc360.com/pie/api/refreshFile';
+            var api = _global.api('qn_refreshFile');
             var dat = {
                 key: uid + '/' + fkey,
             };

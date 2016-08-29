@@ -1,14 +1,18 @@
 //在所有脚本之前，jquery之后执行，比如检测登陆情况
-console.info('>global_pre loading...');
+console.info('global_pre loading...');
 
 if (!_global) var _global = {};
 
 (function () {
     'use strict';
 
-    //全局设置，所有的路径结尾都不带斜杠
-    _global.apiPrefix = 'http://' + window.location.host + '/api';
-    _global.hostUrl = 'http://' + location.host;
+    //全局设置，所有的路径结尾都不带斜杠,自动匹配10knet和jieminuoketang
+    if (/^\w*\.10knet\.com$/.test(location.host)) {
+        _global.hostUrl = 'http://www.10knet.com';
+    } else if (/^\w*\.jieminuoketang\.com$/.test(location.host)) {
+        _global.hostUrl = 'http://www.jieminuoketang.com';
+    }
+    _global.apiPrefix = _global.hostUrl + '/api';
 
 })();
 
@@ -48,10 +52,10 @@ if (!_global) var _global = {};
                 //没有登陆，跳转到登录页，把当前页地址作为参数传递（因为可能是单独调用接口注销的）
                 //如果当前页面已经是登录页或注册页就不要跳转了
                 if (!isloginpage && !isregpage) {
-                    location.href = _global.hostUrl + '/account/?page=acc_login&okUrl=' + encodeURI(location.href);
+                    //location.href = _global.hostUrl + '/account/?page=acc_login&okUrl=' + encodeURI(location.href);
                 };
             };
-        });
+        },'jsonp');
     };
     _global.chkLogin();
 

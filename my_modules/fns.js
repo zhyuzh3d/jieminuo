@@ -7,7 +7,7 @@ var _fns = {};
 
 //基础函数扩充---------------------------------------
 /*扩展JSON.safeParse*/
-JSON.safeParse = JSON.sparse = function(str) {
+JSON.safeParse = JSON.sparse = function (str) {
     try {
         return JSON.parse(str);
     } catch (err) {
@@ -17,7 +17,7 @@ JSON.safeParse = JSON.sparse = function(str) {
 
 /*扩展一个方法或对象*/
 function extend(Child, Parent) {
-    var F = function() {};
+    var F = function () {};
     F.prototype = Parent.prototype;
     Child.prototype = new F();
     Child.prototype.constructor = Child;
@@ -27,22 +27,22 @@ function extend(Child, Parent) {
 
 /*重新封装console的函数*/
 var cnslPreStr = '>';
-console.xerr = function() {
+console.xerr = function () {
     var args = arguments;
     console.info(cnslPreStr, 'ERR:');
     console.error.apply(this, args);
 };
-console.xlog = function() {
+console.xlog = function () {
     var args = arguments;
     console.info(cnslPreStr, 'LOG:');
     console.log.apply(this, args);
 };
-console.xinfo = function() {
+console.xinfo = function () {
     var args = arguments;
     console.info(cnslPreStr, 'INFO:');
     console.info.apply(this, args);
 };
-console.xwarn = function() {
+console.xwarn = function () {
     var args = arguments;
     console.info(cnslPreStr, 'WARN:');
     console.xwarn.apply(this, args);
@@ -148,7 +148,7 @@ options应包含所有必需参数如hostname，port,method等等,例如
 _fns.httpReqPrms = httpReqPrms;
 
 function httpReqPrms(options, bodydata) {
-    var prms = new Promise(function(resolvefn, rejectfn) {
+    var prms = new Promise(function (resolvefn, rejectfn) {
         var req = $http.request(options, (res) => {
             if (res.statusCode != 200) {
                 rejectfn(new Error('Target server return err:' + res.statusCode));
@@ -198,15 +198,15 @@ var mailTransPort = $mailer.createTransport({
 _fns.sendMail = sendMail;
 
 function sendMail(tarmail, tit, cont) {
-    var prms = new Promise(function(resolvefn, rejectfn, transport) {
+    var prms = new Promise(function (resolvefn, rejectfn, transport) {
         if (!transport) transport = mailTransPort;
         transport.sendMail({
             from: 'jscodepie servicegroup<' + _xcfg.serMail.addr + '>',
             to: tarmail,
             subject: tit,
             html: cont
-        }, function(err, res) {
-            (err) ? rejectfn(err) : resolvefn(res);
+        }, function (err, res) {
+            (err) ? rejectfn(err): resolvefn(res);
         });
     });
     return prms;
@@ -218,34 +218,28 @@ function sendMail(tarmail, tit, cont) {
  * @param   {ctx} ctx请求的上下文
  * @returns {uid} 用户的id
  */
-_fns.getUidByCtx = function(ctx) {
-    var co = $co(function * () {
+_fns.getUidByCtx = function (ctx) {
+    var co = $co(function* () {
 
         //通过cookie从主服务器获取uid
         var ukey = ctx.cookies.get('m_ukey');
-        if (!ukey || !_cfg.regx.ukey.test(ukey)) throw Error('您还没有注册和登陆，不能创建App.');
+        if (!ukey || !_cfg.regx.ukey.test(ukey)) throw Error('您还没有注册和登陆');
 
-        var path = '/start/api/getUidByUkey';
+        //登陆情况，读取用户id
+        var mpkey = _rds.k.map_ukey2uid;
+        var uid = yield _ctnu([_rds.cli, 'hget'], _rds.k.map_ukey2uid, ukey);
 
-        var opt = {
-            hostname: 'm.xmgc360.com',
-            port: 80,
-            path: path,
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+        //未登录情况,清除ukey并返回错误
+        if (!uid) {
+            ukey = undefined;
+            ctx.cookies.set('m_ukey', ukey, {
+                httpOnly: true,
+                expires: new Date((new Date()).getTime() + _cfg.dur.browserUkey),
+            });
+            throw Error('错误或无效的登录信息，请您手工登陆或注册.')
         };
 
-        var dat = {
-            ukey: ukey,
-        };
-
-        var res = yield _fns.httpReqPrms(opt, dat);
-        var msg = JSON.safeParse(res.body);
-        if (msg.code != 1) throw Error('获取用户信息失败，请稍后再试:' + msg.text);
-
-        return msg.data.uid;
+        return uid;
     });
     return co;
 };
@@ -257,7 +251,7 @@ _fns.getUidByCtx = function(ctx) {
  * @returns {Object}   转换结果，可能是空对象
  */
 
-_fns.arr2obj = function(arr, keyval, keyobj) {
+_fns.arr2obj = function (arr, keyval, keyobj) {
     if (keyval === undefined) keyval = true;
     var res = {};
     if (!arr || !Array.isArray(arr)) return res;
@@ -283,6 +277,20 @@ _fns.arr2obj = function(arr, keyval, keyobj) {
 }
 
 
+/*兼容jsonp的处理程序
+ctx,koa请求上下文
+domains,只允许这些域名跨域，数组；默认为xcfg中的crossDomains域名
+ */
+_fns.enableJsonp = function (ctx, domains) {
+    if (!domains) domains = _xcfg.crossDomains;
+    var allow = domains.indexOf(ctx.hostname);
+    if (allow == -1) return;
+
+    var jsonpCallback = ctx.query.callback || ctx.request.body.callback;
+    if (jsonpCallback && ctx.body) {
+        ctx.body = ctx.query.callback + '(' + JSON.stringify(ctx.body) + ')';
+    };
+};
 
 
 

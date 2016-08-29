@@ -312,7 +312,6 @@ if (!_xdat) var _xdat = {}; //共享变量
         //给file input添加监听
         filejo.bind('change', function () {
             var fileobj = filejo.get(0).files[0];
-            console.log('>>>onchange', fileobj);
 
             $.get('http://www.10knet.com/api/getUploadToken',
                 function (res) {

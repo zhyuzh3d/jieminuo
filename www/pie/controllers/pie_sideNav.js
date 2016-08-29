@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
     var thisName = 'pie_sideNav';
 
@@ -25,25 +25,25 @@
             ctrlr: 'pie_welcome',
         }]
 
-        $(window).ready(function() {
-            setTimeout(function() {
+        $(window).ready(function () {
+            setTimeout(function () {
                 //载入完毕后执行
             }, 1000)
         });
 
-        $scope.goHome = function() {
-            window.location.href = 'http://m.xmgc360.com';
+        $scope.goHome = function () {
+            window.location.href = _global.hostUrl;
         };
 
         $scope.name = thisName;
 
         //获取App列表，显示在左侧栏
-        $scope.getMyAppList = function() {
-            var api = 'http://m.xmgc360.com/pie/api/getMyApps';
-            $.post(api, undefined, function(res) {
+        $scope.getMyAppList = function () {
+            var api = _global.api('pie_getMyApps');
+            $.post(api, undefined, function (res) {
                 console.log('POST', api, undefined, res);
                 if (res.code == 1) {
-                    _fns.applyScope($scope, function() {
+                    _fns.applyScope($scope, function () {
                         $scope.myApps = res.data;
                     });
                 } else {
@@ -61,7 +61,7 @@
 
 
         //从侧栏打开app编辑器
-        $scope.editApp = function(appname) {
+        $scope.editApp = function (appname) {
             var str = 'http://m.xmgc360.com/pie/web/?page=pie_editor&app=' + appname;
             str = encodeURI(str);
             location.href = str;

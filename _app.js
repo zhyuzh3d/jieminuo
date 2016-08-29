@@ -19,12 +19,13 @@ var $redis = global.$redis = require('redis');
 var $uuid = global.$uuid = require('node-uuid');
 var $sktio = global.$sktio = require('socket.io');
 var $qiniu = global.$qiniu = require('qiniu');
+var $cors = global.$cors = require('koa-cors');
 
 //自定义库引入
+global._xcfg = require('../jieminuo_xcfg.js');
 global._mime = require('./my_modules/mime.js');
 global._ctnu = require('./my_modules/ctnu.js');
 global._cfg = require('./my_modules/cfg.js');
-global._xcfg = require('../jieminuo_xcfg.js');
 global._fns = require('./my_modules/fns.js');
 global._mdwr = require('./my_modules/mdwr.js');
 global._rotr = require('./my_modules/rotr.js');
@@ -67,6 +68,14 @@ koaSvr.use($bodyParser({
 /*http请求中间件
  */
 koaSvr.use(_mdwr);
+
+/*跨域，改为jsonp单个接口控制
+koaSvr.use($cors({
+    origin: 'http://files.10knet.com',
+    credentials: true,
+}));
+*/
+
 
 /*http请求的路由控制
  */

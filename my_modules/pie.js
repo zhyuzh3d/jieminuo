@@ -13,7 +13,7 @@ var templates = {
  * 接口：创建App，存储一个模板index.html文件到七牛存储，返回App的ID
  * @returns {appid} 创建的app的id
  */
-_rotr.apis.createApp = function() {
+_rotr.apis.pie_createApp = function() {
     var ctx = this;
 
     var co = $co(function * () {
@@ -36,9 +36,8 @@ _rotr.apis.createApp = function() {
         var appKey = _rds.k.app(appId);
 
         //向七牛添加一个index.html文件
-        var qnres1 = yield _qn.uploadDataCo(templates.baseHtml, uid + '/' + appName + '/index.html');
-        var qnres2 = yield _qn.uploadDataCo(templates.baseJs, uid + '/' + appName + '/index.js');
-        //var qnres3 = yield _qn.uploadDataCo('body {\n \n \n}', uid + '/' + appName + '/index.css');
+        var qnres1 = yield _qn.qn_uploadDataCo(templates.baseHtml, uid + '/' + appName + '/index.html');
+        var qnres2 = yield _qn.qn_uploadDataCo(templates.baseJs, uid + '/' + appName + '/index.js');
 
         //存储为app-aid键
         var mu = _rds.cli.multi();
@@ -72,7 +71,7 @@ _rotr.apis.createApp = function() {
  * @req {appName} app的name
  * @returns {appid} 创建的app的id
  */
-_rotr.apis.getAppInfo = function() {
+_rotr.apis.pie_getAppInfo = function() {
     var ctx = this;
 
     var co = $co(function * () {
@@ -113,11 +112,10 @@ _rotr.apis.getAppInfo = function() {
  * @returns {obj} {count:3,apps:[{name:'xxx',...}]}
  */
 
-_rotr.apis.getMyApps = function() {
+_rotr.apis.pie_getMyApps = function() {
     var ctx = this;
 
     var co = $co(function * () {
-
         var uid = yield _fns.getUidByCtx(ctx);
 
         //获取appid列表
@@ -155,7 +153,7 @@ _rotr.apis.getMyApps = function() {
  * @returns {null}
  */
 
-_rotr.apis.removeApp = function() {
+_rotr.apis.pie_removeApp = function() {
     var ctx = this;
 
     var co = $co(function * () {
@@ -184,7 +182,7 @@ _rotr.apis.removeApp = function() {
  * @returns {}
  */
 
-_rotr.apis.renameApps = function() {
+_rotr.apis.pie_renameApps = function() {
     var ctx = this;
 
     var co = $co(function * () {
