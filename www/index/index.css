@@ -1,0 +1,183 @@
+#page-welcome {
+    background-image: url('http://files.10knet.com/1/ags4fvzumuxh/welcomebg.jpg');
+    background-color: black;
+    background-size: cover;
+}
+#page-list {
+    background-image: url('http://files.10knet.com/1/ava9bkwnlobp/listpage2.jpg');
+    background-color: black;
+    background-size: cover;
+}
+.page-list-bg {
+    background-image: url('http://files.10knet.com/1/ava9bkwnlobp/listpage2.jpg');
+    background-size: cover;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+}
+.bgimg {
+    width: 50%;
+    max-width: 400px;
+    margin-top: 50px;
+    opacity: 0.2;
+}
+.tabbtn {
+    display: inline-block;
+    max-width: 25%;
+    background: #00bfa5;
+    padding: 8px 12px;
+    margin: 4px;
+    border-radius: 8px;
+}
+.tabbtn a {
+    color: white;
+}
+.slider-title {
+    padding: 8px 16px;
+    width: 0%;
+    color: #FFF;
+    text-align: center;
+}
+.line-tabs {
+    text-align: center;
+    border: none;
+}
+.tabicon {
+    max-width: 100%
+}
+
+.line-normal {
+    margin-bottom: 0;
+}
+
+.list-box {
+    border-radius: 16px;
+    width: 90%;
+    height: 95%;
+    margin-left: 5%;
+    overflow: hidden;
+    background: rgba(0, 191, 165, 0.33);
+    border: 5px solid rgba(0, 147, 127, 0.12);
+    padding: 12px;
+}
+.list {
+    text-align: center;
+    padding-bottom: 200px;
+    position: absolute;
+    top:0
+}
+.teclist {
+    border: 1px solid #444;
+    font-size: 12px;
+    padding: 2px 12px;
+    line-height: 20px;
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.1);
+    color: #FFF;
+    margin: 2px;
+}
+.tiptxt {
+    opacity: 0.75;
+    color: #888;
+    font-size: 12px;
+    border: 1px solid #888;
+    border-radius: 12px;
+    padding: 4px 12px
+}
+.tectitle {
+    font-size: 24px;
+    margin: 4px 12px;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: white;
+}
+.circle {
+    height: 56px;
+    width: 56px;
+    border: 1px solid #FFF;
+    border-radius: 36px;
+    line-height: 40px;
+    cursor: pointer;
+    color: #FFF;
+    opacity: 0.5
+}
+
+.simhei{
+    font-family: simhei;
+}
+.circle:hover {
+    border: 1px solid #448AFF;
+    opacity: 1;
+    color: #448AFF;
+}
+.page-bg {
+    position: absolute;
+    top: 0;
+}
+.page-center {
+    position: absolute;
+    width: 80%;
+    left: 10%;
+    top: 100px;
+}
+.line-center {
+    text-align: center;
+}
+.txt-link {
+    opacity: 0.66;
+    border: 1px solid #64B5F6;
+    border-radius: 36px;
+    color: #64B5F6;
+    background: rgba(0, 38, 98, 0.1);
+    cursor: pointer;
+}
+.txt-link div{
+    display: inline-block;
+}
+
+.txt-link:hover {
+    opacity: 1;
+    color: #448AFF;
+    border: 1px solid #448AFF;
+}
+.txt-white {
+    color: white;
+    font-weight: bold;
+}
+.uppercase {
+    text-transform: uppercase
+}
+.font-lg {
+    font-weight: bold;
+    font-size: 48px
+}
+.font-md {
+    font-weight: bold;
+    font-size: 24px
+}
+.font-sm {
+    font-weight: bold;
+    font-size: 18px
+}
+.font-xs {
+    font-weight: bold;
+    font-size: 14px
+}
+.divider {
+    margin: 6px 0;
+}
+.divider:before {
+    content: "------------- ";
+    font-weight: normal;
+}
+.divider:after {
+    content: " -------------";
+    font-weight: normal;
+}
+.line-space {
+    height: 12px;
+}
+
+
+
