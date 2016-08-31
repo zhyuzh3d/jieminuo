@@ -414,6 +414,7 @@
             //调整字体
             editor.getWrapperElement().style["font-size"] = "1.6rem";
             editor.getWrapperElement().style["font-family"] = "monospace,Monaco";
+            editor.getWrapperElement().style["line-height"] = "1.5rem";
             editor.refresh();
 
             //提示器
@@ -453,23 +454,45 @@
             //只能打开指定类型的文件
             var ext = _fns.getFileExt(fkey);
 
-            if (_cfg.editFileTypes.indexOf(ext) == -1) {
+            var allowftype = (_cfg.editFileTypes.indexOf(ext) != -1);
+            var allowptype = (_cfg.viewImageTypes.indexOf(ext) != -1);
+
+            if (!allowftype && !allowptype) {
                 $mdDialog.show($mdDialog.confirm()
                     .title('编辑器不支持您的文件类型')
                     .textContent('只能打开html,css,js或txt格式文件')
                     .ariaLabel('App name')
                     .ok('关闭'));
+            } else if (allowptype) {
+                //图片格式，弹窗预览
+                $scope.showImgPreviewDialog(fkey);
             } else if (!fkey) {
                 $mdDialog.show($mdDialog.confirm()
                     .title('找不到文件地址，请刷新后再试')
                     .textContent('这可能是由于网络不稳定引起的')
                     .ariaLabel('App name')
                     .ok('关闭'));
-            } else {
+            } else if (allowftype) {
                 var url = _cfg.qn.BucketDomain + fkey;
                 $scope.openFile(url, fkey);
             };
         };
+
+
+        //显示页面的二维码弹窗
+        $scope.showImgPreviewDialog = function(key) {
+            if (!key) {
+                return undefined;
+            } else {
+                $scope.imgPreviewUrl = _cfg.qn.BucketDomain + key;
+            };
+            $mdDialog.show({
+                contentElement: '#imgPreviewDialog',
+                parent: angular.element(document.body),
+                clickOutsideToClose: true
+            });
+        };
+
 
 
         /*打开文件显示到cm的函数,都使用html读取，否则没有回调

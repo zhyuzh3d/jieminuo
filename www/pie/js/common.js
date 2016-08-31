@@ -45,6 +45,7 @@ if (!_pie) var _pie = {};
 
     //支持打开编辑的文件类型
     _cfg.editFileTypes = ['html', 'js', 'css', 'txt', 'json'];
+    _cfg.viewImageTypes = ['jpg', 'png', 'gif'];
 
     //全部mimetype
     _cfg.mimeTypes = {

@@ -157,10 +157,20 @@
                     <a ng-href="{{qrcodeDialogUrl}}" target='_blank' style="padding:24px">
                         <div id="qrcode"></div>
                     </a>
-                    <p style='width:100%;text-transform:none;word-break:break-all;font-size:16px' aria-label='a' >
-                    <span>APP标识名: </span><span ng-bind="curApp.name"></span>
+                    <p style='width:100%;text-transform:none;word-break:break-all;font-size:16px' aria-label='a'>
+                        <span>APP标识名: </span><span ng-bind="curApp.name"></span>
                     </p>
                     <p style='width:100%;text-transform:none;word-break:break-all;font-size:18px' aria-label='a' ng-bind='qrcodeDialogUrl'></p>
+                </md-dialog>
+            </div>
+        </div>
+
+
+        <!--        图片预览弹窗-->
+        <div style="visibility: hidden">
+            <div class="md-dialog-container" id="imgPreviewDialog">
+                <md-dialog layout-padding style='text-align:center'>
+                    <img ng-src="{{imgPreviewUrl}}" style="padding:24px;width:100%;" />
                 </md-dialog>
             </div>
         </div>
