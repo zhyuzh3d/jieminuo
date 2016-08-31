@@ -15,17 +15,19 @@
 </head>
 
 <body ng-controller='bodyController' style="display:none">
+
+
     <div id="fullpage" class="container-fluid" style="padding:0;">
         <div id='page-welcome' class="section">
             <div class='page-bg'>
-                <img src="http://files.10knet.com/1/ags4fvzumuxh/welcomepage.jpg" width="100%">
+                <img src="http://files.10knet.com/1/ava9bkwnlobp/welcomepage3.jpg" width="100%">
             </div>
-
             <!--            欢迎页-->
             <div class='page-center'>
-                <img src="http://files.10knet.com/1/ags4fvzumuxh/全栈工程师养成计划.png" width="100%">
+                <img src="http://files.10knet.com/1/ava9bkwnlobp/全栈工程师.png" width="100%">
+                <img src="http://files.10knet.com/1/ava9bkwnlobp/成长课程.png" width="50%" style='margin-top:-5%;margin-left:25%'>
                 <div class="line-center txt-white  visible-lg">
-                    <div style="font-size:36px">十全十美 2016.10.10 零基础启航</div>
+                    <div style="font-size:36px">2016.10.10 十全十美 零基础启航</div>
                     <div class="uppercase" style="font-size:16px;font-weight:normal">
                         html5+css3+javascript+nodejs+mysql+nginx+centOS | 前端＋后端＋云端 ｜ 高博应诺＋项目工场＋名企大牛+学习鼓励师
                     </div>
@@ -48,14 +50,21 @@
                     </div>
                 </div>
                 <div style="height:18px"></div>
-                <div class="line-center txt-white">
-                    <div class="btn txt-link" style="cursor:pointer" ng-click='nextPage()'>
-                        <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
-                        <span>浏览课程体系</span>
+                <div class="line-center btnsline" style="margin-top:24px">
+                    <div class="btn txt-link" ng-click='nextPage()'>
+                        <span class="glyphicon" aria-hidden="true">
+                            <span class="fa fa-chevron-down"></span>
+                        </span>
+                        <span class="glyphicon simhei">课程详情</span>
                     </div>
-                    <div class="btn txt-link" style="cursor:pointer" ng-click='gotoPie()'>
-                        <span>进入<span style="font-weight:bold;color:#FF1744">代码派</span></span>
-                        <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
+                    <div class="btn txt-linkred" ng-click='gotoFS()'>
+                        <span class="glyphicon simhei">开始学习</span>
+                    </div>
+                    <div class="btn txt-link" ng-click='gotoPie()'>
+                        <span class="glyphicon simhei">代码派</span>
+                        <span class="glyphicon" aria-hidden="true">
+                            <span class="fa fa-chevron-right"></span>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -64,13 +73,13 @@
 
 
         <!--        课程列表页-->
-        <div id='page-list' class="section">
+        <div id='page-list' class="section" style='position:relative'>
             <div class='page-list-bg' style="opacity:0.25"></div>
             <div class="line-center" style="position:absolute;width:100%;height:100%">
                 <img class='bgimg' src='http://files.10knet.com/1/ava9bkwnlobp/xiaochounv.png' width='60%' />
             </div>
             <!--            前端-->
-            <div class="slide line-center">
+            <div class="slide line-center" style='position:relative'>
 
                 <div class="font-lg txt-white">WEB前端</div>
                 <div ng-repeat='tec in clientList'>
@@ -80,18 +89,15 @@
                     </div>
                 </div>
 
-                <div class="line-center" style="margin-top:24px">
+                <div class="line-center btnsline" style="margin-top:24px">
                     <div class="btn txt-link" ng-click='prevSlide()'>
                         <span class="glyphicon" aria-hidden="true">
                             <span class="fa fa-chevron-left"></span>
                         </span>
                         <span class="glyphicon simhei">云端</span>
                     </div>
-                    <div class="btn txt-link" ng-click='nextPage()'>
+                    <div class="btn txt-linkred" ng-click='gotoFS()'>
                         <span class="glyphicon simhei">开始学习</span>
-                        <span class="glyphicon" aria-hidden="true">
-                            <span class="fa fa-chevron-down"></span>
-                        </span>
                     </div>
                     <div class="btn txt-link" ng-click='nextSlide()'>
                         <span class="glyphicon simhei">后端</span>
@@ -99,12 +105,18 @@
                             <span class="fa fa-chevron-right"></span>
                         </span>
                     </div>
-
                 </div>
+
+                <div class="line-center txt-white floatbtn">
+                    <div class="btn btn-lg circle" style="cursor:pointer" ng-click='prevPage()'>
+                        <span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span>
+                    </div>
+                </div>
+
             </div>
             <!--            后端-->
-            <div class="slide  line-center">
-                <div class="font-lg txt-white">后端服务程序</div>
+            <div class="slide  line-center" style='position:relative'>
+                <div class="font-lg txt-white">后端技术</div>
                 <div ng-repeat='tec in serverList'>
                     <div class="tectitle" ng-bind='tec.title'></div>
                     <div>
@@ -112,18 +124,15 @@
                     </div>
                 </div>
 
-                <div class="line-center" style="margin-top:24px">
+                <div class="line-center btnsline" style="margin-top:24px">
                     <div class="btn txt-link" ng-click='prevSlide()'>
                         <span class="glyphicon" aria-hidden="true">
                             <span class="fa fa-chevron-left"></span>
                         </span>
                         <span class="glyphicon simhei">前端</span>
                     </div>
-                    <div class="btn txt-link" ng-click='nextPage()'>
+                    <div class="btn txt-linkred" ng-click='gotoFS()'>
                         <span class="glyphicon simhei">开始学习</span>
-                        <span class="glyphicon" aria-hidden="true">
-                            <span class="fa fa-chevron-down"></span>
-                        </span>
                     </div>
                     <div class="btn txt-link" ng-click='nextSlide()'>
                         <span class="glyphicon simhei">云端</span>
@@ -132,9 +141,15 @@
                         </span>
                     </div>
                 </div>
+
+                <div class="line-center txt-white floatbtn">
+                    <div class="btn btn-lg circle" style="cursor:pointer" ng-click='prevPage()'>
+                        <span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span>
+                    </div>
+                </div>
             </div>
             <!--            云端-->
-            <div class="slide  line-center">
+            <div class="slide  line-center" style='position:relative'>
                 <div class="font-lg txt-white">云端技术</div>
                 <div ng-repeat='tec in cloudList'>
                     <div class="tectitle" ng-bind='tec.title'></div>
@@ -143,18 +158,15 @@
                     </div>
                 </div>
 
-                <div class="line-center" style="margin-top:24px">
+                <div class="line-center btnsline" style="margin-top:24px">
                     <div class="btn txt-link" ng-click='prevSlide()'>
                         <span class="glyphicon" aria-hidden="true">
                             <span class="fa fa-chevron-left"></span>
                         </span>
                         <span class="glyphicon simhei">后端</span>
                     </div>
-                    <div class="btn txt-link" ng-click='nextPage()'>
+                    <div class="btn txt-linkred" ng-click='gotoFS()'>
                         <span class="glyphicon simhei">开始学习</span>
-                        <span class="glyphicon" aria-hidden="true">
-                            <span class="fa fa-chevron-down"></span>
-                        </span>
                     </div>
                     <div class="btn txt-link" ng-click='nextSlide()'>
                         <span class="glyphicon simhei">前端</span>
@@ -163,24 +175,93 @@
                         </span>
                     </div>
                 </div>
+
+                <div class="line-center txt-white floatbtn">
+                    <div class="btn btn-lg circle" style="cursor:pointer" ng-click='prevPage()'>
+                        <span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span>
+                    </div>
+                </div>
             </div>
+
         </div>
 
 
 
 
-        <!--        //课程页-->
-        <div class="section">
-            <div class="line-center">网站建设中，即将面世！</div>
-
-            <!--            <div class="line-center txt-white"> -->
-            <!--                <div class="btn btn-lg circle" style="cursor:pointer" ng-click='nextPage()'>-->
-            <!--                    <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>-->
-            <!--                </div>-->
-            <!--            </div>-->
+        <!--        //代码派-->
+        <div class="section" style="overflow:hidden">
+            <div class='page-bg' style="bottom:0">
+                <img src="http://files.10knet.com/1/ags4fvzumuxh/welcomebg.jpg" width="100%" style="position:absolute;bottom:0;">
+            </div>
+            <div class='page-center'>
+                <div class="line-center">
+                    <p style="color:#FFF;margin: 0">
+                        我们认为的[零基础]是
+                        <br>必须已经掌握以下三大计算机技能
+                    </p>
+                    <h3 style="color:#FFF;margin: 0">会开机，会上网，会打字</h3>
+                    <div class="line-center">
+                        <img src="http://files.10knet.com/1/ava9bkwnlobp/daimapai.png" width="120px">
+                    </div>
+                    <h2 style="color:#FFF;margin: 0">代码派</h2>
+                    <p style="color:#FFF">
+                        杰米诺专有在线编程工具
+                        <br>不需安装，不需部署
+                    </p>
+                    <div class="btn txt-linkred" ng-click='gotoPie()'>
+                        <span class="glyphicon simhei">开始编码</span>
+                    </div>
+                    <div class="line-space"></div>
+                    <div class="line-space"></div>
+                    <div class="line-center" style="color:#FFF">
+                        <div class="playbox">
+                            <div style="opacity:0.33">
+                                <img src="http://files.10knet.com/1/anvgc0tsyvru/小鸡图标.png" width="64px">
+                                <p>私密对话</p>
+                            </div>
+                            <span class="fa fa-play-circle-o playbtn"></span>
+                        </div>
+                        <p>15钟上手真实WebApp开发</p>
+                    </div>
+                    <div class="btn txt-linkred" ng-click='gotoTour()'>
+                        <span class="glyphicon simhei">观看教程</span>
+                    </div>
+                </div>
+            </div>
+            <div class="line-center txt-white floatbtn">
+                <div class="btn btn-lg circle" style="cursor:pointer" ng-click='prevPage()'>
+                    <span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span>
+                </div>
+            </div>
+            <div class="page-footer">ICP证XXXXXXX | 合作伙伴：高博应诺 项目工场 百度传课</div>
         </div>
     </div>
-    </div>
+
+
+
+    <nav class="navbar navbar-default topnav">
+        <div class="btn txt-link topnavbtn" ng-click='gotoHome()'>
+            <span class="glyphicon" aria-hidden="true">
+                 <img src="http://files.10knet.com/1/ava9bkwnlobp/杰米诺head256.png" height="18px" style="margin:4px">
+            </span>
+        </div>
+        <div class="btn txt-link pull-right topnavbtn" nng-click='gotoReg()' style="padding:9px 20px">
+            <span class="glyphicon simhei">注册</span>
+        </div>
+        <div class="btn txt-link pull-right topnavbtn" ng-click='prevSlide()' style='margin-right:6px;padding:9px 20px'>
+            <span class="glyphicon simhei">登陆</span>
+        </div>
+    </nav>
+
+
+
+
+
+
+
+
+
+
 </body>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>

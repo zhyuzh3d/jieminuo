@@ -17,6 +17,10 @@
             $.fn.fullpage.moveSectionDown();
         };
 
+         $scope.prevPage = function() {
+            $.fn.fullpage.moveSectionUp();
+        };
+
         $scope.nextSlide = function() {
             $.fn.fullpage.moveSlideRight();
         };
@@ -27,6 +31,26 @@
 
         $scope.gotoPie = function() {
             location.href = 'http://' + location.host + '/pie/';
+        };
+
+        $scope.gotoFS = function() {
+            location.href = 'http://' + location.host + '/fullstack/';
+        };
+
+        $scope.gotoTour = function() {
+            location.href = 'http://' + location.host + '/pie/';
+        };
+
+        $scope.gotoHome = function() {
+            location.href = 'http://' + location.host + '/';
+        };
+
+        $scope.gotoReg = function() {
+            location.href = 'http://' + location.host + '/account/?page=acc_register';
+        };
+
+        $scope.gotoLogin = function() {
+            location.href = 'http://' + location.host + '/account/?page=acc_login';
         };
 
 
