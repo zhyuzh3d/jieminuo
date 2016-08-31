@@ -10,58 +10,55 @@ body {
     overflow: hidden;
     font-family: simhei;
 }
-
-
 /*去掉a标签的下划线*/
 
 a:link {
     text-decoration: none;
 }
-
 a:active {
     text-decoration: blink;
 }
-
 a:hover {
     text-decoration: none;
 }
-
 a:visited {
     text-decoration: none;
 }
 
+/*用户头像*/
+
+.avatar-sm {
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
 
 /*背景颜色*/
 
 .bg-black {
     background-color: #000;
 }
-
 .bg-darker {
     background-color: #444;
 }
-
 .bg-dark {
     background-color: #666;
 }
-
 .bg-mid {
     background-color: #AAA;
 }
-
 .bg-light {
     background-color: #CCC;
 }
-
 .bg-lighter {
     background-color: #EEE;
 }
-
 .bg-white {
     background-color: #FFF;
 }
-
-
 /*排列的容器*/
 
 .layout-v {
@@ -73,7 +70,6 @@ a:visited {
     flex-wrap: nowrap;
     overflow: auto;
 }
-
 .layout-h {
     position: relative;
     width: 100%;
@@ -83,58 +79,44 @@ a:visited {
     flex-wrap: nowrap;
     overflow: auto;
 }
-
-
 /*排列de单元*/
 
 .fbox {
     flex-grow: 0;
 }
-
 .fbox-1 {
     flex-grow: 1;
 }
-
 .fbox-2 {
     flex-grow: 2;
 }
-
 .fbox-3 {
     flex-grow: 3;
 }
-
 .fbox-4 {
     flex-grow: 4;
 }
-
 .fbox-5 {
     flex-grow: 5;
 }
-
 .fbox-6 {
     flex-grow: 6;
 }
-
 .fbox-7 {
     flex-grow: 7;
 }
-
 .fbox-8 {
     flex-grow: 8;
 }
-
 .fbox-9 {
     flex-grow: 9;
 }
-
 .fbox-10 {
     flex-grow: 10;
 }
-
 .fbox-11 {
     flex-grow: 11;
 }
-
 .fbox-12 {
     flex-grow: 12;
 }

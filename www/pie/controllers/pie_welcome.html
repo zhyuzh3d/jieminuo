@@ -23,6 +23,15 @@
             font-size: 12px;
             text-align: left;
         }
+        .pie_welcome .avatar-md {
+            width: 32px;
+            height: 32px;
+            border-radius: 32px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
     </style>
     <div layout-padding>
 
@@ -31,10 +40,27 @@
                 <span class="fa fa-bars fa-lg"></span>
             </md-button>
             <md-button class="md-icon-button hidden-xs" ng-click="$root.fold=!$root.fold;$root.tagLeftMenu()" style='margin-left:0;color:#AAA' aria-label='tagleft'>
-                <span class="fa fa-bars fa-lg"></span>
+                <span class="fa fa-chevron-left fa-lg" ng-show='$root.leftMenuOpen'></span>
+                <span class="fa fa-bars fa-lg" ng-hide='$root.leftMenuOpen'></span>
             </md-button>
             <md-button class="md-raised md-accent" ng-click='openCreateDialog()' aria-label='doCreateApp'>新建APP</md-button>
-            <md-button class="md-default" ng-click='getMyAppList()' aria-label='getMyAppList'>刷新</md-button>
+            <md-button class="md-default" ng-click='getMyAppList()' aria-label='getMyAppList' ng-show>刷新</md-button>
+
+            <div class="dropdown pull-right" ng-show='hasLogin' style="margin-top:8px">
+                <button class="dropdown-toggle" id="ddmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="background:none;border:none">
+                    <span>
+                        <img class='avatar-md' ng-src='{{myUsrInfo.avatar+"-avatar32"}}' />
+                    </span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="ddmenu1">
+                    <li class="btn" ng-click='gotoProfile()' style="width:100%">资料设置</li>
+                    <md-divider></md-divider>
+                    <li class="btn" ng-click='loginout()' style="width:100%">退出</li>
+                </ul>
+            </div>
+
+
         </div>
         <div layout layout-wrap class='container-fluid'>
             <div class='col-xs-12 col-sm-6 col-md-4 col-lg-2' ng-repeat='item in myApps.apps' style='padding:0.5rem'>

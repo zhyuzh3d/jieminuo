@@ -39,7 +39,8 @@
             <div layout flex='grow'>
                 <md-button class="md-no-ink md-icon-button itbtn" ng-click="$root.fold=!$root.fold;$root.tagLeftMenu()" aria-label='tagleft' style='width:39px;min-width:39px'>
                     <p style="color:#888">
-                        <span class="fa fa-bars fa-1x"></span>
+                        <span class="fa fa-chevron-left fa-1x" ng-show='$root.leftMenuOpen'></span>
+                        <span class="fa fa-bars fa-1x" ng-hide='$root.leftMenuOpen'></span>
                     </p>
                 </md-button>
                 <md-divider></md-divider>
@@ -157,7 +158,7 @@
                         <div id="qrcode"></div>
                     </a>
                     <p style='width:100%;text-transform:none;word-break:break-all;font-size:16px' aria-label='a' >
-                    <span>标识名: </span><span ng-bind="curApp.name"></span>
+                    <span>APP标识名: </span><span ng-bind="curApp.name"></span>
                     </p>
                     <p style='width:100%;text-transform:none;word-break:break-all;font-size:18px' aria-label='a' ng-bind='qrcodeDialogUrl'></p>
                 </md-dialog>
@@ -261,8 +262,8 @@
                     </div>
                     <div flex='none' style="padding-right:20px">
                         <md-button class="md-default itbtn" ng-click="changeCmEditorTheme()" aria-label='tagleft' style='color:#444;width:60px;margin-right:0;'>
-                            <span class="fa fa-circle-o" ng-show='cmTheme=="default"'></span>
                             <span class="fa fa-circle" ng-hide='cmTheme=="default"'></span>
+                            <span class="fa fa-circle-o" ng-show='cmTheme=="default"'></span>
                             <span>主题</span>
                         </md-button>
                         <md-button class="md-default itbtn" ng-click="useTemplate()" aria-label='tagleft' style='color:#444;margin-right:0;width:60px' ng-hide='true'>

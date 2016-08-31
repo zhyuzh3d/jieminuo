@@ -6,6 +6,10 @@
     <title>杰米诺</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initiaXl-scale=1, maximum-scale=1, user-scalable=no" />
+
+    <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="./global/global_pre.js"></script>
+
     <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" />
     <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
     <link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
@@ -24,8 +28,8 @@
             </div>
             <!--            欢迎页-->
             <div class='page-center'>
-                <img src="http://files.10knet.com/1/ava9bkwnlobp/全栈工程师.png" width="100%">
-                <img src="http://files.10knet.com/1/ava9bkwnlobp/成长课程.png" width="50%" style='margin-top:-5%;margin-left:25%'>
+                <img src="http://files.10knet.com/1/ava9bkwnlobp/全栈工程师.png" style='width:90%;margin-left:5%'>
+                <img src="http://files.10knet.com/1/ava9bkwnlobp/成长课程.png" width="40%" style='margin-top:-5%;margin-left:30%'>
                 <div class="line-center txt-white  visible-lg">
                     <div style="font-size:36px">2016.10.10 十全十美 零基础启航</div>
                     <div class="uppercase" style="font-size:16px;font-weight:normal">
@@ -238,33 +242,36 @@
     </div>
 
 
-
     <nav class="navbar navbar-default topnav">
         <div class="btn txt-link topnavbtn" ng-click='gotoHome()'>
             <span class="glyphicon" aria-hidden="true">
                  <img src="http://files.10knet.com/1/ava9bkwnlobp/杰米诺head256.png" height="18px" style="margin:4px">
             </span>
         </div>
-        <div class="btn txt-link pull-right topnavbtn" nng-click='gotoReg()' style="padding:9px 20px">
+        <div class="btn txt-link pull-right topnavbtn" ng-click='gotoReg()' style="padding:9px 20px" ng-hide='hasLogin'>
             <span class="glyphicon simhei">注册</span>
         </div>
-        <div class="btn txt-link pull-right topnavbtn" ng-click='prevSlide()' style='margin-right:6px;padding:9px 20px'>
+        <div class="btn txt-link pull-right topnavbtn" ng-click='gotoLogin()' style='margin-right:6px;padding:9px 20px' ng-hide='hasLogin'>
             <span class="glyphicon simhei">登陆</span>
+        </div>
+        <div class="dropdown pull-right" ng-show='hasLogin'>
+            <button class="dropdown-toggle usrname" id="ddmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span>
+                    <img class='avatar-sm' ng-src='{{myUsrInfo.avatar+"-avatar32"}}' />
+                </span>
+                <span ng-bind='myUsrInfo.nick'>未命名用户</span>
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu ddbox" aria-labelledby="ddmenu1">
+                <li class="btn ddmenu" ng-click='loginout()'>退出</li>
+            </ul>
         </div>
     </nav>
 
 
 
 
-
-
-
-
-
-
 </body>
-
-<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script src="//cdn.bootcss.com/fullPage.js/2.8.4/vendors/scrolloverflow.min.js"></script>
 <script src="//cdn.bootcss.com/fullPage.js/2.8.4/vendors/jquery.easings.min.js"></script>

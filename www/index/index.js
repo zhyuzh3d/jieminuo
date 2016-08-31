@@ -13,11 +13,34 @@
             $('.fp-slidesNav').find('span').css('background', '#FFF');
         });
 
+
+        //等待global读取账号信息成功后刷新右上角用户
+        _global.promiseRun(function() {
+            $scope.$apply(function() {
+                $scope.myUsrInfo = _global.myUsrInfo;
+                $scope.hasLogin = _global.hasLogin;
+            });
+        }, function() {
+            return _global.hasLogin;
+        });
+
+
+        //注销
+        $scope.loginout = function() {
+            _global.logout(function() {
+                $scope.$apply(function() {
+                    $scope.myUsrInfo = _global.myUsrInfo;
+                    $scope.hasLogin = _global.hasLogin;
+                });
+            })
+        };
+
+        //各种跳转函数
         $scope.nextPage = function() {
             $.fn.fullpage.moveSectionDown();
         };
 
-         $scope.prevPage = function() {
+        $scope.prevPage = function() {
             $.fn.fullpage.moveSectionUp();
         };
 

@@ -19,6 +19,7 @@
     ) {
         _fns.initCtrlr($scope, $element, thisName, false);
 
+
         //锚点
         $scope.goto = function(key) {
             $location.hash(key);
@@ -94,7 +95,7 @@
             $.post(api, dat, function(res) {
                 console.log('POST', api, dat, res);
                 if (res.code == 1) {
-                    $scope.curApp=res.data;
+                    $scope.curApp = res.data;
                 } else {
                     //提示错误
                     $mdToast.show(
@@ -875,8 +876,8 @@
 
 
         //改变编辑器的主题
-        $scope.cmTheme = 'default';
-        $scope.changeCmEditorTheme = function(str) {
+        $scope.cmTheme = 'mbo';
+        $scope.changeCmEditorTheme = function() {
             if ($scope.cmTheme == 'default') {
                 $scope.cmTheme = 'mbo';
             } else {
@@ -884,8 +885,6 @@
             };
             $scope.cmEditor.setOption('theme', $scope.cmTheme);
         };
-
-
 
 
 

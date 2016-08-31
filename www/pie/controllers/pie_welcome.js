@@ -23,6 +23,17 @@
         };
 
 
+        //等待global读取账号信息成功后刷新右上角用户
+        _global.promiseRun(function() {
+            $scope.$apply(function() {
+                $scope.myUsrInfo = _global.myUsrInfo;
+                $scope.hasLogin = _global.hasLogin;
+            });
+        }, function() {
+            return _global.hasLogin;
+        });
+
+
         //获取我的App列表
         $scope.getMyAppList = function () {
             var api = _global.api('pie_getMyApps');
@@ -265,6 +276,9 @@
             return css;
         };
 
+        $scope.gotoProfile=function(){
+            location.href = 'http://' + location.host + '/account/?page=acc_profile';
+        };
 
 
 

@@ -3,7 +3,7 @@ console.info('global_pre loading...');
 
 if (!_global) var _global = {};
 
-(function () {
+(function() {
     'use strict';
 
     //全局设置，所有的路径结尾都不带斜杠,自动匹配10knet和jieminuoketang
@@ -16,7 +16,7 @@ if (!_global) var _global = {};
 
 })();
 
-(function () {
+(function() {
     'use strict';
 
     //修改标题
@@ -26,20 +26,20 @@ if (!_global) var _global = {};
 })();
 
 
-(function () {
+(function() {
     'use strict';
 
     //获取api路径
-    _global.api = function (str) {
+    _global.api = function(str) {
         return _global.apiPrefix + '/' + str;
     };
 
     //先检查是否登陆，没有登陆的话直接跳往登陆注册页面
-    _global.chkLogin = function () {
+    _global.chkLogin = function() {
         var api = _global.api('acc_getMyInfo');
         var dat = {};
 
-        $.post(api, dat, function (res) {
+        $.post(api, dat, function(res) {
             console.log('POST', api, dat, res);
             var isloginpage = (location.href.indexOf(_global.hostUrl + '/account/?page=acc_login') == 0);
             var isregpage = (location.href.indexOf(_global.hostUrl + '/account/?page=acc_register') == 0);
@@ -55,9 +55,32 @@ if (!_global) var _global = {};
                     //location.href = _global.hostUrl + '/account/?page=acc_login&okUrl=' + encodeURI(location.href);
                 };
             };
-        },'jsonp');
+        }, 'jsonp');
     };
     _global.chkLogin();
+
+
+    //注销账号
+    _global.logout = function(okfn) {
+        //注销当前账号
+        var api = _global.api('acc_loginOut');
+        var dat = {};
+
+        $.post(api, dat, function(res) {
+            console.log('POST', api, dat, res);
+            if (res.code == 1) {
+                _global.myUsrInfo = undefined;
+                _global.hasLogin = false;
+                if (okfn && okfn.constructor == Function) {
+                    try {
+                        okfn()
+                    } catch (err) {}
+                };
+            } else {
+                console.log('_global:logout:failed:', res.text);
+            }
+        });
+    };
 
 
     /*等待某个值为真然后运行函数fn
@@ -66,9 +89,9 @@ if (!_global) var _global = {};
     fn函数fn(time),默认超时结束不运行;
     forceRun超时最后也会运行这个函数，所以要避免强制运行就要检测时间小于maxtime
     */
-    _global.promiseRun = function (fn, condition, maxtime, interval, forceRun) {
+    _global.promiseRun = function(fn, condition, maxtime, interval, forceRun) {
         if (!fn || fn.constructor != Function) return;
-        if (!condition || condition.constructor != Function) condition = function () {
+        if (!condition || condition.constructor != Function) condition = function() {
             return true;
         };
 
@@ -76,7 +99,7 @@ if (!_global) var _global = {};
         if (!maxtime) maxtime = 10000;
 
         var bgntm = (new Date()).getTime();
-        var setid = setInterval(function () {
+        var setid = setInterval(function() {
             var now = (new Date()).getTime();
             var tm = now - bgntm;
             if (tm >= maxtime) {
@@ -96,7 +119,7 @@ if (!_global) var _global = {};
 
                         fn(tm);
                     } catch (err) {
-                        __errhdlr(new Error('_fns.promiseRun:run error:' + err));
+                        console.log('_fns.promiseRun:run error:', err);
                     };
                     clearInterval(setid);
                 };

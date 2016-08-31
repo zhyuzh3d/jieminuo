@@ -152,9 +152,9 @@
                         .hideDelay(500)
                     ).then(function (result) {
                         if ($scope.args.okUrl) {
-                            //window.location.href = encodeURI($scope.args.okUrl);
+                            window.location.href = encodeURI($scope.args.okUrl);
                         } else {
-                            //window.location.href = document.referrer;
+                            window.location.href = document.referrer;
                         };
                     });
                 } else {
