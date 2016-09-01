@@ -69,10 +69,10 @@
                         <div style="position:absolute;width:100%;height:100%;background-size:cover;opacity:0.4;border-radius: 4px 4px 0 0" ng-style='genCardBg2(item.val)'></div>
                         <div style="position:absolute;width:100%;height:100%;background-size:cover;opacity:0.4;border-radius: 4px 4px 0 0" ng-style='genCardBg(item.val)'></div>
                         <md-card-title-text class="elips" style='margin:16px;z-index:6'>
-                            <div class="md-headline elips" ng-click='editApp(item.key)' style="cursor:pointer;">
+                            <div class="md-headline elips" ng-click='openApp(item.key)' style="cursor:pointer;">
                                 <span class="md-headline elips" ng-bind='item.info.alias' style='color:#000'></span>
                             </div>
-                            <span class="md-subhead elips" style='color:#000' ng-bind='item.info.name' ng-click='openApp(item.key)' style="cursor:pointer;"></span>
+                            <span class="md-subhead elips" style='color:#000' ng-bind='item.info.name' ng-click='editApp(item.key)' style="cursor:pointer;"></span>
                         </md-card-title-text>
                     </md-card-title>
 
@@ -88,7 +88,7 @@
                             <md-menu-content>
                                 <md-button flex='none' class="md-default" ng-click='openApp(item.key)' aria-label='a' style='color:#888'>
                                     <span class='fa fa-globe'></span>
-                                    <span>打开</span>
+                                    <span>浏览</span>
                                 </md-button>
                                 <md-button flex='none' class="md-default" ng-click='editApp(item.key)' aria-label='a' style='color:#888'>
                                     <span class='fa fa-pencil'></span>
