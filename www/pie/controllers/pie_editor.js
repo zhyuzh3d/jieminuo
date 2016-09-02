@@ -19,7 +19,6 @@
     ) {
         _fns.initCtrlr($scope, $element, thisName, false);
 
-
         //锚点
         $scope.goto = function(key) {
             $location.hash(key);
@@ -500,40 +499,51 @@
         延迟100毫秒执行
         */
 
-        $scope.openFile = function(url, fkey) {
+        $scope.openFile = function(url, fkey, ineditor) {
             var appName = $scope.getAppArg();
             var uid = $rootScope.myInfo.id;
             if (!url) url = _cfg.qn.BucketDomain + uid + '/' + appName + '/index.html';
             if (!fkey) fkey = uid + '/' + appName + '/index.html';
+            if (ineditor === undefined) ineditor = true;
 
+            var fext = _fns.getFileExt(url);
+            var fname = _fns.getFileName(url);
 
 
             //添加时间戳强制刷新
             var urlp = url + '?_=' + (new Date()).getTime();
 
             $.get(urlp, function(res) {
-                console.log('GET', urlp, null, String(res).substr(0, 100));
+                console.log('GET', urlp, null, String(res).substr(0, 25));
                 _fns.applyScope($scope, function() {
                     //如果当前编辑文件和preview文件相同，打开新文件之前先把原有数据更新到previewFileData
                     if ($scope.previewFileKey == $scope.curFileKey) {
                         $scope.previewFileData = $scope.curFileData;
                     };
-                    $scope.curFileData = res;
 
-                    //更新curFile
-                    $scope.curFileUrl = url;
-                    $scope.curFileKey = fkey;
-                    $scope.curFileName = _fns.getFileName(url);
-                    $scope.curFileExt = _fns.getFileExt(url);
-                    $scope.tagPart('hideEditor', false);
+                    if (ineditor) {
+                        $scope.curFileData = res;
 
-                    if ($scope.curFileExt == 'html') {
+                        //更新curFile
+                        $scope.curFileUrl = url;
+                        $scope.curFileKey = fkey;
+                        $scope.curFileName = fname;
+                        $scope.curFileExt = fext;
+                        $scope.tagPart('hideEditor', false);
+                    };
+
+
+                    if (fext == 'html') {
                         //如果是html，那么更新previewUrl并刷新窗口
                         $scope.previewFileUrl = $scope.curFileUrl;
                         $scope.previewFileKey = $scope.curFileKey;
                         $scope.previewFileName = $scope.curFileName;
                         $scope.previewFileData = $scope.curFileData;
                         $scope.reloadPreview();
+                    } else if (fext == 'css') {
+                        //如果是index.css，那么直接加载到curCssData,保证实时预览正常
+                        $scope.curCssData = res;
+
                     } else {
                         //如果不是html，强制切换到手工刷新状态
                         $scope.previewRt = false;
@@ -542,13 +552,13 @@
 
 
                     //自动切换编辑器提示引擎
-                    if ($scope.cmModes[$scope.curFileExt] != undefined) {
+                    if (ineditor && $scope.cmModes[$scope.curFileExt] != undefined) {
                         $scope.cmOpt.mode = $scope.cmModes[$scope.curFileExt];
 
                         //重置编辑器
                         $scope.cmEditor.setOption('mode', $scope.cmOpt.mode);
 
-                    } else {
+                    } else if (ineditor) {
                         $mdToast.show(
                             $mdToast.simple()
                             .textContent('编辑器不支持您的文件格式.')
@@ -558,16 +568,20 @@
                     };
 
                     setTimeout(function() {
-                        $scope.curFileData += ' ';
+                        if (ineditor) {
+                            $scope.curFileData += ' ';
+                        };
                     }, 100)
                 });
-                var fname = url.substring(url.lastIndexOf('/') + 1);
-                $mdToast.show(
-                    $mdToast.simple()
-                    .textContent('读取文件' + fname + '成功，已经载入编辑器！')
-                    .position('top right')
-                    .hideDelay(500)
-                );
+                if (ineditor) {
+                    var fname = url.substring(url.lastIndexOf('/') + 1);
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent('读取文件' + fname + '成功，已经载入编辑器！')
+                        .position('top right')
+                        .hideDelay(500)
+                    );
+                }
             }, "html");
         };
 
@@ -575,6 +589,15 @@
         //登录成功后自动读取index.html
         _fns.promiseRun(function(tm) {
             $scope.openFile();
+
+            //自动打开index.css文件并加载到实时预览
+            var appName = $scope.getAppArg();
+            var uid = $rootScope.myInfo.id;
+            var cssurl = _cfg.qn.BucketDomain + uid + '/' + appName + '/index.css';
+            var fkey = uid + '/' + appName + '/index.css';
+            $scope.openFile(cssurl, fkey, false);
+
+
         }, function() {
             return _global.hasLogin;
         });
@@ -745,7 +768,6 @@
             var url = _cfg.qn.BucketDomain + uid + '/' + appName + '/index.html?_=' + (new Date()).getTime();
             window.open(url);
         };
-
 
 
         //显示页面的二维码弹窗

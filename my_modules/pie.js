@@ -6,6 +6,7 @@ var _pie = {};
 var templates = {
     baseHtml: $fs.readFileSync(__path + '/www/pie/templates/base.html', 'utf-8').replace(/\[\{codeHere_*\w*\}\]/g, ''),
     baseJs: $fs.readFileSync(__path + '/www/pie/templates/base.js', 'utf-8').replace(/\[\{codeHere_*\w*\}\]/g, ''),
+    baseCss: $fs.readFileSync(__path + '/www/pie/templates/base.css', 'utf-8').replace(/\[\{codeHere_*\w*\}\]/g, ''),
 };
 
 
@@ -38,6 +39,7 @@ _rotr.apis.pie_createApp = function() {
         //向七牛添加一个index.html文件
         var qnres1 = yield _qn.qn_uploadDataCo(templates.baseHtml, uid + '/' + appName + '/index.html');
         var qnres2 = yield _qn.qn_uploadDataCo(templates.baseJs, uid + '/' + appName + '/index.js');
+        var qnres3 = yield _qn.qn_uploadDataCo(templates.baseCss, uid + '/' + appName + '/index.css');
 
         //存储为app-aid键
         var mu = _rds.cli.multi();

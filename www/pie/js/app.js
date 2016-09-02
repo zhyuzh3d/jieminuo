@@ -196,6 +196,20 @@ var _app = {}; //最高全局变量，angular
         }
     );
 
+    //把css文件读取的内容嵌套到<style>标签里面
+    _app.filter(
+        'styleCss',
+        function() {
+            return function(str) {
+                if (!str) str = '';
+                str = String(str);
+                var res = '<style>' + str + '</style>';
+                console.log('>>>>>>>>>>css', res, '>>>', str, '<<<');
+                return res;
+            };;
+        }
+    );
+
 
 
     //directive:上传文件的指令
