@@ -16,8 +16,6 @@
 
         _fns.getCtrlrAgs($scope, $element);
 
-        console.log('>>>>>$scope.args.okUrl',$scope.args.okUrl);
-
         $scope.user = {};
 
         //需要载入的内容，仅限延迟使用，即时使用的需要加入index.html

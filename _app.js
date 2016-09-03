@@ -28,6 +28,7 @@ global._ctnu = require('./my_modules/ctnu.js');
 global._cfg = require('./my_modules/cfg.js');
 global._fns = require('./my_modules/fns.js');
 global._mdwr = require('./my_modules/mdwr.js');
+global._ndwr = require('./my_modules/ndwr.js');
 global._rotr = require('./my_modules/rotr.js');
 global._rds = require('./my_modules/rds.js');
 global._qn = require('./my_modules/qn.js');
@@ -74,15 +75,19 @@ koaSvr.use($cors({
 }));
 */
 
+/*http请求中间件
+ */
+koaSvr.use(_mdwr);
+
 
 /*http请求的路由控制
  */
 koaSvr.use(_rotr.routes());
 
 
-/*http请求中间件
+/*http请求收尾件
  */
-koaSvr.use(_mdwr);
+koaSvr.use(_ndwr);
 
 
 
