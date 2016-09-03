@@ -13,6 +13,7 @@ global.__domain = _xcfg.domain;
 var __errCode = global.__errCode = {
     APIERR: 8788, //API接口异常，未知错误
     NOTFOUND: 4312, //找不到目标
+    JSONPERR: 8777, //找不到目标
 };
 
 //正则表达式

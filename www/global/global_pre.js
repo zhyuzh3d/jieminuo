@@ -1,9 +1,9 @@
 //在所有脚本之前，jquery之后执行，比如检测登陆情况
-console.info('global_pre loading...');
+console.info('global_pre11 loading...');
 
 if (!_global) var _global = {};
 
-(function() {
+(function () {
     'use strict';
 
     //全局设置，所有的路径结尾都不带斜杠,自动匹配10knet和jieminuoketang
@@ -16,7 +16,7 @@ if (!_global) var _global = {};
 
 })();
 
-(function() {
+(function () {
     'use strict';
 
     //修改标题
@@ -26,21 +26,25 @@ if (!_global) var _global = {};
 })();
 
 
-(function() {
+(function () {
     'use strict';
 
     //获取api路径
-    _global.api = function(str) {
+    _global.api = function (str) {
         return _global.apiPrefix + '/' + str;
     };
 
+
+
     //先检查是否登陆，没有登陆的话直接跳往登陆注册页面
-    _global.chkLogin = function() {
+    _global.chkLogin = function () {
         var api = _global.api('acc_getMyInfo');
         var dat = {};
 
-        $.post(api, dat, function(res) {
-            console.log('POST', api, dat, res);
+        $.ajaxSetup({
+            async: true
+        });
+        $.post(api, dat, function (res) {
             var isloginpage = (location.href.indexOf(_global.hostUrl + '/account/?page=acc_login') == 0);
             var isregpage = (location.href.indexOf(_global.hostUrl + '/account/?page=acc_register') == 0);
 
@@ -52,7 +56,7 @@ if (!_global) var _global = {};
                 //没有登陆，跳转到登录页，把当前页地址作为参数传递（因为可能是单独调用接口注销的）
                 //如果当前页面已经是登录页或注册页就不要跳转了
                 if (!isloginpage && !isregpage) {
-                    //location.href = _global.hostUrl + '/account/?page=acc_login&okUrl=' + encodeURI(location.href);
+                    location.href = _global.hostUrl + '/account/?page=acc_login&okUrl=' + encodeURI(location.href);
                 };
             };
         }, 'jsonp');
@@ -61,12 +65,12 @@ if (!_global) var _global = {};
 
 
     //注销账号
-    _global.logout = function(okfn) {
+    _global.logout = function (okfn) {
         //注销当前账号
         var api = _global.api('acc_loginOut');
         var dat = {};
 
-        $.post(api, dat, function(res) {
+        $.post(api, dat, function (res) {
             console.log('POST', api, dat, res);
             if (res.code == 1) {
                 _global.myUsrInfo = undefined;
@@ -89,9 +93,9 @@ if (!_global) var _global = {};
     fn函数fn(time),默认超时结束不运行;
     forceRun超时最后也会运行这个函数，所以要避免强制运行就要检测时间小于maxtime
     */
-    _global.promiseRun = function(fn, condition, maxtime, interval, forceRun) {
+    _global.promiseRun = function (fn, condition, maxtime, interval, forceRun) {
         if (!fn || fn.constructor != Function) return;
-        if (!condition || condition.constructor != Function) condition = function() {
+        if (!condition || condition.constructor != Function) condition = function () {
             return true;
         };
 
@@ -99,7 +103,7 @@ if (!_global) var _global = {};
         if (!maxtime) maxtime = 10000;
 
         var bgntm = (new Date()).getTime();
-        var setid = setInterval(function() {
+        var setid = setInterval(function () {
             var now = (new Date()).getTime();
             var tm = now - bgntm;
             if (tm >= maxtime) {

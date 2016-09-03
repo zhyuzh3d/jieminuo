@@ -277,20 +277,7 @@ _fns.arr2obj = function (arr, keyval, keyobj) {
 }
 
 
-/*兼容jsonp的处理程序
-ctx,koa请求上下文
-domains,只允许这些域名跨域，数组；默认为xcfg中的crossDomains域名
- */
-_fns.enableJsonp = function (ctx, domains) {
-    if (!domains) domains = _xcfg.crossDomains;
-    var allow = domains.indexOf(ctx.hostname);
-    if (allow == -1) return;
 
-    var jsonpCallback = ctx.query.callback || ctx.request.body.callback;
-    if (jsonpCallback && ctx.body) {
-        ctx.body = ctx.query.callback + '(' + JSON.stringify(ctx.body) + ')';
-    };
-};
 
 
 

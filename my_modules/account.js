@@ -118,6 +118,7 @@ _rotr.apis.acc_getUidByUkey = function () {
  */
 _rotr.apis.acc_getMyInfo = function () {
     var ctx = this;
+    ctx.enableJsonp=true;
 
     var co = $co(function* () {
         var msg;
@@ -149,7 +150,6 @@ _rotr.apis.acc_getMyInfo = function () {
         dat.phone = dat.phone.substr(0, 3) + '******' + dat.phone.substr(dat.phone.length - 2);
 
         ctx.body = __newMsg(1, 'ok', dat);
-        _fns.enableJsonp(ctx);
         return ctx;
     });
     return co;

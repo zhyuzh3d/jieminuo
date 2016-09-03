@@ -65,9 +65,7 @@ koaSvr.use($bodyParser({
     }
 }));
 
-/*http请求中间件
- */
-koaSvr.use(_mdwr);
+
 
 /*跨域，改为jsonp单个接口控制
 koaSvr.use($cors({
@@ -82,7 +80,9 @@ koaSvr.use($cors({
 koaSvr.use(_rotr.routes());
 
 
-
+/*http请求中间件
+ */
+koaSvr.use(_mdwr);
 
 
 
