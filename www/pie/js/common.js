@@ -715,6 +715,8 @@ if (!_pie) var _pie = {};
 })();
 
 
+
+
 //全局变量
 /*专用err处理函数,适合co().then()使用*/
 function __errhdlr(err) {
