@@ -346,10 +346,15 @@ if (!_pie) var _pie = {};
         xhr.file = file;
         xhr.domain = domain;
 
+        //把xhr存入_cfg.xhrs
+        if (file.uploadId && file.id) {
+            _cfg.xhrs[file.uploadId][file.id] = xhr;
+        };
+
         return xhr;
     };
 
-    //根据key先获取指定token，然后上传
+    //根据key先获取指定token，然后上传;无返回
     _fns.uploadFileQn = function (key, file, progress, success, error, complete, domain) {
         var api = _cfg.qn.getUploadTokenApi;
         var dat = {
@@ -414,19 +419,23 @@ if (!_pie) var _pie = {};
 
             for (var i = 0; i < fileobjs.length; i++) {
                 var f = fileobjs[i];
+                if (abortfn) f.abortfn = abortfn;
 
                 //执行上传之前的动作,预先放置一个空的xhr，带有file信息
                 var xhrid = _fns.uuid();
                 var xhr = {};
                 xhr.file = f;
-                xhr.id = xhr.file.id = xhrid;
+                xhr.id = xhr.file.id = f.id = xhrid;
+                xhr.id = xhr.file.uploadId = f.uploadId = uploadId;
+
+
                 _cfg.xhrs[uploadId][xhrid] = xhr;
                 if (beforefn) beforefn(f, xhr);
 
                 var fname = f.name;
 
                 //开始上传
-                xhr = _fns.uploadFileQn(path + '/' + fname, f,
+                xhr = _fns.uploadFileQn(path + '/' + fname, xhr.file,
                     function (evt) {
                         //添加evt.percent,为了避免abort之后progress会多运行一次，所以使用f.abort做判断
                         if (progressfn && !f.abort) {
@@ -452,8 +461,6 @@ if (!_pie) var _pie = {};
                         if (completefn) completefn(f, xhr, status);
                     }, domain);
 
-                if (xhr && abortfn) xhr['abortfn'] = abortfn;
-                if (xhr) xhr.id = xhrid;
                 if (xhr) _cfg.xhrs[uploadId][xhrid] = xhr;
             }
         });
@@ -515,12 +522,15 @@ if (!_pie) var _pie = {};
             $.get(_cfg.qn.getUploadTokenApi2, function (res) {
                 for (var i = 0; i < fileobjs.length; i++) {
                     var f = fileobjs[i];
+                    if (abortfn) f.abortfn = abortfn;
 
                     //执行上传之前的动作,预先放置一个空的xhr，带有file信息
                     var xhrid = _fns.uuid();
                     var xhr = {};
                     xhr.file = f;
-                    xhr.id = xhr.file.id = xhrid;
+                    xhr.id = xhr.file.id = f.id = xhrid;
+                    xhr.uploadId = xhr.file.uploadId = f.uploadId = uploadId;
+
                     _cfg.xhrs[uploadId][xhrid] = xhr;
                     if (beforefn) beforefn(f, xhr);
 
@@ -552,7 +562,14 @@ if (!_pie) var _pie = {};
                         }, domain);
 
                     if (xhr && abortfn) xhr['abortfn'] = abortfn;
-                    xhr.id = xhrid;
+                    if (xhr) {
+                        xhr.id = xhrid;
+                        xhr.uploadId = uploadId;
+                        if (xhr.file) {
+                            xhr.file.id = xhrid;
+                            xhr.file.uploadId = uploadId;
+                        };
+                    };
                     if (xhr) _cfg.xhrs[uploadId][xhrid] = xhr;
                 }
             });
@@ -578,18 +595,15 @@ if (!_pie) var _pie = {};
      * 取消上传，同时适用指定文件名版本和随机文件名版本
      * @param {int} xhrid 最终xhr将存放在_cfg.xhrs[xhrid]
      */
-    _fns.abortUpload = function (xhrid) {
-        for (var upid in _cfg.xhrs) {
-            var ups = _cfg.xhrs[upid];
-            for (var xid in ups) {
-                var xhr = ups[xid];
-                xhr.file.abort = true;
-                xhr.abort();
-                delete ups[xid];
-                if (xhr.abortfn) xhr.abortfn(xhr.file);
-            }
-        };
+    _fns.abortUpload = function (f) {
+        var xhr = _cfg.xhrs[f.uploadId][f.id];
+        if (f.abortfn) f.abortfn(f);
+        f.abort = true;
+        try {
+            xhr.abort();
+        } catch (err) {}
     };
+
 
     /*重新封装console的函数*/
     var cnslPreStr = '>';

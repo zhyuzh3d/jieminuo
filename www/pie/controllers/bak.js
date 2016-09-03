@@ -356,18 +356,11 @@
         };
 
 
-        //并从上传列表中移除
+        //从上传列表中移除
         $scope.removeUpFile = function (f) {
-            setTimeout(function () {
-                _fns.applyScope($scope, function () {
-                    delete $scope.upFiles[f.id];
-                });
-            }, 100);
-        };
-
-        //取消上传并从上传列表中移除
-        $scope.abortUploadFile = function (f) {
-            _fns.abortUpload(f);
+            _fns.applyScope($scope, function () {
+                delete $scope.upFiles[f.id];
+            });
         };
 
 
@@ -535,7 +528,6 @@
                 console.log('GET', urlp, null, String(res).substr(0, 25));
 
                 _fns.applyScope($scope, function () {
-
                     var fobj = {
                         url: url,
                         key: fkey,
@@ -544,14 +536,6 @@
                         data: res,
                     };
 
-                    //同步当前编辑器和预览数据,避免打开新文件后实时预览异常
-                    if ($scope.editorFile.key == $scope.previewRtHtmlFile.key) {
-                        $scope.previewRtHtmlFile.data == $scope.editorFile.data;
-                    } else if ($scope.editorFile.key == $scope.previewRtCssFile.key) {
-                        $scope.previewRtCssFile.data == $scope.editorFile.data;
-                    };
-
-                    //处理编辑器
                     if (ineditor) {
                         $scope.editorFile = fobj;
 
@@ -576,25 +560,104 @@
                             };
                         }, 100);
 
-                        //成功提示
-                        $mdToast.show(
-                            $mdToast.simple()
-                            .textContent('读取文件' + fname + '.' + fext + '成功，已经载入编辑器！')
-                            .position('top right')
-                            .hideDelay(500)
-                        );
+
                     };
 
-                    //不管是否载入编辑器，都改变预览文件参数
                     if (fext == 'html') {
                         $scope.previewRtHtmlFile = fobj;
                         $scope.previewMnFile = fobj;
                     } else if (fext == 'css') {
                         $scope.previewRtCssFile = fobj;
                     };
+
+
+
+
                 });
 
 
+
+
+
+
+
+
+
+                _fns.applyScope($scope, function () {
+                    //如果当前编辑文件和preview文件相同，打开新文件之前先把原有数据更新到previewFileData
+                    if ($scope.previewFileKey == $scope.curFileKey) {
+                        $scope.previewFileData = $scope.curFileData;
+                    };
+
+                    if (ineditor) {
+                        $scope.curFileData = res;
+
+                        //更新curFile
+                        $scope.curFileUrl = url;
+                        $scope.curFileKey = fkey;
+                        $scope.curFileName = fname;
+                        $scope.curFileExt = fext;
+                        $scope.tagPart('hideEditor', false);
+                    };
+
+
+                    if (fext == 'html') {
+                        //如果是html，那么更新previewUrl并刷新窗口
+                        $scope.previewFileUrl = $scope.curFileUrl;
+                        $scope.previewFileKey = $scope.curFileKey;
+                        $scope.previewFileName = $scope.curFileName;
+                        $scope.previewFileData = $scope.curFileData;
+                        $scope.reloadPreview();
+
+                        //更新实时预览数据
+                        $scope.previewRtHtmlData = $scope.curFileData;
+
+                    } else if (fext == 'css') {
+                        //如果是index.css，那么直接加载到curCssData,保证实时预览正常
+                        if (ineditor) {
+                            $scope.previewRtCssData = $scope.curFileData;
+                        } else {
+                            $scope.previewRtCssData = res;
+                        }
+
+                    } else {
+                        //如果不是html，强制切换到手工刷新状态
+                        $scope.previewRt = false;
+                        $scope.reloadPreview();
+                    };
+
+
+                    //自动切换编辑器提示引擎
+                    if (ineditor && $scope.cmModes[$scope.curFileExt] != undefined) {
+                        $scope.cmOpt.mode = $scope.cmModes[$scope.curFileExt];
+
+                        //重置编辑器
+                        $scope.cmEditor.setOption('mode', $scope.cmOpt.mode);
+
+                    } else if (ineditor) {
+                        $mdToast.show(
+                            $mdToast.simple()
+                            .textContent('编辑器不支持您的文件格式.')
+                            .position('top right')
+                            .hideDelay(3000)
+                        );
+                    };
+
+                    setTimeout(function () {
+                        if (ineditor) {
+                            $scope.curFileData += ' ';
+                        };
+                    }, 100)
+                });
+                if (ineditor) {
+                    var fname = url.substring(url.lastIndexOf('/') + 1);
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent('读取文件' + fname + '成功，已经载入编辑器！')
+                        .position('top right')
+                        .hideDelay(500)
+                    );
+                }
             }, "html");
         };
 
@@ -619,13 +682,13 @@
 
         /*刷新手工预览窗口的url*/
         $scope.reloadPreview = function () {
-            //如果当前html文件和预览html文件不同，那么也存储预览html文件，以便刷新预览html文件内部的时间戳
-            if ($scope.previewMnFile.key != $scope.editorFile.key) {
+            //如果当前文件和预览文件不同，那么也存储预览文件，以便刷新预览文件内部的时间戳
+            if ($scope.previewFileKey && $scope.previewFileKey != $scope.curFileKey) {
                 var timestamp = (new Date()).getTime() + '{[timeStamp]}';
                 var uid = $rootScope.myInfo.id;
-                var url = $scope.previewMnFile.key.substr(uid.length + 1);
+                var url = $scope.previewFileKey.substr(uid.length + 1);
 
-                var data = $scope.previewMnFile.data;
+                var data = $scope.previewFileData;
                 var tsdata = data.replace(/\d*\{\[timeStamp\]\}/g, timestamp);
 
                 $scope.saveFile(url, tsdata, function (f, res) {
@@ -635,8 +698,8 @@
                         $scope.refreshPreviewFrameUrl();
                     }, 1000);
                 });
-            } else {
-                //预览与编辑的文件一致,直接刷新
+            } else if ($scope.previewFileKey == $scope.curFileKey) {
+                //预览与编辑的文件一致
                 $scope.refreshPreviewFrameUrl();
             }
         };
@@ -654,8 +717,8 @@
             );
 
             var url = '';
-            if ($scope.previewMnFile.url) {
-                url = encodeURI($scope.previewMnFile.url) + '?_=' + Math.random();
+            if ($scope.previewFileUrl) {
+                url = encodeURI($scope.previewFileUrl) + '?_=' + Math.random();
             };
             setTimeout(function () {
                 $('#previewFrame').attr('src', url);
@@ -680,7 +743,7 @@
             //截取uid/后面的部分
             var appName = $scope.getAppArg();
             var uid = $rootScope.myInfo.id;
-            var fkey = $scope.editorFile.key.substr(uid.length + 1);
+            var fkey = $scope.curFileKey.substr(uid.length + 1);
             var data = $scope.cmDoc.getValue();
 
             if (!fkey || !data) {
@@ -693,14 +756,14 @@
                 var timestamp = (new Date()).getTime() + '{[timeStamp]}';
                 var tsdata = data.replace(/\d*\{\[timeStamp\]\}/g, timestamp);
 
-                //如果编辑的html和预览的html不是同一个页面，那么提前reload保存预览html以便于刷新html里面的时间戳
-                if ($scope.previewMnFile.key != $scope.editorFile.key) {
+                //如果编辑和预览的不是同一个页面，那么提前reload
+                if ($scope.previewFileKey && $scope.previewFileKey != $scope.curFileKey) {
                     $scope.reloadPreview();
                 };
 
                 //存储完成后刷新预览窗
                 $scope.saveFile(fkey, tsdata, function () {
-                    if ($scope.previewMnFile.key == $scope.editorFile.key) {
+                    if ($scope.previewFileKey && $scope.previewFileKey == $scope.curFileKey) {
                         $scope.refreshPreviewFrameUrl();
                     };
                     //更新本地数据
@@ -917,25 +980,12 @@
         })();
 
         //检查是否当前预览文件,文件列表栏标识预览文件
-        $scope.fileStateStyle = function (item) {
-            var stl = {};
-
-            //正在编辑，紫色
-            if (item.key == $scope.editorFile.key) {
-                stl['color'] = '#ec407a';
+        $scope.isPreviewFile = function (item) {
+            if (item.key == $scope.previewFileKey) {
+                return {
+                    'border-left': '4px solid #ec407a'
+                };
             };
-
-            //实时预览，虚线边
-            if (item.key == $scope.previewRtHtmlFile.key || item.key == $scope.previewRtCssFile.key) {
-                stl['border-bottom'] = '1px dashed #DDD';
-            };
-
-            //手工预览，左侧边
-            if (item.key == $scope.previewMnFile.key) {
-                stl['border-left'] = '4px solid #ec407a';
-            };
-
-            return stl;
         };
 
 

@@ -204,7 +204,6 @@ var _app = {}; //最高全局变量，angular
                 if (!str) str = '';
                 str = String(str);
                 var res = '<style>' + str + '</style>';
-                console.log('>>>>>>>>>>css', res, '>>>', str, '<<<');
                 return res;
             };;
         }

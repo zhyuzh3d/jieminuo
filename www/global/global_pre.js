@@ -59,7 +59,9 @@ if (!_global) var _global = {};
                 if (!isloginpage && !isregpage && !ishomepage) {
                     var tourl = _global.hostUrl + '/account/?page=acc_login&okUrl=';
                     tourl += encodeURI(location.href);
-                    location.href = tourl;
+                    setTimeout(function () {
+                        window.location.href = tourl;
+                    }, 100);
                 };
             };
         }, 'jsonp');
