@@ -19,7 +19,7 @@ var $redis = global.$redis = require('redis');
 var $uuid = global.$uuid = require('node-uuid');
 var $sktio = global.$sktio = require('socket.io');
 var $qiniu = global.$qiniu = require('qiniu');
-var $cors = global.$cors = require('koa-cors');
+//var $cors = global.$cors = require('koa-cors');
 
 //自定义库引入
 global._xcfg = require('../jieminuo_xcfg.js');

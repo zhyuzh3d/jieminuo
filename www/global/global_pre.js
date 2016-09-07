@@ -41,13 +41,11 @@ if (!_global) var _global = {};
         var api = _global.api('acc_getMyInfo');
         var dat = {};
 
-        $.ajaxSetup({
-            async: true
-        });
         $.post(api, dat, function (res) {
             var isloginpage = (location.href.indexOf(_global.hostUrl + '/account/?page=acc_login') == 0);
             var isregpage = (location.href.indexOf(_global.hostUrl + '/account/?page=acc_register') == 0);
             var ishomepage = (location.href == _global.hostUrl + '/') || (location.href == _global.hostUrl);
+
 
             if (res.code == 1) {
                 //已经登陆，把数据填充到用户

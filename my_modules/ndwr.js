@@ -25,6 +25,7 @@ function setforJsonp(ctx, domains) {
 
     var jsonpCallback = ctx.query.callback || ctx.request.body.callback;
     if (jsonpCallback && ctx.body) {
+        ctx.body.usejsonp='true';
         ctx.body = ctx.query.callback + '(' + JSON.stringify(ctx.body) + ')';
     };
 };
