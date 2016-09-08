@@ -856,7 +856,7 @@
             if (key) {
                 url = _cfg.qn.BucketDomain + key;
             } else {
-                url = $scope.previewFileUrl;
+                url = $scope.previewMnFile.url;
             };
 
             if (url) {
