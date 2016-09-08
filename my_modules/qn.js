@@ -274,6 +274,7 @@ function qn_uploadDataCo(dat, filekey, extra) {
 
 
 
+
 /*http接口POST：删除一个文件
 验证key是否和当前uid匹配
 req:{key:'...'};
