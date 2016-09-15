@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
     var thisName = 'pie_welcome';
 
@@ -17,32 +17,32 @@
         _fns.initCtrlr($scope, $element, thisName, false);
 
         //锚点
-        $scope.goto = function(key) {
+        $scope.goto = function (key) {
             $location.hash(key);
             $anchorScroll();
         };
 
 
         //等待global读取账号信息成功后刷新右上角用户
-        _global.promiseRun(function() {
-            $scope.$apply(function() {
+        _global.promiseRun(function () {
+            $scope.$apply(function () {
                 $scope.myUsrInfo = _global.myUsrInfo;
                 $scope.hasLogin = _global.hasLogin;
             });
-        }, function() {
+        }, function () {
             return _global.hasLogin;
         });
 
 
         //获取我的App列表
-        $scope.getMyAppList = function() {
+        $scope.getMyAppList = function () {
             var api = _global.api('pie_getMyApps');
             var dat = {};
 
-            $.post(api, dat, function(res) {
+            $.post(api, dat, function (res) {
                 console.log('POST', api, dat, res);
                 if (res.code == 1) {
-                    _fns.applyScope($scope, function() {
+                    _fns.applyScope($scope, function () {
                         $scope.myApps = res.data;
                     });
                 } else {
@@ -59,37 +59,37 @@
         $scope.getMyAppList();
 
 
-        _fns.promiseRun(function(tm) {
+        _fns.promiseRun(function (tm) {
             $scope.getMyAppList();
-        }, function() {
+        }, function () {
             return _pie.myInfo;
         });
 
 
         //退出并刷新
-        $scope.logout = function() {
-            _global.logout(function() {
-                  window.location.reload();
+        $scope.logout = function () {
+            _global.logout(function () {
+                window.location.reload();
             });
         };
 
 
         //跳转到App首页
-        $scope.openApp = function(appname) {
+        $scope.openApp = function (appname) {
             var str = _cfg.qn.BucketDomain + $rootScope.myInfo.id + '/' + appname + '/index.html';
             str = encodeURI(str);
             location.href = str;
         };
 
         //跳转到App首页
-        $scope.editApp = function(appname) {
+        $scope.editApp = function (appname) {
             var str = _global.hostUrl + '/pie/?page=pie_editor&app=' + appname;
             str = encodeURI(str);
             location.href = str;
         };
 
         //弹出提示窗口输入App名称
-        $scope.openCreateDialog = function() {
+        $scope.openCreateDialog = function () {
             $mdDialog.show({
                 contentElement: '#createDialog',
                 parent: angular.element(document.body),
@@ -97,7 +97,7 @@
             });
         };
 
-        $scope.cancelCreateDialog = function() {
+        $scope.cancelDialog = function () {
             $mdDialog.hide();
         };
 
@@ -105,7 +105,7 @@
         //弹出提示窗口输入App名称
         $scope.newApp = {};
         $scope.newApp.name = 'A' + Number(new Date()).toString(36);
-        $scope.doCreateApp = function() {
+        $scope.doCreateApp = function () {
             if (!_cfg.regx.appName.test($scope.newApp.name)) {
                 $mdToast.show(
                     $mdToast.simple()
@@ -129,6 +129,53 @@
         };
 
 
+        //弹出重新初始化app的功能
+        $scope.RIappName = '';
+        $scope.RIappAlias = '';
+        $scope.RIselTemplate = 'base';
+
+        //弹出提示窗口重新初始化app
+        $scope.openReInitDialog = function (appinfo) {
+            $scope.RIappName = appinfo.name;
+            $scope.RIappAlias = appinfo.alias;
+            var confirm = $mdDialog.confirm()
+                .title('您确定要重新初始化[' + $scope.RIappAlias + '(' + $scope.RIappName + ')]应用?')
+                .textContent('警告！文件内容将被删除，丢失后无法找回！')
+                .ariaLabel('remove app')
+                .ok('重新初始化')
+                .cancel('取消');
+            $mdDialog.show(confirm).then(function () {
+                $scope.RIselTemplate = 'base';
+                $mdDialog.show({
+                    contentElement: '#reInitDialog',
+                    parent: angular.element(document.body),
+                    clickOutsideToClose: true
+                });
+            });
+        };
+
+
+        //执行重新初始化
+        $scope.doReInitApp = function () {
+            $mdToast.show(
+                $mdToast.simple()
+                .textContent('正在根据模版为您初始化APP文件，请稍后')
+                .position('top right')
+                .hideDelay(3000)
+            );
+            $scope.initAppByTemplate($scope.RIappName, $scope.RIselTemplate, function () {
+                $mdToast.show(
+                    $mdToast.simple()
+                    .textContent('重新初始化完成，请点击菜单进入编辑文件')
+                    .position('top right')
+                    .hideDelay(3000)
+                );
+            });
+            $scope.cancelDialog();
+        };
+
+
+
         //自动随机标识名
         function randAppName() {
             return 'a' + Math.random().toString(36).substr(2, 11).toLowerCase();
@@ -137,13 +184,13 @@
         //创建一个应用
         $scope.newApp.alias = '';
         $scope.newApp.name = randAppName();
-        $scope.createApp = function(appname, appalias) {
+        $scope.createApp = function (appname, appalias) {
             var api = _global.api('pie_createApp');
             var dat = {
                 appName: appname,
                 appAlias: appalias,
             }
-            $.post(api, dat, function(res) {
+            $.post(api, dat, function (res) {
                 console.log('POST', api, dat, res);
                 if (res.code == 1) {
                     //刷新列表
@@ -151,7 +198,25 @@
                     try {
                         _xdat.ctrlrs['pie_sideNav'][0].getMyAppList();
                     } catch (err) {}
+
                     $mdDialog.hide();
+
+                    //根据模版自动初始化所有文件
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent('正在根据模版为您初始化APP文件，请稍后')
+                        .position('top right')
+                        .hideDelay(3000)
+                    );
+                    $scope.initAppByTemplate(dat.appName, $scope.selTemplate, function () {
+                        $mdToast.show(
+                            $mdToast.simple()
+                            .textContent('初始化完成，请点击菜单进入编辑文件')
+                            .position('top right')
+                            .hideDelay(3000)
+                        );
+                    });
+
                     $scope.newApp.alias = '';
                     $scope.newApp.name = randAppName();
                 } else {
@@ -168,7 +233,7 @@
 
 
         //修改app的别名
-        $scope.renameApp = function(appid) {
+        $scope.renameApp = function (appid) {
             //先弹窗输入新名字
             var confirm = $mdDialog.prompt()
                 .title('请输入新的APP名称(使用中文或数字)')
@@ -177,7 +242,7 @@
                 .ariaLabel('App name')
                 .ok('确定')
                 .cancel('取消');
-            $mdDialog.show(confirm).then(function(ipt) {
+            $mdDialog.show(confirm).then(function (ipt) {
                 if (appid && ipt && _cfg.regx.appAlias.test(ipt)) {
                     //发送修改请求
                     $scope.dorenameApp(appid, ipt);
@@ -195,13 +260,13 @@
 
 
         //执行修改名字的请求
-        $scope.dorenameApp = function(id, alias) {
+        $scope.dorenameApp = function (id, alias) {
             var api = _global.api('pie_renameApps');
             var dat = {
                 appId: id,
                 appAlias: alias,
             }
-            $.post(api, dat, function(res) {
+            $.post(api, dat, function (res) {
                 console.log('POST', api, dat, res);
                 if (res.code == 1) {
                     //刷新列表
@@ -223,26 +288,26 @@
 
 
         //弹出提示窗口提示移除app
-        $scope.doRemoveApp = function(appname) {
+        $scope.doRemoveApp = function (appname) {
             var confirm = $mdDialog.confirm()
                 .title('您确定要移除 ' + appname + '应用吗?')
                 .textContent('移除后将无法恢复.')
                 .ariaLabel('remove app')
                 .ok('确定移除')
                 .cancel('取消');
-            $mdDialog.show(confirm).then(function() {
+            $mdDialog.show(confirm).then(function () {
                 $scope.removeApp(appname);
             });
         };
 
 
         //创建一个应用
-        $scope.removeApp = function(appname) {
+        $scope.removeApp = function (appname) {
             var api = _global.api('pie_removeApp');
             var dat = {
                 appName: appname,
             }
-            $.post(api, dat, function(res) {
+            $.post(api, dat, function (res) {
                 console.log('POST', api, dat, res);
                 if (res.code == 1) {
                     //刷新列表
@@ -265,7 +330,7 @@
 
 
         //根据项目id计算项目的背景
-        $scope.genCardBg = function(n) {
+        $scope.genCardBg = function (n) {
             var len = _cfg.themeImgs.length;
             var url = _cfg.themeImgs[n % len].sm;
             var css = {
@@ -276,7 +341,7 @@
         };
 
         //根据用户的颜色项目的背景
-        $scope.genCardBg2 = function(n) {
+        $scope.genCardBg2 = function (n) {
             var css = {
                 'background-color': _global.myUsrInfo.color,
             };
@@ -284,11 +349,72 @@
             return css;
         };
 
-        $scope.gotoProfile = function() {
+        $scope.gotoProfile = function () {
             location.href = 'http://' + location.host + '/account/?page=acc_profile';
         };
 
 
+        //初始化模版
+        $scope.templates = _cfg.templates;
+        $scope.selTemplate = 'base';
+
+        //记录每次模版初始化的数量
+        $scope.initCounters = {};
+
+        //使用模版初始化项目,逐个保存文件，完成数叠加
+        $scope.initAppByTemplate = function (appname, tmpname, okfn) {
+            var counterid = _fns.uuid();
+            var counter = $scope.initCounters[counterid] = {
+                ok: 0,
+                total: 0,
+            };
+            var files = $scope.templates[tmpname].files;
+            if (!files) {
+                $mdToast.show(
+                    $mdToast.simple()
+                    .textContent('找不到指定模版' + tmpname + '，初始化失败')
+                    .position('top right')
+                    .hideDelay(3000)
+                );
+                return;
+            };
+
+            for (var attr in files) {
+                counter.total++;
+                var furl = files[attr];
+                var fkey = appname + '/' + attr;
+                $scope.initOneFile(furl, fkey, counter, okfn);
+            };
+        };
+
+        //上传数据为文件,传递furl和fkey，避免被后续覆盖值
+        $scope.initOneFile = function (furl, fkey, counter, okfn) {
+            //先读取数据
+            $.get(furl, function (res) {
+                var ext = _fns.getFileExt(fkey);
+                var mime = _fns.getMimeByExt(ext);
+
+                var blob = new Blob([res], {
+                    type: mime
+                });
+                //再写入数据到文件
+                _fns.uploadFileQn(fkey, blob, null, function () {
+                    counter.ok++;
+                    if (counter.ok >= counter.total) {
+                        try {
+                            okfn();
+                        } catch (err) {
+                            $mdToast.show(
+                                $mdToast.simple()
+                                .textContent('初始化结束失败:' + err)
+                                .position('top right')
+                                .hideDelay(3000)
+                            );
+                        }
+                    };
+                });
+            });
+        };
 
 
 

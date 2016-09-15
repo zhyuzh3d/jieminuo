@@ -1,28 +1,34 @@
 <script>
     _fns.addCtrlrJs('pie_welcome');
+
 </script>
 
 <!--控制器界面部分-->
 <div id='pie_welcome' ng-controller='pie_welcome' class='container-fluid pie_welcome'>
     <style>
         /*内部样式，以.doc_devWeb开头*/
+
         .pie_welcome label {
             font-size: 2rem;
             font-family: inherit;
             text-align: left;
         }
+
         .pie_welcome input {
             font-size: 2rem;
             font-family: inherit;
         }
+
         .pie_welcome md-input-container {
             margin-top: 3rem
         }
+
         .pie_welcome .hint-min {
             color: #AAA;
             font-size: 12px;
             text-align: left;
         }
+
         .pie_welcome .avatar-md {
             width: 32px;
             height: 32px;
@@ -72,7 +78,7 @@
                             <div class="md-headline elips" ng-click='openApp(item.key)' style="cursor:pointer;">
                                 <span class="md-headline elips" ng-bind='item.info.alias' style='color:#000'></span>
                             </div>
-                            <span class="md-subhead elips" style='color:#000' ng-bind='item.info.name' ng-click='editApp(item.key)' style="cursor:pointer;"></span>
+                            <span class="md-subhead elips"  ng-bind='item.info.name' ng-click='editApp(item.key)' style="cursor:pointer;color:#000;opacity:0.5"></span>
                         </md-card-title-text>
                     </md-card-title>
 
@@ -95,8 +101,12 @@
                                     <span>编辑</span>
                                 </md-button>
                                 <md-button flex='none' class="md-default" ng-click='renameApp(item.val)' aria-label='a' style='color:#888'>
-                                    <span class='fa fa-refresh'></span>
+                                    <span class='fa fa-tag'></span>
                                     <span>改名</span>
+                                </md-button>
+                                <md-button flex='none' class="md-default" ng-click='openReInitDialog(item.info)' aria-label='a' style='color:#888'>
+                                    <span class='fa fa-refresh'></span>
+                                    <span>重置</span>
                                 </md-button>
                                 <md-button flex='none' class="md-default" ng-click='doRemoveApp(item.key)' aria-label='a' style='color:#888'>
                                     <span class='fa fa-remove'></span>
@@ -120,6 +130,13 @@
                                 <div style='color:#AAA;text-align:left;font-size:12px'>中文,数字,字母都可以,3~18位非数字开头</div>
                             </md-input-container>
                             <md-input-container class="md-block" flex-gt-sm style='margin-top:48px'>
+                                <label style="text-align:left;font-size:2rem">使用模版</label>
+                                <md-select ng-model="selTemplate" style="text-align:left">
+                                    <md-option ng-repeat="(key,tmp) in templates" value="{{key}}" ng-bind='key'></md-option style="text-align:left">
+                                </md-select>
+                                <div style='color:#AAA;text-align:left;font-size:12px' ng-bind="templates[selTemplate].desc"></div>
+                            </md-input-container>
+                            <md-input-container class="md-block" flex-gt-sm style='margin-top:48px'>
                                 <label style="text-align:left;font-size:2rem">APP标识名</label>
                                 <input name='name' ng-model="newApp.name" ng-pattern="/^[a-zA-Z]+[0-9a-zA-Z]{2,31}$/" style='font-size:2rem;font-family:simhei' />
                                 <div style='color:#AAA;text-align:left;font-size:12px'>字母和数字，3~32位非数字开头。不可重名，设定后不可修改</div>
@@ -128,12 +145,35 @@
                     </form>
                     <div style="margin-top:1rem">
                         <md-button class="md-raised md-primary btn-lg" ng-click='doCreateApp()' style='width:180px;color:#FFF'>确定创建</md-button>
-                        <md-button class="md-raised md-default btn-lg" ng-click='cancelCreateDialog()'>取消</md-button>
+                        <md-button class="md-raised md-default btn-lg" ng-click='cancelDialog()'>取消</md-button>
                     </div>
                 </md-dialog>
             </div>
         </div>
 
+
+        <!--        重新初始化模版的弹窗-->
+        <div style="visibility: hidden">
+            <div class="md-dialog-container" id="reInitDialog">
+                <md-dialog layout-padding style='text-align:center;padding:24px;max-width:800px'>
+                    <form name="userForm" style="margin-top:12px;width:400px;">
+                        <md-content class="md-no-momentum" style='background:inherit'>
+                            <md-input-container class="md-block" flex-gt-sm style='margin-top:48px'>
+                                <label style="text-align:left;font-size:2rem">使用模版</label>
+                                <md-select ng-model="RIselTemplate" style="text-align:left">
+                                    <md-option ng-repeat="(key,tmp) in templates" value="{{key}}" ng-bind='key'></md-option style="text-align:left">
+                                </md-select>
+                                <div style='color:#AAA;text-align:left;font-size:12px' ng-bind="templates[RIselTemplate].desc"></div>
+                            </md-input-container>
+                        </md-content>
+                    </form>
+                    <div style="margin-top:1rem">
+                        <md-button class="md-raised md-primary btn-lg" ng-click='doReInitApp()' style='width:180px;color:#FFF'>重新初始化</md-button>
+                        <md-button class="md-raised md-default btn-lg" ng-click='cancelDialog()'>取消</md-button>
+                    </div>
+                </md-dialog>
+            </div>
+        </div>
 
 
 

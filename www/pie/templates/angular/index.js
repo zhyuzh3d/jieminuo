@@ -1,7 +1,4 @@
-/*代码派基础模板，fa+jquery+bootstrap+angular
-自动设置angularjs初始化
-v160819
-*/
+/*基于代码派angular模版创建*/
 
 if(!_pie) _pie = {};
 _pie.useNavBar = 'none'; //屏蔽顶部导航栏
@@ -13,7 +10,6 @@ _pie.useNavBar = 'none'; //屏蔽顶部导航栏
     angular.module('app',[]).controller('bodyController',function($rootScope, $scope) {
 //----在下面开始编码----
 
-[{codeHere}]
 
 
 

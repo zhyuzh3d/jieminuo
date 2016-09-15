@@ -76,6 +76,36 @@ if (!_pie) var _pie = {};
 
 
 
+    //APP模版,根据某个模版可以由前端自由初始化app的各个文件
+    _cfg.templates = {
+        base: {
+            desc: '基本的代码派文件模版',
+            files: {
+                'index.html': 'http://www.jieminuoketang.com/pie/templates/base/index.html',
+                'index.css': 'http://www.jieminuoketang.com/pie/templates/base/index.css',
+                'index.js': 'http://www.jieminuoketang.com/pie/templates/base/index.js',
+            },
+        },
+        angular: {
+            desc: '基本的angularJs文件模版',
+            files: {
+                'index.html': 'http://www.jieminuoketang.com/pie/templates/angular/index.html',
+                'index.css': 'http://www.jieminuoketang.com/pie/templates/angular/index.css',
+                'index.js': 'http://www.jieminuoketang.com/pie/templates/angular/index.js',
+            },
+        },
+        min: {
+            desc: '最简单的web页面模版',
+            files: {
+                'index.html': 'http://www.jieminuoketang.com/pie/templates/min/index.html',
+                'index.css': 'http://www.jieminuoketang.com/pie/templates/min/index.css',
+                'index.js': 'http://www.jieminuoketang.com/pie/templates/min/index.js',
+            },
+        },
+    };
+
+
+
 
     //获取扩展名对应的mimetype
     _fns.getMimeByExt = function (ext) {

@@ -4,9 +4,9 @@ var _pie = {};
 
 //预先读取模板文件
 var templates = {
-    baseHtml: $fs.readFileSync(__path + '/www/pie/templates/base.html', 'utf-8').replace(/\[\{codeHere_*\w*\}\]/g, ''),
-    baseJs: $fs.readFileSync(__path + '/www/pie/templates/base.js', 'utf-8').replace(/\[\{codeHere_*\w*\}\]/g, ''),
-    baseCss: $fs.readFileSync(__path + '/www/pie/templates/base.css', 'utf-8').replace(/\[\{codeHere_*\w*\}\]/g, ''),
+    baseHtml: $fs.readFileSync(__path + '/www/pie/templates/base/index.html', 'utf-8'),
+    baseJs: $fs.readFileSync(__path + '/www/pie/templates/base/index.js', 'utf-8'),
+    baseCss: $fs.readFileSync(__path + '/www/pie/templates/base/index.css', 'utf-8'),
 };
 
 
@@ -36,10 +36,10 @@ _rotr.apis.pie_createApp = function() {
         var appId = yield _ctnu([_rds.cli, 'hincrby'], _rds.k.map_cls2id, 'app', 1);
         var appKey = _rds.k.app(appId);
 
-        //向七牛添加一个index.html文件
-        var qnres1 = yield _qn.qn_uploadDataCo(templates.baseHtml, uid + '/' + appName + '/index.html');
-        var qnres2 = yield _qn.qn_uploadDataCo(templates.baseJs, uid + '/' + appName + '/index.js');
-        var qnres3 = yield _qn.qn_uploadDataCo(templates.baseCss, uid + '/' + appName + '/index.css');
+        //向七牛添加三个的index文件，更多文件由前端根据模版创建
+        var qnreshtml = yield _qn.qn_uploadDataCo(templates.baseHtml, uid + '/' + appName + '/index.html');
+        var qnrescss = yield _qn.qn_uploadDataCo(templates.baseCss, uid + '/' + appName + '/index.css');
+        var qnresjs = yield _qn.qn_uploadDataCo(templates.baseJs, uid + '/' + appName + '/index.js');
 
         //存储为app-aid键
         var mu = _rds.cli.multi();
