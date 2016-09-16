@@ -111,6 +111,7 @@
                                 <md-button flex='none' class="md-default" ng-click='doRemoveApp(item.key)' aria-label='a' style='color:#888'>
                                     <span class='fa fa-remove'></span>
                                     <span>移除</span>
+                                </md-button>
                             </md-menu-content>
                         </md-menu>
                     </md-card-actions>
@@ -161,7 +162,7 @@
                             <md-input-container class="md-block" flex-gt-sm style='margin-top:48px'>
                                 <label style="text-align:left;font-size:2rem">使用模版</label>
                                 <md-select ng-model="RIselTemplate" style="text-align:left">
-                                    <md-option ng-repeat="(key,tmp) in templates" value="{{key}}" ng-bind='key'></md-option style="text-align:left">
+                                    <md-option ng-repeat="(key,tmp) in templates" value="{{key}}" ng-bind='key' style="text-align:left"></md-option >
                                 </md-select>
                                 <div style='color:#AAA;text-align:left;font-size:12px' ng-bind="templates[RIselTemplate].desc"></div>
                             </md-input-container>

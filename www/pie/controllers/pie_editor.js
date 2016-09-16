@@ -115,6 +115,8 @@
         //获取app文件夹的列表
         $scope.getFileList = function () {
             var appName = $scope.getAppArg();
+            var uid = $rootScope.myInfo.id;
+            $scope.appPath = uid + '/' + appName + '/';
 
             var api = _global.api('qn_getFileList');
 
@@ -131,6 +133,33 @@
                         $scope.appFiles = res.data.items;
                         $scope.domain = res.data.domain;
                         $scope.appFolder = appName;
+
+                        //填充folders及内部文件
+                        var folders = res.data.commonPrefixes;
+                        if (folders) {
+                            if (!$scope.appFolders) $scope.appFolders = {};
+                            //填充appFolders[folderpath]={};
+                            var newfolders = {};
+                            for (var attr in folders) {
+                                //如果前端已经存在，那么忽略，以此保持expand等信息,如果后端已经不存在，那么前端也去除
+                                var fpath = folders[attr];
+                                if (!$scope.appFolders[fpath]) {
+                                    newfolders[fpath] = {};
+                                } else {
+                                    newfolders[fpath] = $scope.appFolders[fpath];
+                                };
+                                newfolders[fpath].items = [];
+                            };
+
+                            $scope.appFolders = newfolders;
+
+                            //为每个folder读取文件列表
+                            for (var att in $scope.appFolders) {
+                                $scope.getFolderFiles(att);
+                            };
+                        } else {
+                            $scope.appFolders = {};
+                        };
                     });
                 } else {
                     //提示错误
@@ -144,6 +173,82 @@
             });
         };
         $scope.getFileList();
+
+
+
+
+
+        //获取文件夹的文件列表,并填充到appFolders[folderpath].items
+        $scope.getFolderFiles = function (folderpath) {
+            var api = _global.api('qn_getFileList');
+            //去除开始的uid
+            var fdpath = folderpath.replace(/^\d+\//, '');
+
+            var dat = {
+                path: fdpath,
+                limit: 100,
+            };
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
+                if (res.code == 1) {
+                    _fns.applyScope($scope, function () {
+                        $scope.appFolders[folderpath].items = res.data.items;
+                    });
+                } else {
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent('获取文件列表失败:' + res.text)
+                        .position('top right')
+                        .hideDelay(3000)
+                    );
+                };
+            });
+        };
+
+
+
+        //新增一个文件夹,初始化创建一个'_'文件
+        $scope.doAddNewFolder = function () {
+            var appName = $scope.getAppArg();
+            var uid = $rootScope.myInfo.id;
+
+            //弹出窗口提示输入文件夹名
+            var confirm = $mdDialog.prompt()
+                .title('请输入文件夹的名称(如src)，不推荐创建多余的文件夹，请谨慎使用')
+                .textContent('请不要使用字母数字以外的特殊符号.')
+                .placeholder('folder name')
+                .ariaLabel('folder name')
+                .initialValue('src')
+                .ok('确定')
+                .cancel('取消');
+            $mdDialog.show(confirm).then(function (ipt) {
+                if (ipt && _cfg.regx.folderName.test(ipt)) {
+                    //检查_文件是否存在
+                    var fpath = uid + '/' + appName + '/' + ipt + '/_';
+                    $scope.chkFileExist(fpath, function () {
+                        //提示错误
+                        $mdToast.show(
+                            $mdToast.simple()
+                            .textContent('同名文件夹已经存在，不能创建')
+                            .position('top right')
+                            .hideDelay(3000)
+                        );
+                    }, function () {
+                        $scope.addNewFile(appName + '/' + ipt + '/_');
+                    });
+                } else {
+                    //提示错误
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent('文件夹名格式错误')
+                        .position('top right')
+                        .hideDelay(3000)
+                    );
+                }
+            });
+        };
+
+
 
 
         //增加一个新文件
@@ -229,6 +334,25 @@
             });
         };
 
+
+
+        //删除一个文件夹，必须是下面没有目录才行,其实只是删除最后一个_文件
+        $scope.deleteFolder = function (fdpath) {
+            //前端监测文件夹内是否还有文件
+            var items = $scope.appFolders[fdpath].items;
+            var fdkey = fdpath + '_';
+            if (items.length == 1 && items[0].key == fdkey) {
+                $scope.doDeleteFile(fdkey);
+            } else {
+                $mdDialog.show($mdDialog.confirm()
+                    .title('请先删除文件夹下的文件')
+                    .textContent('不能删除含有文件的文件夹')
+                    .ariaLabel('App name')
+                    .ok('关闭'));
+            };
+        };
+
+
         //删除一个文件
         $scope.deleteFile = function (item) {
             var fpath = item.key;
@@ -271,7 +395,6 @@
 
             var api = _global.api('qn_deleteFile');
 
-
             var dat = {
                 key: fpath,
             };
@@ -298,18 +421,64 @@
             });
         };
 
+
+
+        //弹出选择上传文件夹的弹窗，改变selFolder变量
+        $scope.selFolderPath;
+        $scope.showFolderSelDialog = function () {
+            var keys = ($scope.appFolders) ? Object.keys($scope.appFolders) : [];
+
+            if (keys.length < 1) {
+                //如果为空，默认指向src文件夹
+                $scope.selFolderPath = $scope.appPath + 'src/';
+                $scope.appFolders = {};
+                $scope.appFolders[$scope.selFolderPath] = {};
+            } else if (!$scope.selFolderPath) {
+                //如果之前没指定过selFolderPath,那么指向第一个文件夹
+                $scope.selFolderPath = Object.keys($scope.appFolders)[0];
+            };
+
+            $mdDialog.show({
+                contentElement: '#selFolderDialog',
+                parent: angular.element(document.body),
+                clickOutsideToClose: true
+            });
+        };
+
+        //关闭弹窗
+        $scope.cancelDialog = function () {
+            $mdDialog.hide();
+        };
+
+        //直接向指定folder传文件
+        $scope.upload2Folder = function (fdpath) {
+            $scope.selFolderPath = fdpath;
+            $scope.doUploadFile();
+        };
+
         //模拟input弹窗选择文件并开始上传
         $scope.upFiles = {};
         $scope.doUploadFile = function (evt) {
             var appName = $scope.getAppArg();
             var uid = $rootScope.myInfo.id;
 
-            var btnjo = $(evt.target);
-            if (btnjo.attr('id') != 'uploadBtn') btnjo = btnjo.parent();
+            //如果没有btnjo那么自动创建一个隐身的
+            var btnjo;
+            if (!evt) {
+                btnjo = $('<div style="display:none"></div>');
+            } else {
+                btnjo = $(evt.target);
+                if (btnjo.attr('id') != 'uploadBtn') btnjo = btnjo.parent();
+            }
 
-            $scope.uploadId = _fns.uploadFile(appName, btnjo,
+            //将selFolderPath去掉uid和结尾的斜杠
+            var path = $scope.selFolderPath.replace(/^\d+\//, '');
+            path = path.replace(/\/$/, '');
+
+            $scope.uploadId = _fns.uploadFile(path, btnjo,
                 function (f, res) {
                     //before,
+                    $scope.cancelDialog();
                 },
                 function (f, proevt) {
                     //progress,更新进度条

@@ -40,6 +40,7 @@ if (!_pie) var _pie = {};
         appName: /^[a-zA-Z]+[0-9a-zA-Z]{2,31}$/, //app名称格式，非数字开头3~32位
         appAlias: /^[a-zA-Z\u0391-\uFFE5]+[0-9a-zA-Z\u0391-\uFFE5]{2,17}$/, //app别名，非数字开头3~18位
         fileName: /^[0-9a-zA-Z\u0391-\uFFE5]+\.(js|css|html|json|txt)$/, //文件名，中英文数字加点加2~4位字母数字
+        folderName: /^[0-9a-zA-Z\u0391-\uFFE5]{1,32}$/, //文件名，中英文数字1~32位字母数字
     };
 
 

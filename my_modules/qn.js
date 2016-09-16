@@ -195,6 +195,9 @@ function qn_getFileListCo(prefix, limit, marker) {
         optpath += '&limit=' + limit;
         if (marker && marker != '') optpath += '&marker=' + marker;
 
+        //列出目录树结构
+        optpath += '&delimiter=%2F';
+
         //根据uid授权路径的token
         var options = {
             hostname: 'rsf.qbox.me',
