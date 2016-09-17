@@ -20,6 +20,13 @@
             margin: 0 -5px
         }
 
+        .dialog-line {
+            width: 100%;
+            text-transform: none;
+            word-break: break-all;
+            font-size: 18px
+        }
+
         .pie_editor .itbtn p {
             font-size: 12px
         }
@@ -178,6 +185,19 @@
             </div>
         </div>
 
+        <!--        文件信息弹窗-->
+        <div style="visibility: hidden">
+            <div class="md-dialog-container" id="fileInfoDialog">
+                <md-dialog layout-padding style='text-align:left'>
+                    <a ng-href="{{fileinfoDialogFile.url}}" target='_blank' style="padding:24px;padding-left:8px;font-size:24px" ng-bind='fileinfoDialogFile.url | fileName'></a>
+                    <p class='dialog-line' aria-label='a'>类型&nbsp;:&nbsp;{{fileinfoDialogFile.mimeType}}</p>
+                    <p class='dialog-line' aria-label='a'>大小&nbsp;:&nbsp;{{ksize(fileinfoDialogFile.fsize)}}k</p>
+                    <p class='dialog-line' aria-label='a' style="margin-bottom:0">地址&nbsp;:&nbsp;{{fileinfoDialogFile.url}}</p>
+                    <p class='dialog-line' style='color:#888;font-size:14px;margin-top:0;padding-top:0' aria-label='a'>如果文件内容没有更新，请在链接后添加'?_=任意数字',如.../index.css?_=879933</p>
+                    <br>
+                </md-dialog>
+            </div>
+        </div>
 
         <!--        图片预览弹窗-->
         <div style="visibility: hidden">
@@ -237,9 +257,9 @@
                                         <span class='fa fa-globe'></span>
                                         <span>浏览</span>
                                     </md-button>
-                                    <md-button flex='none' class="md-default leftmenu" ng-click='showQrcodeDialog(item.key)' aria-label='a' style='color:#888;'>
-                                        <span class='fa fa-qrcode'></span>
-                                        <span>二维码</span>
+                                    <md-button flex='none' class="md-default leftmenu" ng-click='showFileInfoDialog(item)' aria-label='a' style='color:#888;'>
+                                        <span class='fa fa-info-circle'></span>
+                                        <span>信息</span>
                                     </md-button>
                                     <md-button flex='none' class="md-default leftmenu" ng-click="deleteFile(item)" aria-label='a' style='color:#888;'>
                                         <span class='fa fa-remove'></span>
@@ -307,9 +327,9 @@
                                                 <span class='fa fa-globe'></span>
                                                 <span>浏览</span>
                                             </md-button>
-                                            <md-button flex='none' class="md-default leftmenu" ng-click='showQrcodeDialog(item.key)' aria-label='a' style='color:#888;'>
-                                                <span class='fa fa-qrcode'></span>
-                                                <span>二维码</span>
+                                            <md-button flex='none' class="md-default leftmenu" ng-click='showFileInfoDialog(item)' aria-label='a' style='color:#888;'>
+                                                <span class='fa fa-info-circle'></span>
+                                                <span>信息</span>
                                             </md-button>
                                             <md-button flex='none' class="md-default leftmenu" ng-click="deleteFile(item)" aria-label='a' style='color:#888;'>
                                                 <span class='fa fa-remove'></span>

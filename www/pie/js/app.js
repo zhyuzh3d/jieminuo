@@ -183,6 +183,7 @@ var _app = {}; //最高全局变量，angular
         'fileName',
         function() {
             return function(url) {
+                if(!url) return '';
                 return url.substring(url.lastIndexOf('/') + 1);
             }
         }

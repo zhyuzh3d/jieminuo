@@ -134,6 +134,14 @@
                         $scope.domain = res.data.domain;
                         $scope.appFolder = appName;
 
+                        //为每个文件添加domain和folder属性
+                        $scope.appFiles.forEach(function (fobj) {
+                            fobj.domain = res.data.domain;
+                            fobj.folder = res.data.folder;
+                            fobj.url = fobj.domain + fobj.key;
+                        });
+
+
                         //填充folders及内部文件
                         var folders = res.data.commonPrefixes;
                         if (folders) {
@@ -192,7 +200,15 @@
                 console.log('POST', api, dat, res);
                 if (res.code == 1) {
                     _fns.applyScope($scope, function () {
-                        $scope.appFolders[folderpath].items = res.data.items;
+                        var folderobj=$scope.appFolders[folderpath];
+                        folderobj.items = res.data.items;
+
+                        //为每个文件添加domain和folder属性
+                        folderobj.items.forEach(function (fobj) {
+                            fobj.domain = res.data.domain;
+                            fobj.folder = res.data.folder;
+                            fobj.url = fobj.domain + fobj.key;
+                        })
                     });
                 } else {
                     $mdToast.show(
@@ -206,6 +222,10 @@
         };
 
 
+        //计算文件大小，除以1024
+        $scope.ksize=function(num){
+          return (num/1024).toFixed(2);
+        };
 
         //新增一个文件夹,初始化创建一个'_'文件
         $scope.doAddNewFolder = function () {
@@ -969,6 +989,16 @@
 
             $mdDialog.show({
                 contentElement: '#qrcodeDialog',
+                parent: angular.element(document.body),
+                clickOutsideToClose: true
+            });
+        };
+
+        //显示文件的信息弹窗,显示文件的链接
+        $scope.showFileInfoDialog = function (item) {
+            $scope.fileinfoDialogFile = item;
+            $mdDialog.show({
+                contentElement: '#fileInfoDialog',
                 parent: angular.element(document.body),
                 clickOutsideToClose: true
             });
