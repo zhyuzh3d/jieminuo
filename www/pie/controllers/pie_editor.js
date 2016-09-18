@@ -200,7 +200,7 @@
                 console.log('POST', api, dat, res);
                 if (res.code == 1) {
                     _fns.applyScope($scope, function () {
-                        var folderobj=$scope.appFolders[folderpath];
+                        var folderobj = $scope.appFolders[folderpath];
                         folderobj.items = res.data.items;
 
                         //为每个文件添加domain和folder属性
@@ -223,8 +223,8 @@
 
 
         //计算文件大小，除以1024
-        $scope.ksize=function(num){
-          return (num/1024).toFixed(2);
+        $scope.ksize = function (num) {
+            return (num / 1024).toFixed(2);
         };
 
         //新增一个文件夹,初始化创建一个'_'文件
@@ -679,7 +679,7 @@
             if (!key) {
                 return undefined;
             } else {
-                $scope.imgPreviewUrl = _cfg.qn.BucketDomain + key;
+                $scope.imgPreviewUrl = $scope.toRtfilesUrl(_cfg.qn.BucketDomain + key);
             };
             $mdDialog.show({
                 contentElement: '#imgPreviewDialog',
@@ -808,6 +808,10 @@
 
         /*刷新手工预览窗口的url*/
         $scope.reloadPreview = function () {
+            //rtfile自动添加时间戳，不需要刷新时间戳
+            $scope.refreshPreviewFrameUrl();
+
+            /*
             //如果当前html文件和预览html文件不同，那么也存储预览html文件，以便刷新预览html文件内部的时间戳
             if ($scope.previewMnFile.key != $scope.editorFile.key) {
                 var timestamp = (new Date()).getTime() + '{[timeStamp]}';
@@ -828,6 +832,7 @@
                 //预览与编辑的文件一致,直接刷新
                 $scope.refreshPreviewFrameUrl();
             }
+            */
         };
 
 
@@ -858,7 +863,7 @@
         $scope.tagPreviewRt = function () {
             $scope.previewRt = !$scope.previewRt;
             if (!$scope.previewRt) {
-                $scope.reloadPreview();
+                $scope.refreshPreviewFrameUrl();
             }
         };
 
@@ -884,7 +889,7 @@
 
                 //如果编辑的html和预览的html不是同一个页面，那么提前reload保存预览html以便于刷新html里面的时间戳
                 if ($scope.previewMnFile.key != $scope.editorFile.key) {
-                    $scope.reloadPreview();
+                    $scope.refreshPreviewFrameUrl();
                 };
 
                 //存储完成后刷新预览窗
@@ -928,6 +933,12 @@
                 );
                 refreshFile(fkey);
             });
+        };
+
+        //专为实时文件地址rtfiles
+        $scope.toRtfilesUrl = function (url) {
+            if (!url) return '';
+            return url.replace(/^http:\/\/files/, 'http://rtfiles');
         };
 
         /*上传之后刷新文件,fkey带uid不带斜杠格式1/myapp/index.html，data为字符串
@@ -981,7 +992,7 @@
             } else {
                 $scope.qrcodeDialogUrl = _cfg.qn.BucketDomain + key;
             };
-            $scope.qrcodeDialogUrl = $scope.qrcodeDialogUrl;
+            $scope.qrcodeDialogUrl = $scope.toRtfilesUrl($scope.qrcodeDialogUrl);
 
             //使用jquery生成二维码
             $('#qrcode').empty();
@@ -1058,8 +1069,11 @@
                 url = $scope.previewMnFile.url;
             };
 
+            url = $scope.toRtfilesUrl(url);
+
             if (url) {
-                url = url + '?_=' + (new Date()).getTime();
+                //时间戳由后端自动添加
+                //url = url + '?_=' + (new Date()).getTime();
                 window.open(encodeURI(url));
             } else {
                 $mdToast.show(
@@ -1070,11 +1084,6 @@
                 );
             }
         };
-
-
-
-
-
 
 
 

@@ -37,9 +37,13 @@ _rotr.apis.pie_createApp = function() {
         var appKey = _rds.k.app(appId);
 
         //向七牛添加三个的index文件，更多文件由前端根据模版创建
-        var qnreshtml = yield _qn.qn_uploadDataCo(templates.baseHtml, uid + '/' + appName + '/index.html');
-        var qnrescss = yield _qn.qn_uploadDataCo(templates.baseCss, uid + '/' + appName + '/index.css');
-        var qnresjs = yield _qn.qn_uploadDataCo(templates.baseJs, uid + '/' + appName + '/index.js');
+        var tmphtml=templates.baseHtml.replace(/\[\[uid\]\]/g,uid).replace(/\[\[appName\]\]/g,appName);
+        var tmpcss=templates.baseCss.replace(/\[\[uid\]\]/g,uid).replace(/\[\[appName\]\]/g,appName);
+        var tmpjs=templates.baseJs.replace(/\[\[uid\]\]/g,uid).replace(/\[\[appName\]\]/g,appName);
+
+        var qnreshtml = yield _qn.qn_uploadDataCo(tmphtml, uid + '/' + appName + '/index.html');
+        var qnrescss = yield _qn.qn_uploadDataCo(tmpcss, uid + '/' + appName + '/index.css');
+        var qnresjs = yield _qn.qn_uploadDataCo(tmpjs, uid + '/' + appName + '/index.js');
 
         //存储为app-aid键
         var mu = _rds.cli.multi();

@@ -104,7 +104,7 @@
 
         //弹出提示窗口输入App名称
         $scope.newApp = {};
-        $scope.newApp.name = 'A' + Number(new Date()).toString(36);
+
         $scope.doCreateApp = function () {
             if (!_cfg.regx.appName.test($scope.newApp.name)) {
                 $mdToast.show(
@@ -182,8 +182,9 @@
         };
 
         //创建一个应用
-        $scope.newApp.alias = '';
         $scope.newApp.name = randAppName();
+        $scope.newApp.alias = '我的应用' + String(Math.random()).substr(2, 4);
+
         $scope.createApp = function (appname, appalias) {
             var api = _global.api('pie_createApp');
             var dat = {
@@ -217,7 +218,7 @@
                         );
                     });
 
-                    $scope.newApp.alias = '';
+                    $scope.newApp.alias = '我的应用' + String(Math.random()).substr(2, 4);
                     $scope.newApp.name = randAppName();
                 } else {
                     //提示错误
@@ -383,16 +384,20 @@
                 counter.total++;
                 var furl = files[attr];
                 var fkey = appname + '/' + attr;
-                $scope.initOneFile(furl, fkey, counter, okfn);
+                $scope.initOneFile(appname, furl, fkey, counter, okfn);
             };
         };
 
         //上传数据为文件,传递furl和fkey，避免被后续覆盖值
-        $scope.initOneFile = function (furl, fkey, counter, okfn) {
+        $scope.initOneFile = function (appname, furl, fkey, counter, okfn) {
             //先读取数据
             $.get(furl, function (res) {
                 var ext = _fns.getFileExt(fkey);
                 var mime = _fns.getMimeByExt(ext);
+                var uid = $rootScope.myInfo.id;
+
+                //对res内的uid和appName进行处理替换
+                res = res.replace(/\[\[uid\]\]/g, uid).replace(/\[\[appName\]\]/g, appname);
 
                 var blob = new Blob([res], {
                     type: mime

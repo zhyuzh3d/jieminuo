@@ -392,7 +392,6 @@ if (!_pie) var _pie = {};
             fpath: key,
         };
         $.post(api, dat, function (res) {
-            console.log('POST', api, dat, res);
             if (res.code == 1) {
                 _fns.uploadFileQn2(res.data.uptoken, file, progress, success, error, complete, domain, res.data.path);
             } else {
