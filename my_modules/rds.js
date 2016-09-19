@@ -36,7 +36,6 @@ _rds.k = {
         return 'usr-' + id;
     },
 
-
     //向用户发送的手机注册验证码
     tmp_phoneRegCode: function(phone) {
         return '_tmp:phoneRegCode-' + phone;
