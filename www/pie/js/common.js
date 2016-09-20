@@ -745,6 +745,25 @@ if (!_pie) var _pie = {};
 })();
 
 
+//把一个对象转化为数组
+_fns.obj2arr = function (obj) {
+    var arr = [];
+    for (var attr in obj) {
+        arr.push(obj[attr]);
+    };
+    return arr;
+};
+
+//把一个数组转化为对象
+_fns.arr2obj = function (arr) {
+    var obj = {};
+    if (arr.constructor != Array) return obj;
+    for (var i = 0; i < arr.length; i++) {
+        obj[String(i)] = arr[i];
+    };
+    return obj;
+};
+
 
 
 //全局变量

@@ -33,6 +33,7 @@
 
         $scope.goHome = function () {
             window.location.href = _global.hostUrl;
+            $root.tagLeftMenu();
         };
 
         $scope.name = thisName;
@@ -44,7 +45,14 @@
                 console.log('POST', api, undefined, res);
                 if (res.code == 1) {
                     _fns.applyScope($scope, function () {
+                        //重新排序
+                        var arr = _fns.obj2arr(res.data.apps);
+                        arr = arr.sort(function (a, b) {
+                            return b.info.time - a.info.time;
+                        });
+
                         $scope.myApps = res.data;
+                        $scope.myApps.apps = _fns.arr2obj(arr);
                     });
                 } else {
                     //提示错误
@@ -62,8 +70,9 @@
 
         //从侧栏打开app编辑器
         $scope.editApp = function (appname) {
-            var str = 'http://m.xmgc360.com/pie/web/?page=pie_editor&app=' + appname;
+            var str = 'http://' + window.location.host + '/pie/?page=pie_editor&app=' + appname;
             str = encodeURI(str);
+            $rootScope.tagLeftMenu();
             location.href = str;
         };
 

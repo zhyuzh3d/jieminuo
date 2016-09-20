@@ -16,6 +16,7 @@
         console.log(thisName + '.js is loading...');
         _fns.initCtrlr($scope, $element, thisName, false);
 
+
         //锚点
         $scope.goto = function (key) {
             $location.hash(key);
@@ -43,7 +44,14 @@
                 console.log('POST', api, dat, res);
                 if (res.code == 1) {
                     _fns.applyScope($scope, function () {
+                        //重新排序
+                        var arr = _fns.obj2arr(res.data.apps);
+                        arr = arr.sort(function (a, b) {
+                            return b.info.time - a.info.time;
+                        });
+
                         $scope.myApps = res.data;
+                        $scope.myApps.apps = _fns.arr2obj(arr);
                     });
                 } else {
                     //提示错误
