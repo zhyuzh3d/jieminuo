@@ -853,11 +853,11 @@
             };
             setTimeout(function () {
                 $('#previewFrame').attr('src', url);
-            }, 2000);
+            }, 3000);
         };
 
 
-        /*切换实时，手工开关;默认实时
+        /*切换实时，手工开关;默认实时；
          */
         $scope.previewRt = true;
         $scope.tagPreviewRt = function () {
@@ -866,6 +866,11 @@
                 $scope.refreshPreviewFrameUrl();
             }
         };
+
+
+
+
+
 
         /*保存当前编辑器内容到当前文件url
          */

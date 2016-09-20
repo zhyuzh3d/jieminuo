@@ -109,7 +109,7 @@
                             <span class="fa fa-flask"></span>
                         </p>
                     </md-button>
-                    <md-menu-content width="4">
+                    <md-menu-content width="4" style='overflow-x: hidden;'>
                         <md-button flex="grow" md-no-ink class="itbtn2" ng-click="tagPreviewRt()" aria-label='tagleft'>
                             <p ng-hide='previewRt' style="color:#00bfa5">
                                 <span class="fa fa-toggle-on fa-lg"></span>
@@ -248,7 +248,7 @@
                                         <span class="fa fa-file"></span>
                                     </p>
                                 </md-button>
-                                <md-menu-content width="3">
+                                <md-menu-content width="3" style='overflow-x: hidden;'>
                                     <md-button flex='none' class="md-default leftmenu" ng-click="doOpenFile(item.key)" aria-label='a' style='color:#888;'>
                                         <span class='fa fa-edit'></span>
                                         <span>编辑</span>
@@ -286,7 +286,7 @@
                                             <span class="fa fa-folder" ng-hide='val.expand'></span>
                                         </p>
                                     </md-button>
-                                    <md-menu-content width="3">
+                                    <md-menu-content width="3" style='overflow-x: hidden;'>
                                         <md-button flex='none' class="md-default leftmenu" aria-label='a' style='color:#888' ng-click='val.expand=!val.expand'>
                                             <span class='fa fa-folder-open'></span>
                                             <span>折叠/展开</span>
@@ -318,7 +318,7 @@
                                                 <span class="fa fa-file"></span>
                                             </p>
                                         </md-button>
-                                        <md-menu-content width="3">
+                                        <md-menu-content width="3" style='overflow-x: hidden;'>
                                             <md-button flex='none' class="md-default leftmenu" ng-click="doOpenFile(item.key)" aria-label='a' style='color:#888;'>
                                                 <span class='fa fa-edit'></span>
                                                 <span>编辑</span>
@@ -354,7 +354,7 @@
                                 <md-button flex="initial" class="md-raised md-primary" ng-click="$mdOpenMenu($event)" aria-label='a' style='min-width:40px;color:#FFF;margin-left:0'>
                                     <span class="fa fa-plus"></span>
                                 </md-button>
-                                <md-menu-content>
+                                <md-menu-content style='overflow-x: hidden;'>
                                     <md-button flex='none' class="md-default leftmenu" aria-label='a' style='color:#888' ng-click="doAddNewFile()">
                                         <span class='fa fa-file-text-o'></span>
                                         <span>&nbsp;新建文件</span>
@@ -418,7 +418,7 @@
                 <iframe id='previewFrame' ng-hide='previewRt' style="border-style:none;height:100%;width:100%;"></iframe>
                 <div ng-show='previewRt' id='previewSec' style="border:1px dashed #DDD;padding:1px;height:100%;width:100%;">
                     <div ng-bind-html='(editorFile.url==previewRtCssFile.url)?editorFile.data:previewRtCssFile.data| styleCss  | toTrustHtml'></div>
-                    <div flex='grow' ng-bind-html='(editorFile.url==previewRtHtmlFile.url)?editorFile.data:previewRtHtmlFile.data | onlyBody  | toTrustHtml'></div>
+                    <div flex='grow' ng-bind-html='(editorFile.url==previewRtHtmlFile.url)?editorFile.data:previewRtHtmlFile.data  | onlyBody | noJsTag | toTrustHtml'></div>
                 </div>
             </div>
         </div>
