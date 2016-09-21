@@ -853,7 +853,7 @@
             };
             setTimeout(function () {
                 $('#previewFrame').attr('src', url);
-            }, 3000);
+            }, 2000);
         };
 
 
@@ -881,6 +881,7 @@
             var uid = $rootScope.myInfo.id;
             var fkey = $scope.editorFile.key.substr(uid.length + 1);
             var data = $scope.cmDoc.getValue();
+
 
             if (!fkey || !data) {
                 $mdDialog.show($mdDialog.confirm()

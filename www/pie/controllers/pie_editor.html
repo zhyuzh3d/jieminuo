@@ -189,7 +189,7 @@
         <div style="visibility: hidden">
             <div class="md-dialog-container" id="fileInfoDialog">
                 <md-dialog layout-padding style='text-align:left'>
-                    <a ng-href="{{fileinfoDialogFile.url}}" target='_blank' style="padding:24px;padding-left:8px;font-size:24px" ng-bind='fileinfoDialogFile.url | fileName'></a>
+                    <a ng-href="{{toRtfilesUrl(fileinfoDialogFile.url)}}" target='_blank' style="padding:24px;padding-left:8px;font-size:24px" ng-bind='fileinfoDialogFile.url | fileName'></a>
                     <p class='dialog-line' aria-label='a'>类型&nbsp;:&nbsp;{{fileinfoDialogFile.mimeType}}</p>
                     <p class='dialog-line' aria-label='a'>大小&nbsp;:&nbsp;{{ksize(fileinfoDialogFile.fsize)}}k</p>
                     <p class='dialog-line' aria-label='a' style="margin-bottom:0">地址&nbsp;:&nbsp;{{fileinfoDialogFile.url}}</p>
