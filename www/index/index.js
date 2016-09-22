@@ -57,7 +57,7 @@
         };
 
         $scope.gotoFS = function() {
-            location.href = 'http://' + location.host + '/fullstack/';
+            location.href = 'https://jmnkt.ke.qq.com/';
         };
 
         $scope.gotoTour = function() {
