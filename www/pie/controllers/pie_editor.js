@@ -853,7 +853,7 @@
             };
             setTimeout(function () {
                 $('#previewFrame').attr('src', url);
-            }, 2000);
+            }, 2500);
         };
 
 
