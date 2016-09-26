@@ -1,9 +1,9 @@
-(function() {
+(function () {
     'use strict';
-    angular.module('app', []).controller('bodyController', function($rootScope, $scope, $location, $anchorScroll) {
+    angular.module('app', []).controller('bodyController', function ($rootScope, $scope, $location, $anchorScroll) {
 
         //初始化fullpage
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#fullpage').fullpage({
                 slidesNavigation: false,
                 slidesNavPosition: 'bottom',
@@ -15,20 +15,20 @@
 
 
         //等待global读取账号信息成功后刷新右上角用户
-        _global.promiseRun(function() {
-            $scope.$apply(function() {
+        _global.promiseRun(function () {
+            $scope.$apply(function () {
                 $scope.myUsrInfo = _global.myUsrInfo;
                 $scope.hasLogin = _global.hasLogin;
             });
-        }, function() {
+        }, function () {
             return _global.hasLogin;
         });
 
 
         //注销
-        $scope.loginout = function() {
-            _global.logout(function() {
-                $scope.$apply(function() {
+        $scope.loginout = function () {
+            _global.logout(function () {
+                $scope.$apply(function () {
                     $scope.myUsrInfo = _global.myUsrInfo;
                     $scope.hasLogin = _global.hasLogin;
                 });
@@ -36,43 +36,47 @@
         };
 
         //各种跳转函数
-        $scope.nextPage = function() {
+        $scope.nextPage = function () {
             $.fn.fullpage.moveSectionDown();
         };
 
-        $scope.prevPage = function() {
+        $scope.prevPage = function () {
             $.fn.fullpage.moveSectionUp();
         };
 
-        $scope.nextSlide = function() {
+        $scope.nextSlide = function () {
             $.fn.fullpage.moveSlideRight();
         };
 
-        $scope.prevSlide = function() {
+        $scope.prevSlide = function () {
             $.fn.fullpage.moveSlideLeft();
         };
 
-        $scope.gotoPie = function() {
-            location.href = 'http://' + location.host + '/pie/';
+        $scope.gotoPie = function () {
+            if ($scope.hasLogin) {
+                location.href = 'http://' + location.host + '/pie/';
+            } else {
+                location.href = 'http://' + location.host + '/account/?page=acc_login';
+            }
         };
 
-        $scope.gotoFS = function() {
+        $scope.gotoFS = function () {
             location.href = 'https://jmnkt.ke.qq.com/';
         };
 
-        $scope.gotoTour = function() {
+        $scope.gotoTour = function () {
             location.href = 'http://' + location.host + '/pie/';
         };
 
-        $scope.gotoHome = function() {
+        $scope.gotoHome = function () {
             location.href = 'http://' + location.host + '/';
         };
 
-        $scope.gotoReg = function() {
+        $scope.gotoReg = function () {
             location.href = 'http://' + location.host + '/account/?page=acc_register';
         };
 
-        $scope.gotoLogin = function() {
+        $scope.gotoLogin = function () {
             location.href = 'http://' + location.host + '/account/?page=acc_login';
         };
 
