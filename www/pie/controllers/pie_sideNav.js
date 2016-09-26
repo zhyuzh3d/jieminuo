@@ -32,8 +32,8 @@
         });
 
         $scope.goHome = function () {
+            $rootScope.tagLeftMenu();
             window.location.href = _global.hostUrl;
-            $root.tagLeftMenu();
         };
 
         $scope.name = thisName;

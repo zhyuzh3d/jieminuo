@@ -1,5 +1,5 @@
 //在所有脚本之前，jquery之后执行，比如检测登陆情况
-console.info('global_pre11 loading...');
+console.info('global_pre loading...');
 
 if (!_global) var _global = {};
 
