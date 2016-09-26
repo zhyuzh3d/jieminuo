@@ -102,7 +102,7 @@
             <div class="dropdown pull-right" ng-show='hasLogin'>
                 <button class="dropdown-toggle usrname" id="ddmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <span>
-                    <img class='avatar-sm' ng-src='{{myUsrInfo.avatar+"-avatar32"}}' />
+                    <img class='avatar-sm' ng-src='{{(hasLogin)?myUsrInfo.avatar+"-avatar32":""}}' />
                 </span>
                     <span ng-bind='myUsrInfo.nick'>未命名用户</span>
                     <span class="caret"></span>
