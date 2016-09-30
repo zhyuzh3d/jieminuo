@@ -1174,8 +1174,11 @@
 
 
         //微信窗口修正
+        var previewWid = (document.body.clientWidth > 480) ? '480px' : document.body.clientWidth - 4 + 'px';
+        $('#previewPart').css('width', previewWid);
+            console.log('>>>dd',previewWid);
+
         function fixLayout() {
-            $scope.previewWid = (document.body.clientWidth > 480) ? '480px' : document.body.clientWidth - 4 + 'px';
             $scope.previewHei = document.body.clientHeight - $('#menuSec').height() - 4 + 'px';
             $scope.mbodyHei = document.body.clientHeight - $('#menuSec').height() + 'px';
             $scope.mbodyWid = document.body.clientWidth - 4 + 'px';
