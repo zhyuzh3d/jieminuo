@@ -1174,13 +1174,13 @@
 
 
         //微信窗口修正
-        var previewWid = (document.body.clientWidth > 480) ? '480px' : document.body.clientWidth - 4 + 'px';
+        var previewWid = (document.body.clientWidth > 480) ? '480px' : $('#menuSec').width() + 'px';
         $('#previewPart').css('width', previewWid);
 
         function fixLayout() {
-            $scope.previewHei = document.body.clientHeight - $('#menuSec').height() - 4 + 'px';
+            $scope.previewHei = document.body.clientHeight - $('#menuSec').height() - 2 + 'px';
             $scope.mbodyHei = document.body.clientHeight - $('#menuSec').height() + 'px';
-            $scope.mbodyWid = document.body.clientWidth - 4 + 'px';
+            $scope.mbodyWid = document.body.clientWidth + 'px';
         }
         fixLayout();
         $(window).resize(fixLayout);

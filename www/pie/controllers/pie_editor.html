@@ -105,8 +105,9 @@
                 <md-divider></md-divider>
                 <md-menu style='padding:0'>
                     <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:50px;margin:0'>
-                        <p style="color:#00bfa5">
-                            <span class="fa fa-flask"></span>
+                        <p>
+                            <span class="fa fa-flask" ng-show='previewRt' style="color:#00bfa5"></span>
+                            <span class="fa fa-flask" ng-hide='previewRt' style="color:#AAA"></span>
                         </p>
                     </md-button>
                     <md-menu-content width="4" style='overflow-x: hidden;'>
