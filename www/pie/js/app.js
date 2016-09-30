@@ -121,6 +121,7 @@ var _app = {}; //最高全局变量，angular
         $rootScope.tagLeftMenu = function () {
             var tg = $mdSidenav('left').toggle();
             $rootScope.leftMenuOpen = $mdSidenav('left').isOpen();
+            $rootScope.leftMenuFold=!$rootScope.leftMenuFold;
         };
     });
 

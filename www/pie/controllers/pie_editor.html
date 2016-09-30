@@ -57,14 +57,14 @@
         <!--        顶部开关-->
         <div layout flex='none' id='menuSec' style="height:30px;border-left:1px solid #DDD">
             <div layout flex='grow'>
-                <md-button class="md-no-ink md-icon-button itbtn" ng-click="$root.fold=!$root.fold;$root.tagLeftMenu()" aria-label='tagleft' style='width:39px;min-width:39px'>
+                <md-button class="md-no-ink md-icon-button itbtn" ng-click="$root.tagLeftMenu()" aria-label='tagleft' style='width:39px;min-width:39px' data-toggle="tooltip" data-placement="bottom" title="显示／隐藏左侧菜单栏">
                     <p style="color:#888">
                         <span class="fa fa-chevron-left fa-1x" ng-show='$root.leftMenuOpen'></span>
                         <span class="fa fa-bars fa-1x" ng-hide='$root.leftMenuOpen'></span>
                     </p>
                 </md-button>
                 <md-divider></md-divider>
-                <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="tagPart('hideList')" aria-label='tagleft' style='width:90px'>
+                <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="tagPart('hideList')" aria-label='tagleft' style='width:90px' data-toggle="tooltip" data-placement="bottom" title="显示／隐藏文件列表">
                     <p ng-hide='hideList' class="minbtn" style="color:#00bfa5">
                         <span class="fa fa-files-o fa-1x"></span>
                         <span>文件列表</span>
@@ -75,25 +75,25 @@
                     </p>
                 </md-button>
                 <md-divider></md-divider>
-                <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="tagPart('hideEditor')" aria-label='tagleft' style='width:70px'>
+                <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="tagPart('hideEditor')" aria-label='tagleft' style='width:70px' data-toggle="tooltip" data-placement="bottom" title="显示／隐藏编辑器">
                     <p ng-hide='hideEditor' style="color:#00bfa5">
                         <span class="fa fa-edit fa-1x"></span>
-                        <span>编辑</span>
+                        <span>编辑器</span>
                     </p>
                     <p ng-show='hideEditor' style="color:#AAA">
                         <span class="fa fa-edit fa-1x"></span>
-                        <span>编辑</span>
+                        <span>编辑器</span>
                     </p>
                 </md-button>
                 <md-divider></md-divider>
-                <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="tagPart('hidePreview')" aria-label='tagleft' style='width:71px'>
+                <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="tagPart('hidePreview')" aria-label='tagleft' style='width:71px' data-toggle="tooltip" data-placement="bottom" title="显示／隐藏预览窗">
                     <p ng-hide='hidePreview' style="color:#00bfa5">
                         <span class="fa fa-eye fa-1x"></span>
-                        <span>预览</span>
+                        <span>预览窗</span>
                     </p>
                     <p ng-show='hidePreview' style="color:#AAA">
                         <span class="fa fa-eye-slash fa-1x"></span>
-                        <span>预览</span>
+                        <span>预览窗</span>
                     </p>
                 </md-button>
                 <md-divider></md-divider>
@@ -140,21 +140,21 @@
             <!-- PC端预览控制-->
             <div layout flex="initial" ng-show="greatThan('sm') && !hidePreview">
                 <md-divider></md-divider>
-                <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="openUrl()" aria-label='tagleft' style='width:70px'>
+                <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="openUrl()" aria-label='tagleft' style='width:70px' data-toggle="tooltip" data-placement="bottom" title="在新窗口打开APP首页">
                     <p style="color:#00bfa5">
                         <span class="fa fa-globe fa-lg"></span>
                         <span>浏览</span>
                     </p>
                 </md-button>
                 <md-divider ng-show='!previewRt'></md-divider>
-                <md-button flex="initial" ng-show='!previewRt' md-no-ink class="md-icon-button itbtn" ng-click="refreshPreviewFrameUrl()" aria-label='tagleft' style='width:70px'>
+                <md-button flex="initial" ng-show='!previewRt' md-no-ink class="md-icon-button itbtn" ng-click="refreshPreviewFrameUrl()" aria-label='tagleft' style='width:70px' data-toggle="tooltip" data-placement="bottom" title="重新载入预览页面">
                     <p style="color:#00bfa5">
                         <span class="fa fa-refresh fa-lg"></span>
                         <span>刷新</span>
                     </p>
                 </md-button>
                 <md-divider></md-divider>
-                <md-button flex="initial" md-no-ink class="md-icon-button itbtn" ng-click="tagPreviewRt()" aria-label='tagleft' style='width:70px'>
+                <md-button flex="initial" md-no-ink class="md-icon-button itbtn" ng-click="tagPreviewRt()" aria-label='tagleft' style='width:70px' data-toggle="tooltip" data-placement="bottom" title="实时／手工预览切换，实时仅模拟html+css效果，手工模式真正完全预览">
                     <p ng-hide='previewRt' style="color:#AAA">
                         <span class="fa fa-toggle-on fa-lg"></span>
                         <span>手工</span>

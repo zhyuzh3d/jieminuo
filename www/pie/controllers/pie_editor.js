@@ -1176,7 +1176,6 @@
         //微信窗口修正
         var previewWid = (document.body.clientWidth > 480) ? '480px' : document.body.clientWidth - 4 + 'px';
         $('#previewPart').css('width', previewWid);
-            console.log('>>>dd',previewWid);
 
         function fixLayout() {
             $scope.previewHei = document.body.clientHeight - $('#menuSec').height() - 4 + 'px';
@@ -1185,6 +1184,13 @@
         }
         fixLayout();
         $(window).resize(fixLayout);
+
+
+        //初始化工具提示
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+
 
         //ctrlr end
     }
