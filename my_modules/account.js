@@ -352,7 +352,7 @@ _rotr.apis.acc_getPhoneRegCode = function () {
         //检查上一次发送的验证码是否过期
         var codeKey = _rds.k.tmp_phoneRegCode(phone);
         var hasSend = yield _ctnu([_rds.cli, 'EXISTS'], codeKey);
-        if (hasSend) throw Error('您已经发送过验证码，请不要重复发送.');
+        if (hasSend) throw Error('您已经发送过注册验证码，请不要重复发送.');
 
         //发送验证码并记录到redis设定过期时间
         var res = yield _account.acc_sendPhoneCodeCo(phone);
@@ -389,15 +389,16 @@ _rotr.apis.acc_getPhoneRstCode = function () {
         //检查上一次发送的验证码是否过期
         var codeKey = _rds.k.tmp_phoneRstCode(phone);
         var hasSend = yield _ctnu([_rds.cli, 'EXISTS'], codeKey);
-        if (hasSend) throw Error('您已经发送过验证码，请不要重复发送.');
+        if (hasSend) throw Error('您已经发送过重置验证码，请不要重复发送.');
 
         //发送验证码并记录到redis设定过期时间
         var res = yield _account.acc_sendPhoneCodeCo(phone);
-        var code=res.code;
+        var code = res.code;
         _rds.cli.setex(codeKey, _cfg.dur.phoneCode, code);
 
         //返回数据
-        ctx.body = __newMsg(1, 'ok',res.res);
+        ctx.body = __newMsg(1, 'ok', res.res);
+        console.log('res',res);
         return ctx;
     });
     return co;

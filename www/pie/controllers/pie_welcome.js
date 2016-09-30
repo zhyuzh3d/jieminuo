@@ -86,7 +86,7 @@
         $scope.openApp = function (appname) {
             var str = _cfg.qn.BucketDomain + $rootScope.myInfo.id + '/' + appname + '/index.html';
             str = encodeURI(str);
-            location.href = str;
+            window.open(str);
         };
 
         //跳转到App首页
@@ -428,6 +428,13 @@
                 });
             });
         };
+
+        //初始化bootstrap的tooltip工具
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+
+
 
 
 

@@ -30,7 +30,9 @@
 
 <body ng-controller='bodyController' style="overlow:auto;background:#FFF">
 
-    <div id="box" style="position:fixed;opacity:0.2"><div id="anibg" style="width:200px;height:400px"></div></div>
+    <div id="box" style="position:fixed;opacity:0.2">
+        <div id="anibg" style="width:200px;height:400px"></div>
+    </div>
 
     <div id='a' class="container-fluid" style="padding:0;overflow:auto;">
         <!--            欢迎页-->
@@ -102,8 +104,8 @@
             <div class="dropdown pull-right" ng-show='hasLogin'>
                 <button class="dropdown-toggle usrname" id="ddmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <span>
-                    <img class='avatar-sm' ng-src='{{(hasLogin)?myUsrInfo.avatar+"-avatar32":""}}' />
-                </span>
+                        <img class='avatar-sm'  ng-src='{{(hasLogin)?myUsrInfo.avatar+"-avatar32":""}}' />
+                    </span>
                     <span ng-bind='myUsrInfo.nick'>未命名用户</span>
                     <span class="caret"></span>
                 </button>

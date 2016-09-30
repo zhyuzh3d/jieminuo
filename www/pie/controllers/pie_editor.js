@@ -1041,7 +1041,7 @@
 
         //使用base.html模板
         $scope.useTemplateHtml = function () {
-            var api = 'http://m.xmgc360.com/pie/web/templates/base.html';
+            var api = 'http://www.jieminuoketang.com/pie/templates/base/index.html';
             $.get(api, function (res) {
                 console.log('GET', api, null, String(res).substr(0, 100));
                 _fns.applyScope($scope, function () {
@@ -1054,7 +1054,7 @@
 
         //使用base.js模板
         $scope.useTemplateJs = function () {
-            var api = 'http://m.xmgc360.com/pie/web/templates/base.js';
+            var api = 'http://www.jieminuoketang.com/pie/templates/base/index.js';
             $.get(api, function (res) {
                 console.log('GET', api, null, String(res).substr(0, 100));
                 _fns.applyScope($scope, function () {
@@ -1186,7 +1186,7 @@
         $(window).resize(fixLayout);
 
 
-        //初始化工具提示
+        //初始化bootstrap的tooltip工具
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
         });

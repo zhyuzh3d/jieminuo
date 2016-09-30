@@ -108,6 +108,8 @@ if (!_pie) var _pie = {};
 
 
 
+
+
     //获取扩展名对应的mimetype
     _fns.getMimeByExt = function (ext) {
         ext = ext.replace('.', '');
@@ -318,7 +320,7 @@ if (!_pie) var _pie = {};
      * @param   {fn} success  上传成功后的函数,三个参数,分别是返回信息(包含name,type,key),state('success'),xhr对象(带有file对象和domain)
      * @param   {fn} error    上传失败后的函数
      * @param   {fn} complete 上传完成后的函数
-     * @param   {fn} domain   上传到哪个存储空间，默认mfile.xmgc360.com
+     * @param   {fn} domain   上传到哪个存储空间，默认mfile.jieminuoketang.com
      * @returns {xhr} 上传的xhr对象，带有file和domain属性
      */
     _fns.uploadFileQn2 = function (token, file, progress, success, error, complete, domain, key) {

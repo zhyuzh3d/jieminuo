@@ -25,7 +25,7 @@
 
         //从info.json获取各个接口信息
         $scope.getApis = function () {
-            var api = 'http://m.xmgc360.com/pie/web/info.json';
+            var api = 'http://www.jieminuoketang.com/pie/web/info.json';
             $.get(api, function (res) {
                 var res = JSON.parse(res);
                 console.log('POST', api, undefined, res);
@@ -36,7 +36,7 @@
                         $scope.apis.forEach(function (item, i) {
                             item.sendDat = {};
                             item.sendPost = function () {
-                                var sendapi = 'http://m.xmgc360.com/pie/api/' + item.name + '/';
+                                var sendapi = 'http://www.jieminuoketang/api/' + item.name + '/';
                                 $.post(sendapi, item.sendDat, function (sendres) {
                                     console.log('POST', sendapi, item.sendDat, sendres);
                                     _fns.applyScope($scope, function () {
@@ -140,25 +140,8 @@
 
 
         //------------------------
-        //ceshi
-        //测试
-        $.get("http://m.xmgc360.com/start/api/getMyInfo", function (res) {
-            console.log('>>>JSONPX', res);
-        }, 'jsonp');
 
-        /*
-        $.ajax({
-            type: "get",
-            url: "http://m.xmgc360.com/start/api/getMyInfo",
-            dataType: "jsonp",
-            success: function(json) {
-                console.log('>>>JSONPX', json);
-            },
-            error: function() {
-                console.log('>>>JSONPX failed');
-            }
-        });
-        */
+
 
 
 

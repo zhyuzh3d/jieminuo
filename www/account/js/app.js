@@ -9,8 +9,8 @@ if (!_xdat) var _xdat = {}; //共享变量
     'use strict';
 
     _cfg.host = window.location.host;
-    _cfg.homePath = 'http://m.xmgc360.com/start/web/account/';
-    _cfg.apiPrefix = 'http://m.xmgc360.com/start/api/';
+    _cfg.homePath = 'http://www.jieminuoketang.com/account/';
+    _cfg.apiPrefix = 'http://www.jieminuoketang/api/';
 
 
     _cfg.startPage = 'acc_profile';

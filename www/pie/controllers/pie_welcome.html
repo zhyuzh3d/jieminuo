@@ -38,6 +38,10 @@
             border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
+        .md-icon-button .itbtn{
+            cursor: pointer;
+        }
+
     </style>
     <div layout-padding>
 
@@ -45,7 +49,7 @@
             <md-button hide-gt-sm class="md-icon-button" ng-click="$root.tagLeftMenu()" style='margin-left:0' aria-label='tagleft'>
                 <span class="fa fa-bars fa-lg"></span>
             </md-button>
-            <md-button class="md-icon-button hidden-xs" ng-click="$root.tagLeftMenu()" style='margin-left:0;color:#AAA' aria-label='tagleft'>
+            <md-button class="md-icon-button hidden-xs" ng-click="$root.tagLeftMenu()" style='margin-left:0;color:#AAA' aria-label='tagleft' data-toggle="tooltip" data-placement="bottom" title="显示／隐藏左侧菜单栏">
                 <span class="fa fa-chevron-left fa-lg" ng-show='$root.leftMenuOpen'></span>
                 <span class="fa fa-bars fa-lg" ng-hide='$root.leftMenuOpen'></span>
             </md-button>
@@ -53,7 +57,7 @@
             <md-button class="md-default" ng-click='getMyAppList()' aria-label='getMyAppList' ng-show>刷新</md-button>
 
             <div class="dropdown pull-right" ng-show='hasLogin' style="margin-top:8px">
-                <button class="dropdown-toggle" id="ddmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="background:none;border:none">
+                <button class="dropdown-toggle" id="ddmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="background:#CCC;border:none">
                     <span>
                         <img class='avatar-md' ng-src='{{myUsrInfo.avatar?myUsrInfo.avatar+"-avatar32":""}}' />
                     </span>
@@ -78,23 +82,29 @@
                             <div class="md-headline elips" ng-click='openApp(item.key)' style="cursor:pointer;">
                                 <span class="md-headline elips" ng-bind='item.info.alias' style='color:#000'></span>
                             </div>
-                            <span class="md-subhead elips"  ng-bind='item.info.name' ng-click='editApp(item.key)' style="cursor:pointer;color:#000;opacity:0.5"></span>
+                            <span class="md-subhead elips" ng-bind='item.info.name' ng-click='editApp(item.key)' style="cursor:pointer;color:#000;opacity:0.5"></span>
                         </md-card-title-text>
                     </md-card-title>
 
 
                     <!--   下拉菜单-->
                     <md-card-actions layout-wrap layout="row" layout-align="end center" style='color:#AAA'>
+                        <md-button flex='none' class="md-icon-button itbtn" ng-click='editApp(item.key)' aria-label='a' style='color:#00bfa5;margin:0'data-toggle="tooltip" data-placement="bottom" title="编辑App代码">
+                            <span class='fa fa-pencil' ></span>
+                        </md-button>
+                        <md-button flex='none' class="md-icon-button itbtn" ng-click='openApp(item.key)' aria-label='a' style='color:#00bfa5;margin:0' data-toggle="tooltip" data-placement="bottom" title="运行App主页">
+                            <span class='fa fa-rocket' ></span>
+                        </md-button>
                         <md-menu style='padding:0'>
-                            <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:50px;margin-right:0'>
-                                <p style="color:#AAA">
+                            <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:50px;margin:0;' data-toggle="tooltip" data-placement="bottom" title="更多菜单功能">
+                                <p style="color:#00bfa5">
                                     <span class="fa fa-bars"></span>
                                 </p>
                             </md-button>
                             <md-menu-content>
                                 <md-button flex='none' class="md-default" ng-click='openApp(item.key)' aria-label='a' style='color:#888'>
-                                    <span class='fa fa-globe'></span>
-                                    <span>浏览</span>
+                                    <span class='fa fa-rocket'></span>
+                                    <span>运行</span>
                                 </md-button>
                                 <md-button flex='none' class="md-default" ng-click='editApp(item.key)' aria-label='a' style='color:#888'>
                                     <span class='fa fa-pencil'></span>
@@ -162,7 +172,7 @@
                             <md-input-container class="md-block" flex-gt-sm style='margin-top:48px'>
                                 <label style="text-align:left;font-size:2rem">使用模版</label>
                                 <md-select ng-model="RIselTemplate" style="text-align:left">
-                                    <md-option ng-repeat="(key,tmp) in templates" value="{{key}}" ng-bind='key' style="text-align:left"></md-option >
+                                    <md-option ng-repeat="(key,tmp) in templates" value="{{key}}" ng-bind='key' style="text-align:left"></md-option>
                                 </md-select>
                                 <div style='color:#AAA;text-align:left;font-size:12px' ng-bind="templates[RIselTemplate].desc"></div>
                             </md-input-container>
@@ -175,8 +185,6 @@
                 </md-dialog>
             </div>
         </div>
-
-
 
 
     </div>
