@@ -355,11 +355,12 @@ _rotr.apis.acc_getPhoneRegCode = function () {
         if (hasSend) throw Error('您已经发送过验证码，请不要重复发送.');
 
         //发送验证码并记录到redis设定过期时间
-        var code = yield _account.acc_sendPhoneCodeCo(phone);
+        var res = yield _account.acc_sendPhoneCodeCo(phone);
+        var code = res.code;
         _rds.cli.setex(codeKey, _cfg.dur.phoneCode, code);
 
         //返回数据
-        ctx.body = __newMsg(1, 'ok');
+        ctx.body = __newMsg(1, 'ok', res.res);
         return ctx;
     });
     return co;
@@ -391,11 +392,12 @@ _rotr.apis.acc_getPhoneRstCode = function () {
         if (hasSend) throw Error('您已经发送过验证码，请不要重复发送.');
 
         //发送验证码并记录到redis设定过期时间
-        var code = yield _account.acc_sendPhoneCodeCo(phone);
+        var res = yield _account.acc_sendPhoneCodeCo(phone);
+        var code=res.code;
         _rds.cli.setex(codeKey, _cfg.dur.phoneCode, code);
 
         //返回数据
-        ctx.body = __newMsg(1, 'ok');
+        ctx.body = __newMsg(1, 'ok',res.res);
         return ctx;
     });
     return co;
@@ -471,7 +473,7 @@ _account.acc_sendPhoneCodeCo = function (phone) {
         //发送验证码
         var minit = _cfg.dur.phoneCode / 60;
         var path = '/kingtto_media/106sms/106sms?mobile=' + phone;
-        path += '&content=【杰米诺】您的验证码是' + code + '，有效时间' + minit + '分钟，请不要告诉他人';
+        path += '&content=【杰米诺】您的验证码是' + code + '，有效时间' + minit + '分钟，请不要告诉他人。';
         path += '&tag=2'; //json格式返回
         path = encodeURI(path);
         var opt = {
@@ -486,10 +488,14 @@ _account.acc_sendPhoneCodeCo = function (phone) {
         };
 
         var res = yield _fns.httpReqPrms(opt);
-        return code;
+        return {
+            code: code,
+            res: res
+        };
     });
     return co;
 }
+
 
 
 

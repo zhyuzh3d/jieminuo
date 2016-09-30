@@ -44,10 +44,11 @@
         };
 
         $scope.gotoPie = function () {
+            var pieurl='http://' + location.host + '/pie/';
             if ($scope.hasLogin) {
-                location.href = 'http://' + location.host + '/pie/';
+                location.href = pieurl;
             } else {
-                location.href = 'http://' + location.host + '/account/?page=acc_login';
+                location.href = 'http://' + location.host + '/account/?page=acc_login'+'&&okUrl='+pieurl;
             }
         };
 
