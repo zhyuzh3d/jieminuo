@@ -1163,6 +1163,7 @@
         //改变编辑器的主题
         $scope.cmTheme = 'mbo';
         $scope.changeCmEditorTheme = function () {
+
             if ($scope.cmTheme == 'default') {
                 $scope.cmTheme = 'mbo';
             } else {
@@ -1172,6 +1173,15 @@
         };
 
 
+        //微信窗口修正
+        function fixLayout() {
+            $scope.previewWid = (document.body.clientWidth > 480) ? '480px' : document.body.clientWidth - 4 + 'px';
+            $scope.previewHei = document.body.clientHeight - $('#menuSec').height() - 4 + 'px';
+            $scope.mbodyHei = document.body.clientHeight - $('#menuSec').height() + 'px';
+            $scope.mbodyWid = document.body.clientWidth - 4 + 'px';
+        }
+        fixLayout();
+        $(window).resize(fixLayout);
 
         //ctrlr end
     }

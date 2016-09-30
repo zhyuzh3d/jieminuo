@@ -111,15 +111,15 @@
                     </md-button>
                     <md-menu-content width="4" style='overflow-x: hidden;'>
                         <md-button flex="grow" md-no-ink class="itbtn2" ng-click="tagPreviewRt()" aria-label='tagleft'>
-                            <p ng-hide='previewRt' style="color:#00bfa5">
+                            <p ng-hide='previewRt' style="color:#AAA">
                                 <span class="fa fa-toggle-on fa-lg"></span>
                                 <span>手工</span>
                             </p>
-                            <p ng-show='previewRt' style="color:#AAA">
+                            <p ng-show='previewRt' style="color:#00bfa5">
                                 <span class="fa fa-toggle-off fa-lg"></span>
                                 <span>实时</span>
                             </p>
-                        </md-button>
+                        </md-button>hi
                         <md-button flex="grow" ng-show='!previewRt' md-no-ink class="itbtn2" ng-click="refreshPreviewFrameUrl()" aria-label='tagleft'>
                             <p style="color:#00bfa5">
                                 <span class="fa fa-refresh fa-lg"></span>
@@ -210,7 +210,7 @@
 
 
         <!--        主体部分-->
-        <div layout='row' layout-align='start stretch' style="width:100%;height:100%">
+        <div id='mainbody' layout='row' layout-align='start stretch' ng-style="{width:mbodyWid,height:mbodyHei}">
 
             <!--            文件列表部分-->
             <div flex='none' id='listPart' ng-hide='hideList' style="width:240px;border-left:1px solid #DDD">
@@ -375,10 +375,10 @@
             </div>
 
             <!--       编辑器部分-->
-            <div flex id='editorPart' layout='column' id='editorPart' ng-hide='hideEditor' class='lboder' style="min-width:480px">
+            <div flex id='editorPart' layout='column' id='editorPart' ng-hide='hideEditor' class='lboder' style="min-width:400px">
                 <!--            编辑器-->
-                <div flex='grow' id='editorSec' style="background:#888;overflow-y:auto;box-shadow: 0 0 24px #666 inset;overflow-x: hidden;">
-                    <div id='cmEditor' ng-model="editorFile.data" ui-codemirror-opts='cmOpt' ui-codemirror="{onLoad:cmLoaded}" style="box-shadow: 0 4px 4px #888888;boder:none;margin:-1px" ui-refresh='cmRefresh'></div>
+                <div flex='grow' id='editorSec' style="background:#888;overflow-y:hidden;box-shadow: 0 0 24px #666 inset;overflow-x: hidden;">
+                    <div id='cmEditor' ng-model="editorFile.data" ui-codemirror-opts='cmOpt' ui-codemirror="{onLoad:cmLoaded}" style="box-shadow: 0 4px 4px #888888;boder:none;margin:-1px;min-height:200px;background:#AAA;width:100%" ui-refresh='cmRefresh'></div>
                 </div>
                 <!--            底部菜单-->
                 <div layout flex='none' layout-align='space-between center' id='menuSec' style="height:48px;padding:0 1rem;border-top: 1px solid #DDD">
@@ -413,7 +413,7 @@
 
             <!--            预览部分-->
             <div id='dragPreSizeBar' flex='none' ng-hide='hidePreview || !greatThan("xs")' style="width:8px;background:#F7F7F7;border-left:1px solid #DDD;cursor:col-resize;"></div>
-            <div layout='column' flex='none' id='previewPart' ng-hide='hidePreview' class='lboder' style='width:480px;'>
+            <div layout='column' flex='none' id='previewPart' ng-hide='hidePreview' class='lboder' style='width:480px;height:100%' ng-style='{width:previewWid,height:previewHei}'>
                 <!--            预览器-->
                 <iframe id='previewFrame' ng-hide='previewRt' style="border-style:none;height:100%;width:100%;"></iframe>
                 <div ng-show='previewRt' id='previewSec' style="border:1px dashed #DDD;padding:1px;height:100%;width:100%;">
