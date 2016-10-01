@@ -10,13 +10,16 @@
     <!--控制器界面部分-->
     <md-sidenav layout='column' md-component-id="left" class="site-sidenav md-sidenav-left" md-component-id="left" md-is-locked-open="($mdMedia('gt-sm'))&&$root.leftMenuFold" style='width:100%;height:100%;padding:0;overflow-x:hidden;border-right:1px solid #00bfa5;box-shadow:none' md-whiteframe='8'>
         <div layout layout-align='space-between stretch' ng-click='goHome()' md-colors='{background:"primary"}' layout-padding flex='initial' style='padding:0;    height: 6rem;'>
-            <div flex='60' style="font-size:1.6rem;color:#FFF;margin:1rem;width:200px;overflow:hidden;font-weight:bold">杰米诺课堂</div>
+            <div flex='60' style="font-size:1.6rem;color:#FFF;margin:1rem;width:200px;overflow:hidden;font-weight:bold;padding-left:0">
+                <span class="fa fa-home fa-lg"></span>
+                <span>杰米诺课堂</span>
+            </div>
         </div>
 
         <md-list layout='column' flex='grow' style='padding:0;width:100%' layout-align='space-between start'>
             <div flex='grow' style="width:100%">
                 <md-menu-item style='width:100%' ng-repeat="item in menus" ng-click='alert($root.lastCtrlr);$root.gotoCtrlr(item.ctrlr);$root.tagLeftMenu()'>
-                    <md-button ng-class="{true:'md-primary',false:''}[$root.lastCtrlr==item.ctrlr]" aria-label='menu'>
+                    <md-button ng-class="{true:'md-primary',false:''}[item.ctrlr==getCurCtrlr()]" aria-label='menu'>
                         <div style="text-align:left">
                             <span ng-class="item.icon" style="margin-right:1rem"></span>
                             <span ng-bind='item.name' style="font-size:1.3rem"></span>
@@ -24,15 +27,14 @@
                     </md-button>
                 </md-menu-item>
                 <md-divider></md-divider>
-                <div flex='grow' style="width:100%">
-                    <md-menu-item style='width:100%' ng-repeat="item in myApps.apps" ng-click='editApp(item.info.name)'>
-                        <md-button ng-class="{true:'md-primary',false:''}[item==xargs.app]" aria-label='menu'>
-                            <div style="text-align:left">
-                                <span ng-bind='item.info.alias' style="font-size:1.3rem"></span>
-                            </div>
-                        </md-button>
-                    </md-menu-item>
-                </div>
+                <md-menu-item ng-show='isAdmin'  style='width:100%' ng-repeat="item in adminMenus" ng-click='alert($root.lastCtrlr);$root.gotoCtrlr(item.ctrlr);$root.tagLeftMenu()'>
+                    <md-button ng-class="{true:'md-primary',false:''}[item.ctrlr==getCurCtrlr()]" aria-label='menu'>
+                        <div style="text-align:left">
+                            <span ng-class="item.icon" style="margin-right:1rem"></span>
+                            <span ng-bind='item.name' style="font-size:1.3rem"></span>
+                        </div>
+                    </md-button>
+                </md-menu-item>
             </div>
         </md-list>
     </md-sidenav>

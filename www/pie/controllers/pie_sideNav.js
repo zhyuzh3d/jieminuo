@@ -18,69 +18,50 @@
         _fns.initCtrlr($scope, $element, thisName, false);
 
         $rootScope[thisName] = $scope;
+        $scope.name = thisName;
 
         $scope.menus = [{
             name: '我的首页',
             icon: 'fa fa-bomb',
             ctrlr: 'pie_welcome',
-        }]
+        }];
 
-        $(window).ready(function () {
-            setTimeout(function () {
-                //载入完毕后执行
-            }, 1000)
-        });
+        $scope.adminMenus = [{
+            name: '用户管理',
+            icon: 'fa fa-adn',
+            ctrlr: 'pie_admusrs',
+        }];
 
         $scope.goHome = function () {
             $rootScope.tagLeftMenu();
             window.location.href = _global.hostUrl;
         };
 
-        $scope.name = thisName;
 
-        //获取App列表，显示在左侧栏
-        $scope.getMyAppList = function () {
-            var api = _global.api('pie_getMyApps');
-            $.post(api, undefined, function (res) {
-                console.log('POST', api, undefined, res);
-                if (res.code == 1) {
-                    _fns.applyScope($scope, function () {
-                        //重新排序
-                        var arr = _fns.obj2arr(res.data.apps);
-                        arr = arr.sort(function (a, b) {
-                            return b.info.time - a.info.time;
-                        });
-
-                        $scope.myApps = res.data;
-                        $scope.myApps.apps = _fns.arr2obj(arr);
-                    });
-                } else {
-                    //提示错误
-                    $mdToast.show(
-                        $mdToast.simple()
-                        .textContent('读取App列表失败，请稍后再试:' + res.text)
-                        .position('top right')
-                        .hideDelay(3000)
-                    );
-                };
+        //等待global读取账号信息成功后决定是否显示管理菜单
+        _global.promiseRun(function () {
+            $scope.$apply(function () {
+                $scope.myUsrInfo = _global.myUsrInfo;
+                $scope.hasLogin = _global.hasLogin;
+                $scope.isAdmin = $scope.myUsrInfo.id == 1;
             });
+        }, function () {
+            return _global.hasLogin;
+        });
+
+
+        //从当前地址栏截取获得contrllor名称
+        $scope.getCurCtrlr = function () {
+            var url = unescape(location.href);
+            var seg = url.match(/\#\/root\#curPageUrl\#@[\S\s]*\#?/g);
+            if (!seg && seg.length > 0) return undefined;
+
+            var cnanme = seg[seg.length - 1].substr(seg[seg.length - 1].indexOf('#@'));
+            if (cnanme.length < 2) return '';
+
+            cnanme = cnanme.substr(2);
+            return cnanme;
         };
-        $scope.getMyAppList();
-
-
-        //从侧栏打开app编辑器
-        $scope.editApp = function (appname) {
-            var str = 'http://' + window.location.host + '/pie/?page=pie_editor&app=' + appname;
-            str = encodeURI(str);
-            $rootScope.tagLeftMenu();
-            location.href = str;
-        };
-
-
-
-
-
-
 
 
 

@@ -11,7 +11,8 @@
         $anchorScroll,
         $element,
         $mdToast,
-        $mdDialog
+        $mdDialog,
+        $mdMedia
     ) {
         console.log(thisName + '.js is loading...');
         _fns.initCtrlr($scope, $element, thisName, false);
@@ -204,10 +205,6 @@
                 if (res.code == 1) {
                     //刷新列表
                     $scope.getMyAppList();
-                    try {
-                        _xdat.ctrlrs['pie_sideNav'][0].getMyAppList();
-                    } catch (err) {}
-
                     $mdDialog.hide();
 
                     //根据模版自动初始化所有文件
@@ -435,7 +432,14 @@
         });
 
 
-
+        //开始就打开左侧栏
+        $(document).ready(function () {
+            setTimeout(function () {
+                if (!$rootScope.leftMenuOpen && $mdMedia("gt-sm")) {
+                    $('#leftnavbtn').click();
+                };
+            }, 1000);
+        });
 
 
         //end

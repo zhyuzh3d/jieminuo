@@ -99,6 +99,10 @@ var _app = {}; //最高全局变量，angular
             }, 50);
         };
 
+
+
+
+
         //跳转到默认起始页控制器
         $(document).ready(function () {
             var autohash = _fns.changeCtrlrByHash();
@@ -117,11 +121,25 @@ var _app = {}; //最高全局变量，angular
         //侧栏
         $rootScope.sideNavUrl = _fns.getCtrlrUrl('pie_sideNav');
 
-        //显示左侧栏
-        $rootScope.tagLeftMenu = function () {
-            var tg = $mdSidenav('left').toggle();
+        //显示左侧栏,接收true／false
+        $rootScope.tagLeftMenu = function (open) {
+            console.log('>>>>open',open);
+            var isopen = $rootScope.leftMenuOpen = $mdSidenav('left').isOpen();
+            if (open === undefined) {
+                $mdSidenav('left').toggle();
+                $rootScope.leftMenuFold = !$rootScope.leftMenuFold;
+            } else if (open) {
+                if (!isopen) {
+                    $mdSidenav('left').toggle();
+                    $rootScope.leftMenuFold = false;
+                }
+            } else {
+                if (isopen) {
+                    $mdSidenav('left').toggle();
+                    $rootScope.leftMenuFold = true;
+                }
+            };
             $rootScope.leftMenuOpen = $mdSidenav('left').isOpen();
-            $rootScope.leftMenuFold=!$rootScope.leftMenuFold;
         };
     });
 
