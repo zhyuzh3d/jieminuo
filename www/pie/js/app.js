@@ -123,7 +123,7 @@ var _app = {}; //最高全局变量，angular
 
         //显示左侧栏,接收true／false
         $rootScope.tagLeftMenu = function (open) {
-            console.log('>>>>open',open);
+            console.log('>>>>open', open);
             var isopen = $rootScope.leftMenuOpen = $mdSidenav('left').isOpen();
             if (open === undefined) {
                 $mdSidenav('left').toggle();
@@ -218,7 +218,25 @@ var _app = {}; //最高全局变量，angular
         }
     );
 
-
+    //filter：隐私信息，一半用*代替
+    _app.filter(
+        'halfHide',
+        function () {
+            return function (str) {
+                if(!str) return undefined;
+                var shown = Math.ceil(str.length / 2);
+                var startn = Math.floor(shown / 2);
+                var endn = shown - startn;
+                var hiden = str.length - shown;
+                var rep = '';
+                for (var i = 0; i < hiden; i++) {
+                    rep += '*';
+                };
+                var str2 = str.substr(0, startn) + rep + str.substr(startn + shown);
+                return str2;
+            }
+        }
+    );
 
 
 

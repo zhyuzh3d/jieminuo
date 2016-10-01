@@ -398,7 +398,7 @@ _rotr.apis.acc_getPhoneRstCode = function () {
 
         //返回数据
         ctx.body = __newMsg(1, 'ok', res.res);
-        console.log('res',res);
+        console.log('res', res);
         return ctx;
     });
     return co;
@@ -496,6 +496,94 @@ _account.acc_sendPhoneCodeCo = function (phone) {
     });
     return co;
 }
+
+
+
+/**
+ * admin，获取用户列表,
+ * @returns {} hgetall读取_map:usr.phone:usr.id键，全部返回给前端
+ */
+_rotr.apis.acc_admGetUsrList = function () {
+    var ctx = this;
+
+    var co = $co(function* () {
+        var uid = yield _fns.getUidByCtx(ctx);
+        if (uid != 1) throw Error('权限验证失败，当前用户无权获取用户列表');
+
+        var rdskey = _rds.k.map_uphone2uid;
+        var res = yield _ctnu([_rds.cli, 'hgetall'], rdskey);
+
+        //返回数据
+        ctx.body = __newMsg(1, 'ok', res);
+        return ctx;
+    });
+    return co;
+};
+
+
+/**
+ * admin，获取单个用户详细信息,
+ * @returns {} hgetall读取usr-4键和uApps-4，全部返回给前端
+ */
+_rotr.apis.acc_admGetUsrDetails = function () {
+    var ctx = this;
+
+    var co = $co(function* () {
+        var uid = yield _fns.getUidByCtx(ctx);
+        if (uid != 1) throw Error('权限验证失败，当前用户无权获取用户列表');
+
+        var id = ctx.query.id || ctx.request.body.id;
+        if (!id) throw Error('没有收到用户id.');
+
+
+        var usrkey = _rds.k.usr(id);
+        var usr = yield _ctnu([_rds.cli, 'hgetall'], usrkey);
+
+        var uappkey = _rds.k.usrApps(id);
+        var uapps = yield _ctnu([_rds.cli, 'zrange'], uappkey, 0, -1, 'withscores');
+
+        //返回数据
+        ctx.body = __newMsg(1, 'ok', {
+            usr: usr,
+            uapps: uapps,
+        });
+        return ctx;
+    });
+    return co;
+};
+
+
+/**
+ * admin，修改单个用户的属性, 只能修改usr-4键的属性
+ * @returns {}
+ */
+_rotr.apis.acc_admSetUsrAttr = function () {
+    var ctx = this;
+
+    var co = $co(function* () {
+        var uid = yield _fns.getUidByCtx(ctx);
+        if (uid != 1) throw Error('权限验证失败，当前用户无权获取用户列表');
+
+        var uid = ctx.query.uid || ctx.request.body.uid;
+        if (!uid) throw Error('没有收到uid.');
+
+        var key = ctx.query.key || ctx.request.body.key;
+        if (!key || key == '') throw Error('没有收到key.');
+
+        var val = ctx.query.val || ctx.request.body.val;
+        if (!val) throw Error('没有收到val.');
+
+
+        var usrkey = _rds.k.usr(uid);
+        var usr = yield _ctnu([_rds.cli, 'hset'], usrkey, key, val);
+
+        //返回数据
+        ctx.body = __newMsg(1, 'ok');
+        return ctx;
+    });
+    return co;
+};
+
 
 
 

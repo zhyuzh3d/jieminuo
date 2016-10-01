@@ -748,11 +748,18 @@ if (!_pie) var _pie = {};
 })();
 
 
-//把一个对象转化为数组
-_fns.obj2arr = function (obj) {
+//把一个对象转化为数组,使用usekv保留原有属性
+_fns.obj2arr = function (obj, usekv) {
     var arr = [];
     for (var attr in obj) {
-        arr.push(obj[attr]);
+        if (!usekv) {
+            arr.push(obj[attr]);
+        } else {
+            arr.push({
+                key: attr,
+                val: obj[attr]
+            });
+        }
     };
     return arr;
 };

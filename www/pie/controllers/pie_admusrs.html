@@ -4,7 +4,7 @@
 </script>
 
 <!--控制器界面部分-->
-<div layout layout-align='stretch stretch' id='pie_admusrs' ng-controller='pie_admusrs' class='pie_admusrs' style='width: 100%; height: 100%; overflow:visible;'>
+<div layout layout-align='stretch stretch' id='pie_admusrs' ng-controller='pie_admusrs' class='pie_admusrs' style='width: 100%; height: 100%; overflow:visible;background:#FFF'>
     <style>
         /*内部样式，以控制器名为class开头*/
 
@@ -29,7 +29,7 @@
                 <span class="fa fa-chevron-left fa-lg" ng-show='$root.leftMenuOpen'></span>
                 <span class="fa fa-bars fa-lg" ng-hide='$root.leftMenuOpen'></span>
             </md-button>
-            <md-button class="md-raised md-accent" ng-click='openCreateDialog()' aria-label='doCreateApp'>新建APP</md-button>
+            <md-button class="md-raised md-accent" ng-click='getUsrList()' aria-label='doCreateApp'>刷新列表</md-button>
             <md-button class="md-default" ng-click='getMyAppList()' aria-label='getMyAppList' ng-show>刷新</md-button>
 
             <div class="dropdown pull-right" ng-show='hasLogin' style="margin-top:8px">
@@ -49,9 +49,94 @@
 
         <!--        列表-->
         <div>
+            <div>
+                <span>共计用户{{usrs.length}}人；当前第{{curPageIndex}}页</span>
+            </div>
+            <nav class="pull-right">
+                <ul class="pagination">
+                    <li><a href="#" ng-click='toPrevPage()'>&laquo;</a></li>
+                    <li ng-repeat='n in paginationArr' ng-click='toPageN(n)'>
+                        <a href="#" ng-bind='n'></a>
+                    </li>
+                    <li><a href="#" ng-click='toNextPage()'>&raquo;</a></li>
+                </ul>
+            </nav>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>电话</th>
+                        <th>用户ID</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat='u in curPageUsrs'>
+                        <td ng-bind='$index'></td>
+                        <td ng-bind='u.key | halfHide'></td>
+                        <td ng-bind='u.val'></td>
+                        <td>
+                            <a href="#" ng-click='getUsrDetails(u)'>详细</a>
+                            <span>&nbsp;</span>
+                            <a href="#" ng-click='openSetUsrAttrDialog(u)'>修改</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <nav>
+                <ul class="pagination">
+                    <li><a href="#" ng-click='toPrevPage()'>&laquo;</a></li>
+                    <li ng-repeat='n in paginationArr' ng-click='toPageN(n)'>
+                        <a href="#" ng-bind='n'></a>
+                    </li>
+                    <li><a href="#" ng-click='toNextPage()'>&raquo;</a></li>
 
+                </ul>
+            </nav>
 
         </div>
+
+
+        <!--        弹窗-->
+
+        <!--      详细信息弹窗-->
+        <div style="visibility: hidden">
+            <div class="md-dialog-container" id="usrDetailsDialog">
+                <md-dialog layout-padding style='text-align:center;padding:24px;max-width:800px'>
+                    <pre ng-bind='usrDetailsDialogData | json' style="text-align:left">
+                    </pre>
+                </md-dialog>
+            </div>
+        </div>
+
+        <!--      修改用户属性信息弹窗-->
+        <div style="visibility: hidden">
+            <div class="md-dialog-container" id="setUsrAttrDialog">
+                <md-dialog layout-padding style='text-align:center;padding:24px;max-width:400px'>
+                    <h4>ID{{setUsrAttrDialogData.usr.id}}</h4>
+                    <div>手机{{setUsrAttrDialogData.usr.phone | halfHide}}</div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">key</div>
+                            <input class="form-control" type="text" ng-model='setUsrAttrDialogData.key'>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">val</div>
+                            <input class="form-control" type="text" ng-model='setUsrAttrDialogData.val'>
+                        </div>
+                    </div>
+                    <div style="margin-top:1rem">
+                        <md-button class="md-raised md-primary btn-lg" ng-click='setUsrAttr()' style='width:180px;color:#FFF'>确定创建</md-button>
+                        <md-button class="md-raised md-default btn-lg" ng-click='cancelDialog()'>取消</md-button>
+                    </div>
+
+                </md-dialog>
+            </div>
+        </div>
+
+
 
     </div>
 

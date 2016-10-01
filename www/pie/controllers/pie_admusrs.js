@@ -12,7 +12,8 @@
         $element,
         $mdToast,
         $mdDialog,
-        $mdMedia
+        $mdMedia,
+        $filter
     ) {
         console.log(thisName + '.js is loading...');
         _fns.initCtrlr($scope, $element, thisName, false);
@@ -31,6 +32,7 @@
             $scope.$apply(function () {
                 $scope.myUsrInfo = _global.myUsrInfo;
                 $scope.hasLogin = _global.hasLogin;
+                $scope.getUsrList();
             });
         }, function () {
             return _global.hasLogin;
@@ -48,10 +50,136 @@
         };
 
 
+        //获取用户手机号码列表
+        $scope.getUsrList = function () {
+            var api = _global.api('acc_admGetUsrList');
+            var dat = {};
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
+                _fns.applyScope($scope, function () {
+                    //转化数据格式
+                    $scope.usrs = _fns.obj2arr(res.data, true);
+                    for (var i = 0; i < $scope.usrs.length; i++) {
+                        $scope.usrs[i].val = Number($scope.usrs[i].val);
+                    };
+                    $scope.pageCount = Math.ceil($scope.usrs.length / $scope.perPageCount);
+                    $scope.usrs = $scope.usrs.sort(function (a, b) {
+                        return Number(b.val) - Number(a.val);
+                    });
+
+                    //截取当前页数据
+                    $scope.getCurPageUsrs();
+
+                    //分页数组
+                    $scope.paginationArr = [];
+                    for (var i = 0; i < $scope.pageCount; i++) {
+                        $scope.paginationArr.push(i);
+                    };
+                })
+            });
+        };
 
 
+        //分页相关
+        $scope.curPageIndex = 0;
+        $scope.perPageCount = 50;
+        $scope.pageCount = 0;
+        $scope.curPageUsrs = [];
+
+        $scope.getCurPageUsrs = function () {
+            var start = $scope.curPageIndex * $scope.perPageCount;
+            var end = start + $scope.perPageCount;
+            end = (end > $scope.usrs.length) ? $scope.usrs.length - 1 : end;
+            $scope.curPageUsrs = $scope.usrs.slice(start, end + 1);
+        };
+
+        $scope.toNextPage = function () {
+            var n = $scope.curPageIndex + 1;
+            if (n > $scope.pageCount) n = $scope.pageCount;
+            $scope.curPageIndex = n;
+            $scope.getCurPageUsrs();
+        }
+
+        $scope.toPrevPage = function () {
+            var n = $scope.curPageIndex - 1;
+            if (n < 0) n = 0;
+            $scope.curPageIndex = n;
+            $scope.getCurPageUsrs();
+        }
+
+        $scope.toPageN = function (n) {
+            $scope.curPageIndex = n;
+            $scope.getCurPageUsrs();
+        }
 
 
+        //读取用户的全部信息
+        $scope.usrDetailsDialogData = {};
+        $scope.getUsrDetails = function (u) {
+            var api = _global.api('acc_admGetUsrDetails');
+            var dat = {
+                id: u.val
+            };
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
+                $scope.usrDetailsDialogData = res.data;
+                res.phone = u.key;
+                res.id = u.id;
+
+                //弹出窗口
+                $mdDialog.show({
+                    contentElement: '#usrDetailsDialog',
+                    parent: angular.element(document.body),
+                    clickOutsideToClose: true
+                });
+            });
+        };
+
+        //修改用户的单个属性弹窗
+        $scope.setUsrAttrDialogData = {};
+        $scope.openSetUsrAttrDialog = function (u) {
+            $scope.setUsrAttrDialogData.usr = {};
+            $scope.setUsrAttrDialogData.usr = {
+                phone: u.key,
+                id: u.val,
+            };
+
+            //弹出窗口
+            $mdDialog.show({
+                contentElement: '#setUsrAttrDialog',
+                parent: angular.element(document.body),
+                clickOutsideToClose: true
+            });
+        };
+
+        //修改用户属性post
+        $scope.setUsrAttr = function () {
+            var api = _global.api('acc_admSetUsrAttr');
+            var dat = {
+                uid: $scope.setUsrAttrDialogData.usr.id,
+                key: $scope.setUsrAttrDialogData.key,
+                val: $scope.setUsrAttrDialogData.val,
+            };
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
+                if (res.code == 1) {
+                    $mdDialog.hide();
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent('修改成功')
+                        .position('top right')
+                        .hideDelay(3000)
+                    );
+                };
+            });
+        };
+
+        $scope.cancelDialog = function () {
+            $mdDialog.hide();
+        };
+
+        //修正背景色
+        $('#curPage').css('background', '#FFF');
 
 
 

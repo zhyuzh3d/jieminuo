@@ -54,7 +54,7 @@
         $scope.getCurCtrlr = function () {
             var url = unescape(location.href);
             var seg = url.match(/\#\/root\#curPageUrl\#@[\S\s]*\#?/g);
-            if (!seg && seg.length > 0) return undefined;
+            if (!seg || seg.length < 0) return undefined;
 
             var cnanme = seg[seg.length - 1].substr(seg[seg.length - 1].indexOf('#@'));
             if (cnanme.length < 2) return '';
