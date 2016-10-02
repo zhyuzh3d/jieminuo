@@ -156,7 +156,7 @@
         $scope.setUsrAttr = function () {
             var api = _global.api('acc_admSetUsrAttr');
             var dat = {
-                uid: $scope.setUsrAttrDialogData.usr.id,
+                id: $scope.setUsrAttrDialogData.usr.id,
                 key: $scope.setUsrAttrDialogData.key,
                 val: $scope.setUsrAttrDialogData.val,
             };
@@ -174,6 +174,40 @@
             });
         };
 
+
+        //移除用户，现弹窗再执行
+        $scope.removeUsr = function (u) {
+            var confirm = $mdDialog.confirm()
+                .title('您确定要移除用户 ' + u.val + '(' + u.key + ')' + '吗?')
+                .textContent('移除后将无法恢复.')
+                .ariaLabel('remove usr')
+                .ok('确定移除')
+                .cancel('取消');
+            $mdDialog.show(confirm).then(function () {
+                var api = _global.api('acc_admRemoveUsr');
+                var dat = {
+                    id: u.val,
+                };
+                $.post(api, dat, function (res) {
+                    console.log('POST', api, dat, res);
+                    if (res.code == 1) {
+                        $mdDialog.hide();
+                        $mdToast.show(
+                            $mdToast.simple()
+                            .textContent('移除成功')
+                            .position('top right')
+                            .hideDelay(3000)
+                        );
+                    };
+                });
+            });
+        };
+
+
+
+
+
+        //关闭任何弹窗
         $scope.cancelDialog = function () {
             $mdDialog.hide();
         };

@@ -36,12 +36,13 @@ _rotr.apis.acc_regByPhone = function () {
         //写入rds数据库usr类pw,phone，并更新ukey:uid
         var mu = _rds.cli.multi();
         mu.hset(_rds.k.map_ukey2uid, ukey, uid);
+        mu.hset(_rds.k.map_uphone2uid, phone, uid);
 
         mu.hset(usrKey, 'id', uid);
         mu.hset(usrKey, 'phone', phone);
         mu.hset(usrKey, 'pw', pw);
         mu.hset(usrKey, 'ukey', ukey);
-        mu.hset(phoneMapKey, phone, uid);
+
         mu.del(codeKey);
         var res = yield _ctnu([mu, 'exec']);
 
@@ -530,7 +531,7 @@ _rotr.apis.acc_admGetUsrDetails = function () {
 
     var co = $co(function* () {
         var uid = yield _fns.getUidByCtx(ctx);
-        if (uid != 1) throw Error('权限验证失败，当前用户无权获取用户列表');
+        if (uid != 1) throw Error('权限验证失败，当前用户无权进行此操作');
 
         var id = ctx.query.id || ctx.request.body.id;
         if (!id) throw Error('没有收到用户id.');
@@ -541,6 +542,7 @@ _rotr.apis.acc_admGetUsrDetails = function () {
 
         var uappkey = _rds.k.usrApps(id);
         var uapps = yield _ctnu([_rds.cli, 'zrange'], uappkey, 0, -1, 'withscores');
+
 
         //返回数据
         ctx.body = __newMsg(1, 'ok', {
@@ -555,6 +557,7 @@ _rotr.apis.acc_admGetUsrDetails = function () {
 
 /**
  * admin，修改单个用户的属性, 只能修改usr-4键的属性
+ * id,key,val
  * @returns {}
  */
 _rotr.apis.acc_admSetUsrAttr = function () {
@@ -562,10 +565,10 @@ _rotr.apis.acc_admSetUsrAttr = function () {
 
     var co = $co(function* () {
         var uid = yield _fns.getUidByCtx(ctx);
-        if (uid != 1) throw Error('权限验证失败，当前用户无权获取用户列表');
+        if (uid != 1) throw Error('权限验证失败，当前用户无权进行此操作');
 
-        var uid = ctx.query.uid || ctx.request.body.uid;
-        if (!uid) throw Error('没有收到uid.');
+        var id = ctx.query.id || ctx.request.body.id;
+        if (!id) throw Error('没有收到目标用户id.');
 
         var key = ctx.query.key || ctx.request.body.key;
         if (!key || key == '') throw Error('没有收到key.');
@@ -574,7 +577,7 @@ _rotr.apis.acc_admSetUsrAttr = function () {
         if (!val) throw Error('没有收到val.');
 
 
-        var usrkey = _rds.k.usr(uid);
+        var usrkey = _rds.k.usr(id);
         var usr = yield _ctnu([_rds.cli, 'hset'], usrkey, key, val);
 
         //返回数据
@@ -583,6 +586,51 @@ _rotr.apis.acc_admSetUsrAttr = function () {
     });
     return co;
 };
+
+/**
+ * admin，移除一个用户，只是从索引里面去掉
+ * _map:usr.phone:usr.id索引，_map:usr.ukey:usr.id索引，_tmp:phoneRstCode-uid键
+ * id
+ * @returns {}
+ */
+_rotr.apis.acc_admRemoveUsr = function () {
+    var ctx = this;
+
+    var co = $co(function* () {
+        var uid = yield _fns.getUidByCtx(ctx);
+        if (uid != 1) throw Error('权限验证失败，当前用户无权进行此操作');
+
+        var id = ctx.query.id || ctx.request.body.id;
+        if (!uid) throw Error('没有收到目标用户id.');
+
+        //获取用户的phone和ukey
+        var theusrkey = _rds.k.usr(id);
+        var thephone = yield _ctnu([_rds.cli, 'hget'], theusrkey, 'phone');
+        var theukey = yield _ctnu([_rds.cli, 'hget'], theusrkey, 'ukey');
+
+        //移除索引和重置密码临时key
+        var mu = _rds.cli.multi();
+
+        var phonemapkey = _rds.k.map_uphone2uid;
+        mu.hdel(phonemapkey, thephone);
+        var ukeymapkey = _rds.k.map_ukey2uid;
+        mu.hdel(ukeymapkey, theukey);
+        var theurstkey = _rds.k.tmp_phoneRstCode(thephone);
+        mu.del(theurstkey, theurstkey);
+
+        var res = yield _ctnu([mu, 'exec']);
+
+        //返回数据
+        ctx.body = __newMsg(1, 'ok', res);
+        return ctx;
+    });
+    return co;
+};
+
+
+
+
+
 
 
 
