@@ -608,7 +608,7 @@ _rotr.apis.acc_admRemoveUsr = function () {
         var thephone = yield _ctnu([_rds.cli, 'hget'], theusrkey, 'phone');
         var theukey = yield _ctnu([_rds.cli, 'hget'], theusrkey, 'ukey');
 
-        //移除索引和重置密码临时key
+        //移除索引和重置密码临时key，将usr-id键设定1个月后过期自动销毁
         var mu = _rds.cli.multi();
 
         var phonemapkey = _rds.k.map_uphone2uid;
@@ -618,6 +618,8 @@ _rotr.apis.acc_admRemoveUsr = function () {
         var theurstkey = _rds.k.tmp_phoneRstCode(thephone);
         mu.del(theurstkey, theurstkey);
 
+        mu.expire(theusrkey, _cfg.dur.month) ;
+
         var res = yield _ctnu([mu, 'exec']);
 
         //返回数据
@@ -626,8 +628,6 @@ _rotr.apis.acc_admRemoveUsr = function () {
     });
     return co;
 };
-
-
 
 
 
