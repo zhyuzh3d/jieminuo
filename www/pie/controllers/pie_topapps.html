@@ -1,10 +1,10 @@
 <script>
-    _fns.addCtrlrJs('pie_history');
+    _fns.addCtrlrJs('pie_topapps');
 
 </script>
 
 <!--控制器界面部分-->
-<div layout layout-align='stretch stretch' id='pie_history' ng-controller='pie_history' class='pie_history' style='width: 100%; height: 100%; overflow:visible;background:#FFF'>
+<div layout layout-align='stretch stretch' id='pie_topapps' ng-controller='pie_topapps' class='pie_topapps' style='width: 100%; height: 100%; overflow:visible;background:#FFF'>
     <style>
         /*内部样式，以控制器名为class开头*/
 
@@ -39,20 +39,7 @@
 
         <!--        关于-->
         <div style="padding:16px">
-            <h1>What's New?(功能升级历史)</h1>
-            <h4>我们的每一步都离不开您的支持，感谢！</h4>
-            <br>
-            <div class="container-fluid" style="padding:0">
-                <div class="panel panel-default" ng-repeat='v in his'>
-                    <div class="panel-heading">
-                        <h4 ng-bind-html='v.title | toTrustHtml'></h4>
-                    </div>
-                    <div class="panel-body">
-                        <div ng-bind-html='v.content | toTrustHtml' style="color:#666"></div>
-                        <div><small class="pull-right" ng-bind='v.time | date:"yyyy-MM-dd HH:mm:ss"' style="color:#AAA"></small></div>
-                    </div>
-                </div>
-            </div>
+            <div>页面建设中，敬请期待</div>
         </div>
 
     </div>

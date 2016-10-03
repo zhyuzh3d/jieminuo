@@ -205,6 +205,7 @@ if (!_pie) var _pie = {};
      */
     _fns.changeCtrlrByHash = function () {
 
+
         //拆解地址栏hash
         var hasharr = unescape(window.location.hash).split('#');
         if (hasharr.length < 4) return false;
@@ -238,7 +239,7 @@ if (!_pie) var _pie = {};
         _fns.applyScope(scope, function () {
             scope[attr] = url;
         })
-        return;
+        return res;
     };
 
 

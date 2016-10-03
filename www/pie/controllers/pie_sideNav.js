@@ -21,12 +21,16 @@
         $scope.name = thisName;
 
         $scope.menus = [{
-            name: '我的首页',
-            icon: 'fa fa-bomb',
+            name: '我创建的APP',
+            icon: 'fa fa-code',
             ctrlr: 'pie_welcome',
         }, {
-            name: '版本历史',
-            icon: 'fa fa-history',
+            name: '热榜TOP10',
+            icon: 'fa fa-trophy',
+            ctrlr: 'pie_topapps',
+        }, {
+            name: 'What\'s New',
+            icon: 'fa fa-bomb',
             ctrlr: 'pie_history',
         }, {
             name: '关于我们',

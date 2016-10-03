@@ -1,6 +1,6 @@
 (function () {
     'use strict';
-    var thisName = 'pie_history';
+    var thisName = 'pie_topapps';
 
     _app.controller(thisName, thisFn);
 
@@ -61,16 +61,6 @@
                 };
             }, 1000);
         });
-
-
-        //版本历史信息
-        $scope.his = [{
-            title: '左侧栏增加【What\'s New】和【关于我们】两个菜单',
-            time: new Date('2016-10-3 15:12'),
-            content: '【What\'s New】列出所有升级的新功能，即版本历史；<br>【关于我们】显示杰米诺课堂的创办理念和我们的各种联系方式'
-         }]
-
-
 
         //end
     }

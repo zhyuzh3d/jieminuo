@@ -100,11 +100,9 @@ var _app = {}; //最高全局变量，angular
         };
 
 
-
-
-
         //跳转到默认起始页控制器
         $(document).ready(function () {
+            var ctrlrName = _cfg.startPage;
             var autohash = _fns.changeCtrlrByHash();
 
             //自动跳转也把控制器计入历史
@@ -113,7 +111,7 @@ var _app = {}; //最高全局变量，angular
                 $rootScope.ctlrHis.push(ctrlrName);
             };
 
-            if (!_fns.changeCtrlrByHash()) {
+            if (!autohash) {
                 $rootScope.gotoCtrlr();
             };
         });
@@ -140,6 +138,7 @@ var _app = {}; //最高全局变量，angular
             };
             $rootScope.leftMenuOpen = $mdSidenav('left').isOpen();
         };
+
     });
 
     _app.controller('appCtrlr', appCtrlr);
@@ -222,7 +221,7 @@ var _app = {}; //最高全局变量，angular
         'halfHide',
         function () {
             return function (str) {
-                if(!str) return undefined;
+                if (!str) return undefined;
                 var shown = Math.ceil(str.length / 2);
                 var startn = Math.floor(shown / 2);
                 var endn = shown - startn;

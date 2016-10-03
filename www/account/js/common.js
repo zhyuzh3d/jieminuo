@@ -204,7 +204,7 @@ if (!_pie) var _pie = {};
         _fns.applyScope(scope, function () {
             scope[attr] = url;
         })
-        return;
+        return res;
     };
 
 
