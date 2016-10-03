@@ -601,7 +601,7 @@ _rotr.apis.acc_admRemoveUsr = function () {
         if (uid != 1) throw Error('权限验证失败，当前用户无权进行此操作');
 
         var id = ctx.query.id || ctx.request.body.id;
-        if (!uid) throw Error('没有收到目标用户id.');
+        if (!id) throw Error('没有收到目标用户id.');
 
         //获取用户的phone和ukey
         var theusrkey = _rds.k.usr(id);

@@ -1,14 +1,14 @@
 <script>
-    _fns.addCtrlrJs('pie_admusrs');
+    _fns.addCtrlrJs('pie_admsms');
 
 </script>
 
 <!--控制器界面部分-->
-<div layout layout-align='stretch stretch' id='pie_admusrs' ng-controller='pie_admusrs' class='pie_admusrs' style='width: 100%; height: 100%; overflow:visible;background:#FFF'>
+<div layout layout-align='stretch stretch' id='pie_admsms' ng-controller='pie_admsms' class='pie_admsms' style='width: 100%; height: 100%; overflow:visible;background:#FFF'>
     <style>
         /*内部样式，以控制器名为class开头*/
 
-        .pie_admusrs .avatar-md {
+        .pie_admsms .avatar-md {
             width: 32px;
             height: 32px;
             border-radius: 32px;
@@ -29,7 +29,8 @@
                 <span class="fa fa-chevron-left fa-lg" ng-show='$root.leftMenuOpen'></span>
                 <span class="fa fa-bars fa-lg" ng-hide='$root.leftMenuOpen'></span>
             </md-button>
-            <md-button class="md-raised md-accent" ng-click='getUsrList()' aria-label='doCreateApp' style='padding:0 16px'>刷新用户列表</md-button>
+            <md-button class="md-raised" ng-class='{true:"md-accent",false:"md-default"}[mode=="reg"]' ng-click='setMode("reg")' aria-label='a'>注册验证</md-button>
+            <md-button class="md-raised " ng-class='{true:"md-accent",false:"md-default"}[mode=="rst"]' ng-click='setMode("rst")' aria-label='a'>重置验证</md-button>
 
             <div class="dropdown pull-right" ng-show='hasLogin' style="margin-top:8px">
                 <button class="dropdown-toggle" id="ddmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="background:none;border:none">
@@ -49,7 +50,7 @@
         <!--        列表-->
         <div>
             <div>
-                <span>共计用户{{usrs.length}}人；当前第{{curPageIndex}}页</span>
+                <span>共{{listData.length}}个；当前第{{curPageIndex}}页</span>
             </div>
             <nav class="pull-right">
                 <ul class="pagination">
@@ -64,22 +65,16 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>电话</th>
-                        <th>用户ID</th>
+                        <th>key</th>
                         <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat='u in curPageUsrs'>
+                    <tr ng-repeat='dt in curPageData'>
                         <td ng-bind='$index'></td>
-                        <td ng-bind='u.key | halfHide'></td>
-                        <td ng-bind='u.val'></td>
+                        <td ng-bind='dt'></td>
                         <td>
-                            <a href="#" ng-click='getUsrDetails(u)'>详细</a>
-                            <span>&nbsp;</span>
-                            <a href="#" ng-click='openSetUsrAttrDialog(u)'>修改</a>
-                            <span>&nbsp;</span>
-                            <a href="#" ng-click='removeUsr(u)'>移除</a>
+                            <a href="#" ng-click='deleteKey(dt)'>删除</a>
                         </td>
                     </tr>
                 </tbody>
@@ -96,48 +91,6 @@
             </nav>
 
         </div>
-
-
-        <!--        弹窗-->
-
-        <!--      详细信息弹窗-->
-        <div style="visibility: hidden">
-            <div class="md-dialog-container" id="usrDetailsDialog">
-                <md-dialog layout-padding style='text-align:center;padding:24px;max-width:800px'>
-                    <pre ng-bind='usrDetailsDialogData | json' style="text-align:left">
-                    </pre>
-                </md-dialog>
-            </div>
-        </div>
-
-        <!--      修改用户属性信息弹窗-->
-        <div style="visibility: hidden">
-            <div class="md-dialog-container" id="setUsrAttrDialog">
-                <md-dialog layout-padding style='text-align:center;padding:24px;max-width:400px'>
-                    <h4>ID{{setUsrAttrDialogData.usr.id}}</h4>
-                    <div>手机{{setUsrAttrDialogData.usr.phone | halfHide}}</div>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-addon">key</div>
-                            <input class="form-control" type="text" ng-model='setUsrAttrDialogData.key'>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-addon">val</div>
-                            <input class="form-control" type="text" ng-model='setUsrAttrDialogData.val'>
-                        </div>
-                    </div>
-                    <div style="margin-top:1rem">
-                        <md-button class="md-raised md-primary btn-lg" ng-click='setUsrAttr()' style='width:180px;color:#FFF'>确定创建</md-button>
-                        <md-button class="md-raised md-default btn-lg" ng-click='cancelDialog()'>取消</md-button>
-                    </div>
-
-                </md-dialog>
-            </div>
-        </div>
-
-
 
     </div>
 

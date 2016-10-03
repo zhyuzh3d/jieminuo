@@ -24,12 +24,28 @@
             name: '我的首页',
             icon: 'fa fa-bomb',
             ctrlr: 'pie_welcome',
+        }, {
+            name: '版本历史',
+            icon: 'fa fa-history',
+            ctrlr: 'pie_history',
+        }, {
+            name: '关于我们',
+            icon: 'fa fa-smile-o',
+            ctrlr: 'pie_about',
         }];
 
         $scope.adminMenus = [{
             name: '用户管理',
-            icon: 'fa fa-adn',
+            icon: 'fa fa-user',
             ctrlr: 'pie_admusrs',
+        }, {
+            name: '短信验证管理',
+            icon: 'fa fa-tty',
+            ctrlr: 'pie_admsms',
+        }, {
+            name: 'RDS数据库',
+            icon: 'fa fa-database',
+            ctrlr: 'pie_admrds',
         }];
 
         $scope.goHome = function () {

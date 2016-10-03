@@ -1,0 +1,79 @@
+<script>
+    _fns.addCtrlrJs('pie_admrds');
+
+</script>
+
+<!--控制器界面部分-->
+<div layout layout-align='stretch stretch' id='pie_admrds' ng-controller='pie_admrds' class='pie_admrds' style='width: 100%; height: 100%; overflow:visible;background:#FFF'>
+    <style>
+        /*内部样式，以控制器名为class开头*/
+
+        .pie_admrds .avatar-md {
+            width: 32px;
+            height: 32px;
+            border-radius: 32px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+    </style>
+    <!--控制器界面部分-->
+    <div layout-padding style="width:100%">
+        <!--        顶部-->
+        <div>
+            <md-button hide-gt-sm class="md-icon-button" ng-click="$root.tagLeftMenu()" style='margin-left:0' aria-label='tagleft'>
+                <span class="fa fa-bars fa-lg"></span>
+            </md-button>
+            <md-button id='leftnavbtn' class="md-icon-button hidden-xs" ng-click="$root.tagLeftMenu()" style='margin-left:0;color:#AAA' aria-label='tagleft' data-toggle="tooltip" data-placement="bottom" title="显示／隐藏左侧菜单栏">
+                <span class="fa fa-chevron-left fa-lg" ng-show='$root.leftMenuOpen'></span>
+                <span class="fa fa-bars fa-lg" ng-hide='$root.leftMenuOpen'></span>
+            </md-button>
+
+
+            <div class="dropdown pull-right" ng-show='hasLogin' style="margin-top:8px">
+                <button class="dropdown-toggle" id="ddmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="background:none;border:none">
+                    <span>
+                        <img class='avatar-md' ng-src='{{myUsrInfo.avatar?myUsrInfo.avatar+"-avatar32":""}}' />
+                    </span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="ddmenu1">
+                    <li class="btn" ng-click='gotoProfile()' style="width:100%">资料设置</li>
+                    <md-divider></md-divider>
+                    <li class="btn" ng-click='logout()' style="width:100%">退出</li>
+                </ul>
+            </div>
+        </div>
+
+        <div>
+            <div class="form-group" style="max-width:500px">
+                <div class="input-group">
+                    <div class="input-group-addon">cmd</div>
+                    <input class="form-control" type="text" ng-model='cmd' placeholder='["hgetall","usr-1"],务必双引号'>
+                </div>
+            </div>
+            <md-button class="md-raised md-accent"  ng-click='runCmd()' aria-label='a' style='margin:0 0 8px 0'>执行</md-button>
+        </div>
+        <!--        列表-->
+        <div>
+            <span>返回结果</span>
+            <md-button class="md-primary"  ng-click='listData=undefined' aria-label='a' style='margin:0 0 8px 0'>CLEAR</md-button>
+            <pre ng-bind='listData | json'></pre>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<!---->

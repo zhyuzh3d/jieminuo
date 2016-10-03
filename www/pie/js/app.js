@@ -123,7 +123,6 @@ var _app = {}; //最高全局变量，angular
 
         //显示左侧栏,接收true／false
         $rootScope.tagLeftMenu = function (open) {
-            console.log('>>>>open', open);
             var isopen = $rootScope.leftMenuOpen = $mdSidenav('left').isOpen();
             if (open === undefined) {
                 $mdSidenav('left').toggle();

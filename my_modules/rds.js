@@ -74,6 +74,50 @@ _rds.autoBakId = setTimeout(function () {
 console.log(">_rds:autoBak is running,id is rds.autoBakId ...");
 
 
+/**
+ * admin，直接远程运行命令，接收命令一定为数组模式，不超过5个参数，并返回结果，
+ * @returns {} 命令的结果
+ */
+_rotr.apis.rds_admRunCmd = function () {
+    var ctx = this;
+
+    var co = $co(function* () {
+        var uid = yield _fns.getUidByCtx(ctx);
+        if (uid != 1) throw Error('权限验证失败，当前用户无权进行此操作');
+
+        var cmd = ctx.query.cmd || ctx.request.body.cmd;
+        if (!cmd) throw Error('没有收到cmd.');
+
+        var paras = JSON.safeParse(cmd);
+        if (paras.constructor != Array || paras.length == 0) throw Error('参数格式必须是数组.');
+
+        //如果包含flush则不操作，直接返回成功
+        if (paras[0].toLowerCase().indexOf('flush') != -1) {
+            ctx.body = __newMsg(1, 'ok', '操作成功!');
+            return ctx;
+        };
+
+        //执行操作
+        var res;
+        if (paras.length == 1) {
+            res = yield _ctnu([_rds.cli, paras[0]]);
+        } else if (paras.length == 2) {
+            res = yield _ctnu([_rds.cli, paras[0]], paras[1]);
+        } else if (paras.length == 3) {
+            res = yield _ctnu([_rds.cli, paras[0]], paras[1], paras[2]);
+        } else if (paras.length == 4) {
+            res = yield _ctnu([_rds.cli, paras[0]], paras[1], paras[2], paras[3]);
+        } else if (paras.length == 5) {
+            res = yield _ctnu([_rds.cli, paras[0]], paras[1], paras[2], paras[3], paras[4]);
+        };
+
+        //返回数据
+        ctx.body = __newMsg(1, 'ok', res);
+        return ctx;
+    });
+    return co;
+};
+
 
 
 

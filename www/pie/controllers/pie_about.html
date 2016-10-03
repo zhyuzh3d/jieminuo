@@ -1,0 +1,69 @@
+<script>
+    _fns.addCtrlrJs('pie_about');
+
+</script>
+
+<!--控制器界面部分-->
+<div layout layout-align='stretch stretch' id='pie_about' ng-controller='pie_about' class='pie_about' style='width: 100%; height: 100%; overflow:visible;background:#FFF'>
+    <style>
+        /*内部样式，以控制器名为class开头*/
+
+    </style>
+    <!--控制器界面部分-->
+    <div layout-padding style="width:100%">
+        <!--        顶部-->
+        <div>
+            <md-button hide-gt-sm class="md-icon-button" ng-click="$root.tagLeftMenu()" style='margin-left:0' aria-label='tagleft'>
+                <span class="fa fa-bars fa-lg"></span>
+            </md-button>
+            <md-button id='leftnavbtn' class="md-icon-button hidden-xs" ng-click="$root.tagLeftMenu()" style='margin-left:0;color:#AAA' aria-label='tagleft' data-toggle="tooltip" data-placement="bottom" title="显示／隐藏左侧菜单栏">
+                <span class="fa fa-chevron-left fa-lg" ng-show='$root.leftMenuOpen'></span>
+                <span class="fa fa-bars fa-lg" ng-hide='$root.leftMenuOpen'></span>
+            </md-button>
+
+
+            <div class="dropdown pull-right" ng-show='hasLogin' style="margin-top:8px">
+                <button class="dropdown-toggle" id="ddmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="background:none;border:none">
+                    <span>
+                        <img class='avatar-md' ng-src='{{myUsrInfo.avatar?myUsrInfo.avatar+"-avatar32":""}}' />
+                    </span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="ddmenu1">
+                    <li class="btn" ng-click='gotoProfile()' style="width:100%">资料设置</li>
+                    <md-divider></md-divider>
+                    <li class="btn" ng-click='logout()' style="width:100%">退出</li>
+                </ul>
+            </div>
+        </div>
+
+        <!--        关于-->
+        <div style="padding:16px">
+            <h1>关于杰米诺课堂</h1>
+            <h2>人人都是工程师，真正零基础学编程</h2>
+            <h3>重新定义入门零基础：会开机，会上网，会打字</h3>
+            <h4>学一点编程，多一些理性，懂一种智慧</h4>
+            <br>
+            <hr>
+            <h4>联系我们</h4>
+            <h5>学习讨论QQ群:200597620</h5>
+            <h5>意见反馈论坛:<a href="http://qgc.qq.com/315016908">http://qgc.qq.com/315016908</a></h5>
+            <h5>技术支持QQ:286052520</h5>
+            <h5>商业服务QQ:1537316513</h5>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<!---->
