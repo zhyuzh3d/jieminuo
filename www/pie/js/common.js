@@ -749,7 +749,9 @@ if (!_pie) var _pie = {};
 })();
 
 
-//把一个对象转化为数组,使用usekv保留原有属性
+/*把一个对象转化为数组{key1:val1,key2:val2,...} =>[val1,val2,...]
+* 使用usekv保留原有属性转为[{key:xx,val:xx},...],默认为假
+*/
 _fns.obj2arr = function (obj, usekv) {
     var arr = [];
     for (var attr in obj) {
@@ -765,15 +767,39 @@ _fns.obj2arr = function (obj, usekv) {
     return arr;
 };
 
-//把一个数组转化为对象
-_fns.arr2obj = function (arr) {
-    var obj = {};
-    if (arr.constructor != Array) return obj;
-    for (var i = 0; i < arr.length; i++) {
-        obj[String(i)] = arr[i];
+
+
+/**
+ * 将一个数组转化为对象
+ * @param   {array}   arr    需要转换的数组
+ * @param   {boolean} keyval 是否是[key,val,key,val]模式,默认为真,keyobj转换为'key':{'key':key,'val':val}
+ * @returns {Object}   转换结果，可能是空对象
+ */
+
+_fns.arr2obj = function (arr, keyval, keyobj) {
+    if (keyval === undefined) keyval = true;
+    var res = {};
+    if (!arr || !Array.isArray(arr)) return res;
+    if (!keyval) {
+        for (var i = 0; i < arr.length; i++) {
+            res[String(i)] = arr[i];
+        };
+    } else {
+        for (var i = 0; i < arr.length; i += 2) {
+            if ((i + 1) < arr.length) {
+                if (keyobj) {
+                    res[String(arr[i])] = {
+                        key: String(arr[i]),
+                        val: arr[i + 1]
+                    };
+                } else {
+                    res[String(arr[i])] = arr[i + 1];
+                }
+            };
+        };
     };
-    return obj;
-};
+    return res;
+}
 
 
 

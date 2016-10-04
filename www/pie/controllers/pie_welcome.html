@@ -76,8 +76,6 @@
                     <li class="btn" ng-click='logout()' style="width:100%">退出</li>
                 </ul>
             </div>
-
-
         </div>
         <div layout layout-wrap class='container-fluid'>
             <div class='col-xs-12 col-sm-6 col-md-4 col-lg-2' ng-repeat='item in myApps.apps' style='padding:0.5rem'>
@@ -113,6 +111,10 @@
                                 </p>
                             </md-button>
                             <md-menu-content>
+                                <md-button flex='none' class="md-default" ng-click='joinLadder(item)' aria-label='a' style='color:#888;padding:6px 40px;margin:0'>
+                                    <span class='fa fa-trophy'></span>
+                                    <span>打榜</span>
+                                </md-button>
                                 <md-button flex='none' class="md-default" ng-click='openApp(item.key)' aria-label='a' style='color:#888;padding:6px 40px;margin:0'>
                                     <span class='fa fa-rocket'></span>
                                     <span>运行</span>

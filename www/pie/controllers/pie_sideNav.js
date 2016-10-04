@@ -46,6 +46,10 @@
             name: '短信验证管理',
             icon: 'fa fa-tty',
             ctrlr: 'pie_admsms',
+        },{
+            name: '榜单管理',
+            icon: 'fa fa-trophy',
+            ctrlr: 'pie_admladder',
         }, {
             name: 'RDS数据库',
             icon: 'fa fa-database',

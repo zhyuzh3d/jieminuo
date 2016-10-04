@@ -16,6 +16,13 @@
         console.log(thisName + '.js is loading...');
         _fns.initCtrlr($scope, $element, thisName, false);
 
+
+
+        var a = 0;
+        console.log('>>>>nil==', a == null);
+        console.log('>>>>nil!=', a != null);
+        console.log('>>>>nil!==', a !== null);
+
         //锚点
         $scope.goto = function (key) {
             $location.hash(key);
@@ -140,8 +147,6 @@
 
 
         //------------------------
-
-
 
 
 

@@ -10,44 +10,53 @@ var cli = _rds.cli = $redis.createClient(6379, 'localhost', {});
 
 //全部key列表,所有映射map_开头,所有临时tmp_开头,所有对象直接写
 _rds.k = {
-    //应用,hash
-    app: function (id) {
+
+    app: function (id) { //应用键,hash
         return 'app-' + id;
     },
 
-    //用户的app列表,zsort,{appName:appid}
-    usrApps: function (uid) {
+    usrApps: function (uid) { //用户的app列表,zsort,{appName:appid}
         return 'uApps-' + uid;
     },
 
+    map_cls2id: '_map:cls:id', //存储类的自增id,hash
 
+    map_uphone2uid: '_map:usr.phone:usr.id', //用户手机号码到用户id映射,hash
 
-    //存储类的自增id,hash
-    map_cls2id: '_map:cls:id',
+    map_ukey2uid: '_map:usr.ukey:usr.id', //用户ukey到用户id的映射,hash
 
-    //用户手机号码到用户id映射,hash
-    map_uphone2uid: '_map:usr.phone:usr.id',
-
-    //用户ukey到用户id的映射,hash
-    map_ukey2uid: '_map:usr.ukey:usr.id',
-
-    //用户,hash
-    usr: function (id) {
+    usr: function (id) { //用户键,hash
         return 'usr-' + id;
     },
 
-    //向用户发送的手机注册验证码,string
-    tmp_phoneRegCode: function (phone) {
+    tmp_phoneRegCode: function (phone) { //向用户发送的手机注册验证码,string
         return '_tmp:phoneRegCode-' + phone;
     },
-    //向用户发送的手机注册验证码,string
-    tmp_phoneRstCode: function (phone) {
+
+    tmp_phoneRstCode: function (phone) { //向用户发送的手机注册验证码,string
         return '_tmp:phoneRstCode-' + phone;
     },
+
+    //ladder排行榜相关
+    ladderShow: '_map:ldrShow:app.id:show', //ladder:预备榜展示次数，自动叠加,zsort
+    ladderJoinTime: '_map:ldrJoinTime:app.id:ts' ,//ladder:加入展示榜的时间记录，用于以后清理show榜,zsort
+    ladderUsrShow: '_map:ldrUShow:app.id:show', //ladder:预备榜有效展示次数，每用户不重复叠加,zsort
+    ladderHit: '_map:ldrrHit:app.id:hit', //ladder:预备榜击中次数，每用户1次,zsort
+    ladderShowHis: '_map:ldrShowHis' ,//ladder:预备榜展示历史，成员app.id-usr.id格式，set
+    ladderHitHis: '_map:ldrHitHis' ,//ladder:预备榜击中历史，成员app.id-usr.id格式，set
+    ladderWeight: '_map:ldrWei:app.id:wei', //ladder:排行榜权重记录，超过100次开始计算，zsort
+
 };
 
 
-//先重命名文件，然后启动bgsave命令
+
+
+
+
+
+
+
+//备份函数，先重命名文件，然后启动bgsave命令
 _rds.saveDbBak = function (bak) {
     var ts = (new Date()).getTime();
     if (bak == true || bak === undefined) {

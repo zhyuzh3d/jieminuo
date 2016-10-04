@@ -52,7 +52,7 @@
                         });
 
                         $scope.myApps = res.data;
-                        $scope.myApps.apps = _fns.arr2obj(arr);
+                        $scope.myApps.apps = _fns.arr2obj(arr,false);
                     });
                 } else {
                     //提示错误
@@ -342,7 +342,6 @@
             var css = {
                 'background-image': 'url(' + url + ')',
             };
-
             return css;
         };
 
@@ -351,7 +350,6 @@
             var css = {
                 'background-color': _global.myUsrInfo.color,
             };
-
             return css;
         };
 
@@ -425,6 +423,37 @@
                 });
             });
         };
+
+
+
+        //加入排行榜
+        $scope.joinLadder = function (item) {
+            var api = _global.api('pie_ladderJoin');
+            var dat = {
+                appId: item.val,
+            }
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
+                if (res.code == 1) {
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent('恭喜，您的APP已经成功加入排行榜！')
+                        .position('top right')
+                        .hideDelay(3000)
+                    );
+                } else {
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent('加入排行榜失败:' + res.text)
+                        .position('top right')
+                        .hideDelay(3000)
+                    );
+                };
+            });
+        };
+
+
+
 
         //初始化bootstrap的tooltip工具
         $(document).ready(function () {

@@ -1,0 +1,117 @@
+<script>
+    _fns.addCtrlrJs('pie_admladder');
+
+</script>
+
+<!--控制器界面部分-->
+<div layout layout-align='stretch stretch' id='pie_admladder' ng-controller='pie_admladder' class='pie_admladder' style='width: 100%; height: 100%; overflow:visible;background:#FFF'>
+    <style>
+        /*内部样式，以控制器名为class开头*/
+
+    </style>
+    <!--控制器界面部分-->
+    <div layout-padding style="width:100%">
+        <!--        顶部-->
+        <div>
+            <md-button hide-gt-sm class="md-icon-button" ng-click="$root.tagLeftMenu()" style='margin-left:0' aria-label='tagleft'>
+                <span class="fa fa-bars fa-lg"></span>
+            </md-button>
+            <md-button id='leftnavbtn' class="md-icon-button hidden-xs" ng-click="$root.tagLeftMenu()" style='margin-left:0;color:#AAA' aria-label='tagleft' data-toggle="tooltip" data-placement="bottom" title="显示／隐藏左侧菜单栏">
+                <span class="fa fa-chevron-left fa-lg" ng-show='$root.leftMenuOpen'></span>
+                <span class="fa fa-bars fa-lg" ng-hide='$root.leftMenuOpen'></span>
+            </md-button>
+            <md-button class="md-raised md-primary"  ng-click='getListData()' aria-label='a'>刷新列表</md-button>
+
+            <div class="dropdown pull-right" ng-show='hasLogin' style="margin-top:8px">
+                <button class="dropdown-toggle" id="ddmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="background:none;border:none">
+                    <span>
+                        <img class='avatar-md' ng-src='{{myUsrInfo.avatar?myUsrInfo.avatar+"-avatar32":""}}' />
+                    </span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="ddmenu1">
+                    <li class="btn" ng-click='gotoProfile()' style="width:100%">资料设置</li>
+                    <md-divider></md-divider>
+                    <li class="btn" ng-click='logout()' style="width:100%">退出</li>
+                </ul>
+            </div>
+        </div>
+
+        <!--        列表-->
+        <div>
+            <div>
+                <span>共{{listData.length}}个；当前第{{curPageIndex}}页</span>
+            </div>
+            <nav class="pull-right">
+                <ul class="pagination">
+                    <li><a href="#" ng-click='toPrevPage()'>&laquo;</a></li>
+                    <li ng-repeat='n in paginationArr' ng-click='toPageN(n)'>
+                        <a href="#" ng-bind='n'></a>
+                    </li>
+                    <li><a href="#" ng-click='toNextPage()'>&raquo;</a></li>
+                </ul>
+            </nav>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>appid</th>
+                        <th>joinTime</th>
+                        <th>show</th>
+                        <th>ushow</th>
+                        <th>weight</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat='dt in curPageData'>
+                        <td ng-bind='$index'></td>
+                        <td ng-bind='dt.key'></td>
+                        <td ng-bind='dt.joinTime | date:"yyyy/MM/dd HH:mm"'></td>
+                        <td ng-bind='dt.show'></td>
+                        <td ng-bind='dt.ushow'></td>
+                        <td ng-bind='dt.weight'></td>
+                        <td>
+                            <a href="#" ng-click='showAppDetails(dt)'>详细</a>
+                            <a href="#" ng-click='removeApp(dt)'>移除</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <nav>
+                <ul class="pagination">
+                    <li><a href="#" ng-click='toPrevPage()'>&laquo;</a></li>
+                    <li ng-repeat='n in paginationArr' ng-click='toPageN(n)'>
+                        <a href="#" ng-bind='n'></a>
+                    </li>
+                    <li><a href="#" ng-click='toNextPage()'>&raquo;</a></li>
+
+                </ul>
+            </nav>
+        </div>
+
+        <!--      详细信息弹窗-->
+        <div style="visibility: hidden">
+            <div class="md-dialog-container" id="jsonDialog">
+                <md-dialog layout-padding style='text-align:center;padding:24px;max-width:800px'>
+                    <pre ng-bind='jsonDialogData | json' style="text-align:left">
+                    </pre>
+                </md-dialog>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<!---->

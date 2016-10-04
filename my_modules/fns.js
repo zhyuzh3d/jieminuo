@@ -245,7 +245,7 @@ _fns.getUidByCtx = function (ctx) {
 };
 
 /**
- * 讲一个数组转化为对象
+ * 将一个数组转化为对象
  * @param   {array}   arr    需要转换的数组
  * @param   {boolean} keyval 是否是[key,val,key,val]模式,默认为真,keyobj转换为'key':{'key':key,'val':val}
  * @returns {Object}   转换结果，可能是空对象
