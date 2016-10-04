@@ -46,8 +46,8 @@
                         <md-card-title class="elips" style='padding:0;overflow:hidden;position:relative'>
                             <div style="position:absolute;width:100%;height:100%;background-size:cover;opacity:0.4;border-radius: 4px 4px 0 0" ng-style='genCardBg2(item.val)'></div>
                             <div style="position:absolute;width:100%;height:100%;background-size:cover;opacity:0.4;border-radius: 4px 4px 0 0" ng-style='genCardBg(item.id)'></div>
-                            <md-card-title-text class="elips" ng-click='openApp(item)' style='margin:16px;z-index:6'>
-                                <div class="md-headline elips" style="cursor:pointer;">
+                            <md-card-title-text class="elips" style='margin:16px;z-index:6'>
+                                <div class="md-headline elips" ng-click='openApp(item)' style="cursor:pointer;">
                                     <span class="md-headline elips" ng-bind='item.alias' style='color:#000;font-size:16px'></span>
                                 </div>
                                 <div class="md-subhead elips" ng-click='likeApp(item)' style="cursor:pointer;color:#000;opacity:0.5;font-size:10px">
