@@ -1,6 +1,6 @@
 (function () {
     'use strict';
-    var thisName = 'pie_topapps';
+    var thisName = 'pie_ladder';
 
     _app.controller(thisName, thisFn);
 

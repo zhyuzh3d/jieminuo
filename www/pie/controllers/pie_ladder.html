@@ -1,10 +1,10 @@
 <script>
-    _fns.addCtrlrJs('pie_topapps');
+    _fns.addCtrlrJs('pie_ladder');
 
 </script>
 
 <!--控制器界面部分-->
-<div layout layout-align='stretch stretch' id='pie_topapps' ng-controller='pie_topapps' class='pie_topapps' style='width: 100%; height: 100%; overflow:visible;background:#FFF'>
+<div layout layout-align='stretch stretch' id='pie_ladder' ng-controller='pie_ladder' class='pie_ladder' style='width: 100%; height: 100%; overflow:visible;background:#FFF'>
     <style>
         /*内部样式，以控制器名为class开头*/
 
@@ -41,7 +41,7 @@
         <div style="padding:16px">
             <div class='md-button' style="margin-left:20px;color:#888" ng-click='showAppsTip()' style='cursor:pointer'>
                 <span>随机推荐</span>
-                <span class='fa fa-question-circle-o fa-lg' ></span>
+                <span class='fa fa-question-circle-o fa-lg'></span>
             </div>
             <div layout layout-wrap class='container-fluid'>
                 <div class='col-xs-12 col-sm-6 col-md-4 col-lg-2' ng-repeat='item in showApps' style='padding:0.5rem'>
@@ -82,8 +82,9 @@
         <div style="padding:16px">
             <div class='md-button' style="margin-left:20px;color:#888" ng-click='topAppsTip()' style='cursor:pointer'>
                 <span>TOP排行榜</span>
-                <span class='fa fa-question-circle-o fa-lg' ></span>
+                <span class='fa fa-question-circle-o fa-lg'></span>
             </div>
+            <div style="text-align:center" ng-show='topApps.length<1'>～这里空空如也，等你来打榜～</div>
             <div layout layout-wrap class='container-fluid'>
                 <div class='col-xs-12 col-sm-6 col-md-4 col-lg-2' ng-repeat='item in topApps' style='padding:0.5rem'>
                     <md-card md-theme="default" md-theme-watch style='margin:0;'>

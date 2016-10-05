@@ -27,7 +27,7 @@
         }, {
             name: 'TOP排行榜',
             icon: 'fa fa-trophy',
-            ctrlr: 'pie_topapps',
+            ctrlr: 'pie_ladder',
         }, {
             name: 'What\'s New',
             icon: 'fa fa-bomb',
