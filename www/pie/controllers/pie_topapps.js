@@ -68,7 +68,7 @@
             var count = 1;
             if ($mdMedia("gt-xs")) count = 2;
             if ($mdMedia("gt-sm")) count = 3;
-            if ($mdMedia("gt-md")) count = 3;
+            if ($mdMedia("gt-md")) count = 6;
 
             var dat = {
                 count: count - 1,
@@ -99,7 +99,7 @@
             var count = 1;
             if ($mdMedia("gt-xs")) count = 2;
             if ($mdMedia("gt-sm")) count = 3;
-            if ($mdMedia("gt-md")) count = 3;
+            if ($mdMedia("gt-md")) count = 6;
 
 
             var dat = {
@@ -110,6 +110,9 @@
                 if (res.code == 1) {
                     _fns.applyScope($scope, function () {
                         $scope.topApps = res.data;
+                        $scope.topApps.sort(function (a, b) {
+                            return b.weight - a.weight;
+                        });
                     });
                 } else {
                     $mdToast.show(
@@ -194,7 +197,7 @@
 
         //显示推荐规则
         $scope.showAppsTip = function () {
-            $scope.textDialogData = '推荐规则\n任何参加【打榜】的APP都有均等的推荐机会\n每人对每个APP都只能点赞一次\n推荐100次之后才有机会进入TOP排行榜\nTOP榜排名关键在于点赞数和推荐次数的比例';
+            $scope.textDialogData = '推荐规则\n任何参加【打榜】的APP都有均等的推荐机会\n每人对每个APP都【只能点赞一次】\n推荐【100次】之后才有机会进入TOP排行榜\nTOP榜排名关键在于【点赞数】和【推荐次数】的比例';
 
             //弹出窗口
             $mdDialog.show({
@@ -206,7 +209,7 @@
 
         //显示推荐规则
         $scope.topAppsTip = function () {
-            $scope.textDialogData = '排行规则\nAPP被推荐100次之后才会进入TOP榜排名计算\n排名为完全计算机算法排行，无人工干预\nTOP榜排名关键在于点赞数和推荐次数的比例';
+            $scope.textDialogData = '排行规则\n打榜APP被推荐【100次】之后才会进入TOP榜排名计算\n排名为完全计算机算法排行，【无人工】干预\nTOP榜排名关键在于【点赞数】和【推荐次数】的比例';
 
             //弹出窗口
             $mdDialog.show({

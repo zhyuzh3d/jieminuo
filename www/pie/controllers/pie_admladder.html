@@ -72,7 +72,7 @@
                         <td ng-bind='dt.show'></td>
                         <td ng-bind='dt.hit'></td>
                         <td ng-bind='dt.ushow'></td>
-                        <td ng-bind='dt.weight'></td>
+                        <td ng-bind='dt.weight | limitTo:4'></td>
                         <td>
                             <a href="#" ng-click='showAppDetails(dt)'>详细</a>
                             <a href="#" ng-click='removeApp(dt)'>移除</a>
