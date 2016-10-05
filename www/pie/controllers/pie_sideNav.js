@@ -25,7 +25,7 @@
             icon: 'fa fa-code',
             ctrlr: 'pie_welcome',
         }, {
-            name: '热榜TOP10',
+            name: '热榜TOP10(开发中)',
             icon: 'fa fa-trophy',
             ctrlr: 'pie_topapps',
         }, {

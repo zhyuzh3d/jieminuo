@@ -39,7 +39,10 @@
 
         <!--        showapp列表-->
         <div style="padding:16px">
-            <h5 style="margin-left:20px;color:#888">推荐APP(随机)</h5>
+            <div class='md-button' style="margin-left:20px;color:#888" ng-click='showAppsTip()' style='cursor:pointer'>
+                <span>推荐APP(随机)</span>
+                <span class='fa fa-question-circle-o fa-lg' ></span>
+            </div>
             <div layout layout-wrap class='container-fluid'>
                 <div class='col-xs-12 col-sm-6 col-md-4 col-lg-2' ng-repeat='item in showApps' style='padding:0.5rem'>
                     <md-card md-theme="default" md-theme-watch style='margin:0;'>
@@ -74,6 +77,61 @@
                 </div>
             </div>
         </div>
+
+        <!--        topapp列表-->
+        <div style="padding:16px">
+            <div class='md-button' style="margin-left:20px;color:#888" ng-click='topAppsTip()' style='cursor:pointer'>
+                <span>TOP排行榜</span>
+                <span class='fa fa-question-circle-o fa-lg' ></span>
+            </div>
+            <div layout layout-wrap class='container-fluid'>
+                <div class='col-xs-12 col-sm-6 col-md-4 col-lg-2' ng-repeat='item in topApps' style='padding:0.5rem'>
+                    <md-card md-theme="default" md-theme-watch style='margin:0;'>
+                        <md-card-title class="elips" style='padding:0;overflow:hidden;position:relative'>
+                            <div style="position:absolute;width:100%;height:100%;background-size:cover;opacity:0.4;border-radius: 4px 4px 0 0" ng-style='genCardBg2(item.val)'></div>
+                            <div style="position:absolute;width:100%;height:100%;background-size:cover;opacity:0.4;border-radius: 4px 4px 0 0" ng-style='genCardBg(item.id)'></div>
+                            <md-card-title-text class="elips" style='margin:16px;z-index:6'>
+                                <div class="md-headline elips" ng-click='openApp(item)' style="cursor:pointer;">
+                                    <span class="md-headline elips" ng-bind='item.alias' style='color:#000;font-size:16px'></span>
+                                </div>
+                                <div class="md-subhead elips" ng-click='likeApp(item)' style="cursor:pointer;color:#000;opacity:0.5;font-size:10px">
+                                    <span>No.</span>
+                                    <span ng-bind='$index+1'></span>
+                                    <span class='fa fa-thumbs-up'></span>
+                                    <span ng-bind='{{item.hit?item.hit:0}}'></span>
+                                </div>
+                            </md-card-title-text>
+                        </md-card-title>
+
+
+                        <!--   下拉菜单-->
+                        <md-card-actions layout-wrap layout="row" layout-align="end center" style='color:#AAA'>
+                            <md-button flex='none' class="md-icon-button itbtn md-primary" ng-click='openApp(item)' aria-label='a' style='margin:0' data-toggle="tooltip" data-placement="bottom" title="运行App主页">
+                                <span class='fa fa-rocket'></span>
+                            </md-button>
+                            <md-button flex='none' class="md-icon-button itbtn md-primary" ng-show='item.hashit' ng-click='likeApp(item)' aria-label='a' style='margin:0' data-toggle="tooltip" data-placement="bottom" title="好就给它投一票！">
+                                <span class='fa fa-thumbs-up'></span>
+                            </md-button>
+                            <md-button flex='none' class="md-icon-button itbtn  md-default" ng-hide='item.hashit' aria-label='a' style='margin:0' data-toggle="tooltip" data-placement="bottom" ng-click='likeApp(item)' title="谢谢你的支持！">
+                                <span class='fa fa-thumbs-up'></span>
+                            </md-button>
+                        </md-card-actions>
+                    </md-card>
+                </div>
+            </div>
+        </div>
+
+        <!--      详细信息弹窗-->
+        <div style="visibility: hidden">
+            <div class="md-dialog-container" id="textDialog">
+                <md-dialog layout-padding style='text-align:center;padding:24px;max-width:800px'>
+                    <pre ng-bind='textDialogData' style="text-align:left;font-size:16px">
+                    </pre>
+                </md-dialog>
+            </div>
+        </div>
+
+
 
     </div>
 

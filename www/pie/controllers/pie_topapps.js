@@ -32,6 +32,8 @@
             $scope.$apply(function () {
                 $scope.myUsrInfo = _global.myUsrInfo;
                 $scope.hasLogin = _global.hasLogin;
+                $scope.getShowApps();
+                $scope.getTopApps();
             });
         }, function () {
             return _global.hasLogin;
@@ -57,11 +59,19 @@
             }, 1000);
         });
 
+
         //从show读取n个推荐app,实际个数为n+1;
         $scope.getShowApps = function () {
             var api = _global.api('pie_ladderGetShowApps');
+
+            //自动根据页面设定读取showapp数量
+            var count = 1;
+            if ($mdMedia("gt-xs")) count = 2;
+            if ($mdMedia("gt-sm")) count = 3;
+            if ($mdMedia("gt-md")) count = 3;
+
             var dat = {
-                count: 4
+                count: count - 1,
             };
             $.post(api, dat, function (res) {
                 console.log('POST', api, dat, res);
@@ -80,7 +90,38 @@
             });
         };
 
-        $scope.getShowApps();
+
+        //从weight读取n个topapp,实际个数为n+1;
+        $scope.getTopApps = function () {
+            var api = _global.api('pie_ladderGetTopApps');
+
+            //自动根据页面设定读取showapp数量
+            var count = 1;
+            if ($mdMedia("gt-xs")) count = 2;
+            if ($mdMedia("gt-sm")) count = 3;
+            if ($mdMedia("gt-md")) count = 3;
+
+
+            var dat = {
+                count: count - 1,
+            };
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
+                if (res.code == 1) {
+                    _fns.applyScope($scope, function () {
+                        $scope.topApps = res.data;
+                    });
+                } else {
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent('读取排行榜列表失败:' + res.text)
+                        .position('top right')
+                        .hideDelay(3000)
+                    );
+                }
+            });
+        };
+
 
         //运行app，跳转到app首页,转换到rtfiles
         $scope.openApp = function (app) {
@@ -150,6 +191,30 @@
             return css;
         };
 
+
+        //显示推荐规则
+        $scope.showAppsTip = function () {
+            $scope.textDialogData = '推荐规则\n任何参加【打榜】的APP都有均等的推荐机会\n每人对每个APP都只能点赞一次\n推荐100次之后才有机会进入TOP排行榜\nTOP榜排名关键在于点赞数和推荐次数的比例';
+
+            //弹出窗口
+            $mdDialog.show({
+                contentElement: '#textDialog',
+                parent: angular.element(document.body),
+                clickOutsideToClose: true
+            });
+        };
+
+        //显示推荐规则
+        $scope.topAppsTip = function () {
+            $scope.textDialogData = '排行规则\nAPP被推荐100次之后才会进入TOP榜排名计算\n排名为完全计算机算法排行，无人工干预\nTOP榜排名关键在于点赞数和推荐次数的比例';
+
+            //弹出窗口
+            $mdDialog.show({
+                contentElement: '#textDialog',
+                parent: angular.element(document.body),
+                clickOutsideToClose: true
+            });
+        };
 
 
 

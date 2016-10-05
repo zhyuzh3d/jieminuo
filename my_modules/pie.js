@@ -274,7 +274,7 @@ _rotr.apis.pie_ladderJoin = function () {
 
 /**
  * ladder:获取n(<10)个随机展示，从展示榜抽取且自增，并且根据显示历史验证是否需要增加用户展示榜计数
- * @param {count} 读取多少个，小于10
+ * @param {count} 读取多少个，小于12
  * @returns {apps:[{id:xx,alias:xx,name:xx,authorid:xx,url:xxx},...]}
  */
 
@@ -286,14 +286,69 @@ _rotr.apis.pie_ladderGetShowApps = function () {
         var uid = yield _fns.getUidByCtx(ctx);
 
         var count = ctx.query.count || ctx.request.body.count;
-        if (count == undefined || count > 10) count = 10;
+        if (count == undefined || count > 12) count = 12;
 
         //获取5个最低展示数的APP
         var apps = yield _ctnu([_rds.cli, 'zrange'], _rds.k.ladderShow, 0, count, 'withscores');
         apps = _fns.arr2obj(apps);
 
+        var res = yield _pie.ladderProcAppsShowCo(apps, uid, 'show');
+
+        //返回数据
+        ctx.body = __newMsg(1, 'ok', res);
+        return ctx;
+    });
+    return co;
+};
+
+
+
+/**
+ * ladder:获取top10，权重榜的10个,本质上这也是一种展现，计算到show榜
+ * @param {count} 读取多少个，小于12
+ * @returns {apps:[{id:xx,alias:xx,name:xx,authorid:xx,url:xxx},...]}
+ */
+
+_rotr.apis.pie_ladderGetTopApps = function () {
+    var ctx = this;
+
+    var co = $co(function* () {
+
+        var uid = yield _fns.getUidByCtx(ctx);
+
+        var count = ctx.query.count || ctx.request.body.count;
+        if (count == undefined || count > 12) count = 12;
+
+        //获取5个最高权重榜APP
+        var apps = yield _ctnu([_rds.cli, 'zrevrange'], _rds.k.ladderWeight, 0, count, 'withscores');
+        apps = _fns.arr2obj(apps);
+
+        var res = yield _pie.ladderProcAppsShowCo(apps, uid);
+
+        //返回数据
+        ctx.body = __newMsg(1, 'ok', res);
+        return ctx;
+    });
+    return co;
+};
+
+
+
+/*处理多个apps的展示后续事件，
+ * 比如，获取每个app的详细信息，
+ * 监测是否第一次向用户展示自增ushow数据
+ * 获取app的更多榜单信息如show,ushow,hit,wei等数据
+ * @param {apps} 一个对象，每个属性就是appid，{112:99,124:1,...},只用attr/key，val不用
+ * @param {uid} 当前用户
+ * @param {asKey} 把apps的val作为哪个属性返回，'show'，则是{...,show:99,....}
+ * @returns [{appinfo},...] app详细信息数组
+ */
+_pie.ladderProcAppsShowCo = function (apps, uid, asKey) {
+    var co = $co(function* () {
         var mu = _rds.cli.multi();
         var muasync = _rds.cli.multi();
+
+        var needUpdateWeight = {};
 
         //针对每个appid操作
         for (var appid in apps) {
@@ -310,12 +365,12 @@ _rotr.apis.pie_ladderGetShowApps = function () {
             if (!hasshow) {
                 muasync.zincrby(_rds.k.ladderUsrShow, 1, appid);
                 muasync.sadd(_rds.k.ladderShowHis, appid + '-' + uid);
+                needUpdateWeight[appid] = true;
             }
         };
 
         muasync.exec();
         var res = yield _ctnu([mu, 'exec']);
-
 
         for (var i = 0; i < res.length; i++) {
             var appinfo = res[i];
@@ -350,15 +405,21 @@ _rotr.apis.pie_ladderGetShowApps = function () {
                 hit: resadd[1],
                 hashit: resadd[2],
             };
+
+            if (asKey) res[i][asKey] = apps[appinfo.id];
+
+            //获取权重
+            if (needUpdateWeight[appinfo.id]) {
+                res[i].weight = yield _pie.ladderUpdateWeightCo(appinfo.id);
+            } else {
+                res[i].weight = yield _ctnu([_rds.cli, 'zscore'], _rds.k.ladderWeight, appinfo.id);
+            };
         };
 
-        //返回数据
-        ctx.body = __newMsg(1, 'ok', res);
-        return ctx;
+        return res;
     });
     return co;
 };
-
 
 
 /**
@@ -382,10 +443,11 @@ _rotr.apis.pie_ladderLikeApp = function () {
         //检查hithis是否已经点赞
         var haslike = yield _ctnu([_rds.cli, 'sismember'], _rds.k.ladderHitHis, appId + '-' + uid);
 
-        //如果没有点赞，那么增加hit记录,并返回新的点赞数;异步增加hithis
-        var res = 0;
+        //如果没有点赞，那么增加hit记录,并返回新的点赞数和权重;异步增加hithis
+        var res = {};
         if (!haslike) {
-            res = yield _ctnu([_rds.cli, 'zincrby'], _rds.k.ladderHit, 1, appId);
+            res.hit = yield _ctnu([_rds.cli, 'zincrby'], _rds.k.ladderHit, 1, appId);
+            res.weight = yield _pie.ladderUpdateWeightCo(appId);
             _rds.cli.sadd(_rds.k.ladderHitHis, appId + '-' + uid);
         };
 
@@ -396,6 +458,48 @@ _rotr.apis.pie_ladderLikeApp = function () {
     });
     return co;
 };
+
+
+
+/**
+ * 根据ushow和hit计算单个app的weight并更新
+ * 前提是show大于100，异步更新weight并返回新weight
+ * @param   {appId} 需要计算更新的appid
+ * @returns {weight} hit/ushow的比例，小于1的小数；-1表示展示低于100，无权重
+ */
+
+_pie.ladderUpdateWeightCo = function (appId) {
+    var co = $co(function* () {
+        //先获取show，低于100直接返回-1
+        var show = yield _ctnu([_rds.cli, 'zscore'], _rds.k.ladderShow, appId);
+        if (show < 100) return -1;
+
+        var mu = _rds.cli.multi();
+
+        //获取ushow和hit计算weight
+        mu.zscore(_rds.k.ladderHit, appId);
+        mu.zscore(_rds.k.ladderUsrShow, appId);
+
+        var res = yield _ctnu([mu, 'exec']);
+        if (!res[0] === null) res[1] = 0; //未被击中，无记录
+        if (!res[1]) throw Error('获取APP榜单权重失败,找不到APP展示数据.');
+
+        var weight = res[0] / res[1];
+
+        //异步写入weight数据库
+        _rds.cli.zadd(_rds.k.ladderWeight, weight, appId);
+
+        return weight;
+    });
+    return co;
+}
+
+
+
+
+
+
+
 
 
 /**
