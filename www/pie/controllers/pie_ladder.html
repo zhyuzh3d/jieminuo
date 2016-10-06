@@ -73,6 +73,12 @@
                             <md-button flex='none' class="md-icon-button itbtn  md-default" ng-hide='item.hashit' aria-label='a' style='margin:0' data-toggle="tooltip" data-placement="bottom" ng-click='likeApp(item)' title="谢谢你的支持！">
                                 <span class='fa fa-thumbs-up'></span>
                             </md-button>
+                            <md-button flex='none' class="md-icon-button itbtn md-primary" ng-show='item.hasfavor' ng-click='setFavorApp(item,false)' aria-label='a' style='margin:0' data-toggle="tooltip" data-placement="bottom" title="点击取消收藏">
+                                <span class='fa fa-heart'></span>
+                            </md-button>
+                            <md-button flex='none' class="md-icon-button itbtn  md-default" ng-hide='item.hasfavor' aria-label='a' style='margin:0' data-toggle="tooltip" data-placement="bottom" ng-click='setFavorApp(item,true)' title="点击收藏">
+                                <span class='fa fa-heart'></span>
+                            </md-button>
                         </md-card-actions>
                     </md-card>
                 </div>
@@ -117,6 +123,12 @@
                             <md-button flex='none' class="md-icon-button itbtn  md-default" ng-hide='item.hashit' aria-label='a' style='margin:0' data-toggle="tooltip" data-placement="bottom" ng-click='likeApp(item)' title="谢谢你的支持！">
                                 <span class='fa fa-thumbs-up'></span>
                             </md-button>
+                            <md-button flex='none' class="md-icon-button itbtn md-primary" ng-show='item.hasfavor' ng-click='setFavorApp(item,false)' aria-label='a' style='margin:0' data-toggle="tooltip" data-placement="bottom" title="点击取消收藏">
+                                <span class='fa fa-heart'></span>
+                            </md-button>
+                            <md-button flex='none' class="md-icon-button itbtn  md-default" ng-hide='item.hasfavor' aria-label='a' style='margin:0' data-toggle="tooltip" data-placement="bottom" ng-click='setFavorApp(item,true)' title="点击收藏">
+                                <span class='fa fa-heart'></span>
+                            </md-button>
                         </md-card-actions>
                     </md-card>
                 </div>
@@ -130,8 +142,8 @@
                     <h1 class="md-title">您希望用哪个APP参加比赛:</h1>
                     <div layout="column" layout-align="center center">
                         <md-select placeholder="请选择一个APP" ng-model="joinDialgSelId" md-on-open="getMyApps()" style="min-width: 200px">
-                            <md-option ng-value="app.id" ng-repeat="app in myApps" ng-disabled='app.inLadder'>
-                                <span class='fa fa-check' ng-show='app.inLadder'></span>
+                            <md-option ng-value="app.id" ng-repeat="app in myApps" ng-disabled='app.inladder'>
+                                <span class='fa fa-check' ng-show='app.inladder'></span>
                                 <span ng-bind='app.alias'></span>
                             </md-option>
                         </md-select>

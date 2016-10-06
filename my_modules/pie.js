@@ -103,8 +103,18 @@ _rotr.apis.pie_getAppInfo = function () {
         var appkey = _rds.k.app(appid);
         var dat = yield _ctnu([_rds.cli, 'hgetall'], appkey);
 
+        //对数据进行过滤，只显示公开数据
+        var res = {
+            id: dat.id,
+            name: dat.name,
+            alias: dat.alias,
+            time: dat.time,
+            uid: dat.uid,
+            url: dat.url,
+        };
+
         //返回数据
-        ctx.body = __newMsg(1, 'ok', dat);
+        ctx.body = __newMsg(1, 'ok', res);
         return ctx;
     });
     return co;
@@ -133,7 +143,7 @@ _rotr.apis.pie_getMyApps = function () {
             apps: _fns.arr2obj(apps, true, true),
         };
 
-        //读取每个app的数据
+        //读取每个app的全部数据，不过滤
         var mu = _rds.cli.multi();
         for (var attr in dat.apps) {
             var app = dat.apps[attr];
@@ -262,8 +272,8 @@ _rotr.apis.pie_ladderJoin = function () {
         //记录加入时间
         mu.zadd(_rds.k.ladderJoinTime, (new Date()).getTime(), appId);
 
-        //添加到app-id的inLadder字段
-        mu.hset(_rds.k.app(appId), 'inLadder', 1);
+        //添加到app-id的inladder字段
+        mu.hset(_rds.k.app(appId), 'inladder', 1);
 
         var res = yield _ctnu([mu, 'exec']);
 
@@ -375,6 +385,10 @@ _pie.ladderProcAppsShowCo = function (apps, uid, asKey) {
         muasync.exec();
         var res = yield _ctnu([mu, 'exec']);
 
+        //获取用户的favor列表，以便于下面填充hasfavor字段
+        var ufavors = yield _ctnu([_rds.cli, 'smembers'], _rds.k.usrFavorApps(uid));
+
+        //为每个app补充信息
         for (var i = 0; i < res.length; i++) {
             var appinfo = res[i];
 
@@ -407,6 +421,7 @@ _pie.ladderProcAppsShowCo = function (apps, uid, asKey) {
                 },
                 hit: resadd[1],
                 hashit: resadd[2],
+                hasfavor: ufavors.indexOf(appinfo.id) != -1,
             };
 
             if (asKey) res[i][asKey] = apps[appinfo.id];
@@ -497,6 +512,131 @@ _pie.ladderUpdateWeightCo = function (appId) {
     return co;
 }
 
+
+
+/**
+ * favor:收藏一个app
+ * @param {appId} 收藏哪个app
+ * @returns {}
+ */
+
+_rotr.apis.pie_favorAdd = function () {
+    var ctx = this;
+
+    var co = $co(function* () {
+
+        var uid = yield _fns.getUidByCtx(ctx);
+
+        var appId = ctx.query.appId || ctx.request.body.appId;
+        if (appId === undefined) throw Error('App ID不能为空.');
+        appId = Number(appId);
+        if (!appId || !Number.isInteger(appId)) throw Error('App ID格式错误.');
+
+        //将appid添加到uFavorApps-uid中
+        var res = yield _ctnu([_rds.cli, 'sadd'], _rds.k.usrFavorApps(uid), appId);
+
+        //返回数据
+        ctx.body = __newMsg(1, 'ok', res);
+        return ctx;
+    });
+    return co;
+};
+
+/**
+ * favor:取消收藏一个app
+ * @param {appId} 取消哪个app
+ * @returns {}
+ */
+
+_rotr.apis.pie_favorRem = function () {
+    var ctx = this;
+
+    var co = $co(function* () {
+
+        var uid = yield _fns.getUidByCtx(ctx);
+
+        var appId = ctx.query.appId || ctx.request.body.appId;
+        if (appId === undefined) throw Error('App ID不能为空.');
+        appId = Number(appId);
+        if (!appId || !Number.isInteger(appId)) throw Error('App ID格式错误.');
+
+        //将appid添加到uFavorApps-uid中
+        var res = yield _ctnu([_rds.cli, 'srem'], _rds.k.usrFavorApps(uid), appId);
+
+        //返回数据
+        ctx.body = __newMsg(1, 'ok', res);
+        return ctx;
+    });
+    return co;
+};
+
+
+/**
+ * favor:获取收藏的App列表，包含每个app的公开信息和作者信息
+ * @param {}
+ * @returns [{id:12,name:xxx,url:xxx,author:{id:xx,nick:xx,avatar:xx}},...]
+ */
+
+_rotr.apis.pie_favorGetApps = function () {
+    var ctx = this;
+
+    var co = $co(function* () {
+
+        var uid = yield _fns.getUidByCtx(ctx);
+
+        //将appid添加到uFavorApps-uid中
+        var apps = yield _ctnu([_rds.cli, 'smembers'], _rds.k.usrFavorApps(uid));
+        if (!apps || apps.length < 1) {
+            ctx.body = __newMsg(1, 'ok', []);
+            return ctx;
+        };
+
+        var muapp = _rds.cli.multi();
+
+        //循环提取多个app基本信息
+        for (var i = 0; i < apps.length; i++) {
+            muapp.hgetall(_rds.k.app(apps[i]));
+        };
+        var resapps = yield _ctnu([muapp, 'exec']);
+
+        var muauthor = _rds.cli.multi();
+
+        //循环为每个app的作者提取信息,必须每个都提取，即使为空也要补足,确保一一对应
+        for (var n = 0; n < resapps.length; n++) {
+            var authorid = resapps[n] ? resapps[n].id : undefined;
+            muauthor.hgetall(_rds.k.usr(authorid));
+        };
+        var resauthors = yield _ctnu([muauthor, 'exec']);
+
+        //整理数据与合并数据
+        var res = [];
+        for (var m = 0; m < resapps.length; m++) {
+            var item = resapps[m] ? resapps[m] : {};
+            var author = resauthors[m] ? resauthors[m] : {};
+            res.push({
+                id: item.id,
+                name: item.name,
+                alias: item.alias,
+                time: item.time,
+                url: item.url,
+                uid: item.uid,
+                inladder: item.inladder,
+                hasfavor: true,
+                author: {
+                    id: author.id,
+                    nick: author.nick,
+                    color: author.color,
+                    avatar: author.avatar,
+                }
+            })
+        };
+
+        //返回数据
+        ctx.body = __newMsg(1, 'ok', res);
+        return ctx;
+    });
+    return co;
+};
 
 
 

@@ -297,6 +297,32 @@
         };
 
 
+        //加入排行榜
+        $scope.setFavorApp = function (appinfo, favor) {
+            var api = _global.api('pie_favorAdd');
+            if (favor == false) api = _global.api('pie_favorRem');
+            var dat = {
+                appId: appinfo.id,
+            }
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
+                var tip = favor ? '已成功加入收藏！' : '取消收藏成功';
+                if (res.code == 1) {
+                    _fns.applyScope($scope, function () {
+                        appinfo.hasfavor = favor;
+                    });
+                } else {
+                    tip = '设置失败:' + res.text;
+                };
+                $scope.cancelDialog();
+                $mdToast.show(
+                    $mdToast.simple()
+                    .textContent(tip)
+                    .position('top right')
+                    .hideDelay(3000)
+                );
+            });
+        };
 
 
 

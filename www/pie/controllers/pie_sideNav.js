@@ -29,6 +29,10 @@
             icon: 'fa fa-trophy',
             ctrlr: 'pie_ladder',
         }, {
+            name: '我的收藏',
+            icon: 'fa fa-heart',
+            ctrlr: 'pie_favors',
+        },{
             name: 'What\'s New',
             icon: 'fa fa-bomb',
             ctrlr: 'pie_history',
