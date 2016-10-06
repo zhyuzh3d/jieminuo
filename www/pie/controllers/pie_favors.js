@@ -159,7 +159,7 @@
         };
 
         //加入排行榜
-        $scope.setFavorApp = function (appinfo, favor) {
+        $scope.setFavorApp = function (appinfo, favor, refresh) {
             var api = _global.api('pie_favorAdd');
             if (favor == false) api = _global.api('pie_favorRem');
             var dat = {
@@ -167,7 +167,7 @@
             }
             $.post(api, dat, function (res) {
                 console.log('POST', api, dat, res);
-                var tip = favor ? '已成功加入收藏！' : '取消收藏成功';
+                var tip = favor ? '已成功加入收藏！' : '取消收藏成功,页面刷新后消失';
                 if (res.code == 1) {
                     _fns.applyScope($scope, function () {
                         appinfo.hasfavor = favor;
@@ -182,11 +182,78 @@
                     .position('top right')
                     .hideDelay(3000)
                 );
+
+                if (refresh) $scope.getFavorApps();
+
             });
         };
 
 
+        //弹出手工收藏窗口
+        $scope.openMenualAddDialog = function () {
+            $scope.munualAddDialogIpt = undefined;
+            $mdDialog.show({
+                contentElement: '#menualAddDialog',
+                parent: angular.element(document.body),
+                clickOutsideToClose: true
+            });
+        };
 
+        //根据链接添加收藏
+        $scope.getAppInfoByUrl = function () {
+            $scope.munualAddDialogTip = undefined;
+            $scope.menualAddDialogAppId = undefined;
+            $scope.menualAddDialogAppAlias = undefined;
+
+            if (!$scope.munualAddDialogIpt) {
+                $scope.munualAddDialogTip = '请输入链接';
+                return;
+            }
+            var url = $scope.munualAddDialogIpt.toLowerCase();
+            //首先进行验证
+            if (!/^(http:\/\/)?(rt)?files.jieminuoketang.com\/\d+\/[a-z0-9]+\//.test(url)) {
+                $scope.munualAddDialogTip = '请输入正确的链接格式';
+                return;
+            };
+
+            //去除开头部分
+            url = url.replace(/^(http:\/\/)?(rt)?files.jieminuoketang.com/g, '');
+
+            //解析链接地址获得目标app的uid和name
+            var arr = url.split('/');
+            var appuid = arr[1];
+            var appname = arr[2];
+
+            //从服务器拉取appid和其它信息
+            var api = _global.api('pie_getAppInfo');
+            var dat = {
+                appUid: appuid,
+                appName: appname,
+            };
+
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
+                if (res.code == 1) {
+                    _fns.applyScope($scope, function () {
+                        //重新排序
+                        $scope.menualAddDialogAppAlias = res.data.alias;
+                        $scope.menualAddDialogAppId = res.data.id;
+                        $scope.menualAddDialogAppInfo = res.data;
+                    });
+                } else {
+                    _fns.applyScope($scope, function () {
+                        //重新排序
+                        $scope.munualAddDialogTip = '找不到对应的APP:' + res.text;
+                    });
+                };
+            });
+
+        };
+
+        //根据链接添加收藏
+        $scope.menualAddFavor = function () {
+            $scope.setFavorApp($scope.menualAddDialogAppInfo, true, true);
+        };
 
 
 

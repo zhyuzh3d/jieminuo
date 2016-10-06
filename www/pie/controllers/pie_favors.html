@@ -21,6 +21,8 @@
                 <span class="fa fa-bars fa-lg" ng-hide='$root.leftMenuOpen'></span>
             </md-button>
 
+            <md-button class="md-raised md-accent" ng-click='openMenualAddDialog()' aria-label='a' style='padding:0 16px'>手工添加收藏</md-button>
+
             <div class="dropdown pull-right" ng-show='hasLogin' style="margin-top:8px">
                 <button class="dropdown-toggle" id="ddmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="background:none;border:none">
                     <span>
@@ -38,6 +40,7 @@
 
         <!--        favorapp列表-->
         <div style="padding:16px">
+            <div style="text-align:center" ng-show='favorApps.length<1'>～这里空空如也，去TOP排行榜看看有什么好东西吧～</div>
             <div layout layout-wrap class='container-fluid'>
                 <div class='col-xs-12 col-sm-6 col-md-4 col-lg-2' ng-repeat='item in favorApps' style='padding:0.5rem'>
                     <md-card md-theme="default" md-theme-watch style='margin:0;'>
@@ -70,6 +73,28 @@
                         </md-card-actions>
                     </md-card>
                 </div>
+            </div>
+        </div>
+
+        <!--      手工添加链接收藏弹窗-->
+        <div style="visibility: hidden">
+            <div class="md-dialog-container" id="menualAddDialog">
+                <md-dialog layout-padding style='text-align:center;padding:24px;max-width:800px'>
+                    <h4 style='text-align:left'>请输入APP的链接地址</h4>
+                    <div class="input-group">
+                        <span class="input-group-addon fa fa-link"></span>
+                        <input type="text" class="form-control" ng-change='getAppInfoByUrl()' ng-model='munualAddDialogIpt' placeholder="http://files.jieminuoketang.com/...">
+                    </div>
+                    <div ng-show=' munualAddDialogTip' style="text-align:left;color:#A00;margin-top:0"><small ng-bind='munualAddDialogTip'></small></div>
+                    <div style="text-align:left" ng-show='menualAddDialogAppAlias'>
+                        <span>APP名称:&nbsp;</span>
+                        <span ng-bind='menualAddDialogAppAlias'></span>
+                    </div>
+                    <div style="margin-top:18px;text-align:left">
+                        <div class="md-button md-raised md-accent" ng-click='menualAddFavor()' aria-label='a' ng-disabled='!menualAddDialogAppId'>加入收藏</div>
+                        <div class="md-button" ng-click='cancelDialog()' aria-label='a'>取消</div>
+                    </div>
+                </md-dialog>
             </div>
         </div>
 
