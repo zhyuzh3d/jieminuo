@@ -78,6 +78,7 @@
             </div>
         </div>
         <div layout layout-wrap class='container-fluid'>
+            <div style="text-align:center" ng-show='myApps.count<1'>～这里空空如也，立即创建自己的APP吧～</div>
             <div class='col-xs-12 col-sm-6 col-md-4 col-lg-2' ng-repeat='item in myApps.apps' style='padding:0.5rem'>
                 <md-card md-theme="default" md-theme-watch style='margin:0;'>
                     <md-card-title class="elips" style='padding:0;overflow:hidden;position:relative'>

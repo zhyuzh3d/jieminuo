@@ -262,6 +262,9 @@ _rotr.apis.pie_ladderJoin = function () {
         //记录加入时间
         mu.zadd(_rds.k.ladderJoinTime, (new Date()).getTime(), appId);
 
+        //添加到app-id的inLadder字段
+        mu.hset(_rds.k.app(appId), 'inLadder', 1);
+
         var res = yield _ctnu([mu, 'exec']);
 
         //返回数据

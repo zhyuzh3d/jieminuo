@@ -30,6 +30,7 @@
             $scope.$apply(function () {
                 $scope.myUsrInfo = _global.myUsrInfo;
                 $scope.hasLogin = _global.hasLogin;
+                $scope.getMyAppList();
             });
         }, function () {
             return _global.hasLogin;
@@ -65,7 +66,7 @@
                 };
             });
         };
-        $scope.getMyAppList();
+
 
 
         _fns.promiseRun(function (tm) {

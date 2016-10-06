@@ -159,7 +159,7 @@
                         tip = '谢谢您的支持！'
                         _fns.applyScope($scope, function () {
                             if (!app.hit) app.hit = 0;
-                            app.hit += 1;
+                            app.hit = Number(app.hit) + 1;
                             app.hashit = 1;
                         })
                     };
@@ -218,6 +218,85 @@
                 clickOutsideToClose: true
             });
         };
+
+        //取消弹窗
+        $scope.cancelDialog = function () {
+            $mdDialog.hide();
+        };
+
+
+        //弹出打榜弹窗
+        $scope.openJoinDialog = function () {
+            $scope.joinDialgSelId = undefined;
+            $mdDialog.show({
+                contentElement: '#joinDialog',
+                parent: angular.element(document.body),
+                clickOutsideToClose: true
+            });
+        };
+
+        //获取我的app列表
+        $scope.getMyApps = function () {
+            var api = _global.api('pie_getMyApps');
+            var dat = {};
+
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
+                if (res.code == 1) {
+                    _fns.applyScope($scope, function () {
+                        //重新排序
+                        var arr = _fns.obj2arr(res.data.apps);
+                        var apparr = [];
+                        arr.forEach(function (item) {
+                            apparr.push(item.info);
+                        });
+                        apparr = apparr.sort(function (a, b) {
+                            return b.time - a.time;
+                        });
+
+                        $scope.myApps = apparr;
+                    });
+                } else {
+                    //提示错误
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent('读取App列表失败，请稍后再试:' + res.text)
+                        .position('top right')
+                        .hideDelay(3000)
+                    );
+                };
+            });
+        };
+
+        //加入排行榜
+        $scope.joinLadder = function (appId) {
+            var api = _global.api('pie_ladderJoin');
+            var dat = {
+                appId: appId,
+            }
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
+                $scope.cancelDialog();
+                if (res.code == 1) {
+                    $scope.getShowApps();
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent('恭喜，您的APP已经成功加入排行榜！')
+                        .position('top right')
+                        .hideDelay(3000)
+                    );
+                } else {
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent('加入排行榜失败:' + res.text)
+                        .position('top right')
+                        .hideDelay(3000)
+                    );
+                };
+            });
+        };
+
+
 
 
 
