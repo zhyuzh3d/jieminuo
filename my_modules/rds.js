@@ -39,11 +39,11 @@ _rds.k = {
 
     //ladder排行榜相关
     ladderShow: '_map:ldrShow:app.id:show', //ladder:预备榜展示次数，自动叠加,zsort
-    ladderJoinTime: '_map:ldrJoinTime:app.id:ts' ,//ladder:加入展示榜的时间记录，用于以后清理show榜,zsort
+    ladderJoinTime: '_map:ldrJoinTime:app.id:ts', //ladder:加入展示榜的时间记录，用于以后清理show榜,zsort
     ladderUsrShow: '_map:ldrUShow:app.id:show', //ladder:预备榜有效展示次数，每用户不重复叠加,zsort
     ladderHit: '_map:ldrrHit:app.id:hit', //ladder:预备榜击中次数，每用户1次,zsort
-    ladderShowHis: '_map:ldrShowHis' ,//ladder:预备榜展示历史，成员app.id-usr.id格式，set
-    ladderHitHis: '_map:ldrHitHis' ,//ladder:预备榜击中历史，成员app.id-usr.id格式，set
+    ladderShowHis: '_map:ldrShowHis', //ladder:预备榜展示历史，成员app.id-usr.id格式，set
+    ladderHitHis: '_map:ldrHitHis', //ladder:预备榜击中历史，成员app.id-usr.id格式，set
     ladderWeight: '_map:ldrWei:app.id:wei', //ladder:排行榜权重记录，超过100次开始计算，zsort
 
     //favor收藏相关

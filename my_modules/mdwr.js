@@ -4,7 +4,7 @@
 
 var _mdwr = function* (next) {
     //可以在这里修改请求的路径或添加参数
-
+    var ctx = this;
 
     yield next;
 };

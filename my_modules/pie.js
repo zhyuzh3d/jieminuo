@@ -666,14 +666,16 @@ _rotr.apis.pie_admGetLadderList = function () {
         var hit = yield _ctnu([_rds.cli, 'zrange'], _rds.k.ladderHit, 0, -1, 'withscores');
         var weight = yield _ctnu([_rds.cli, 'zrange'], _rds.k.ladderWeight, 0, -1, 'withscores');
 
-        //返回数据
-        ctx.body = __newMsg(1, 'ok', {
+        var res = {
             show: show,
             joinTime: joinTime,
             ushow: ushow,
             hit: hit,
             weight: weight,
-        });
+        }
+
+        //返回数据
+        ctx.body = __newMsg(1, 'ok', res);
         return ctx;
     });
     return co;

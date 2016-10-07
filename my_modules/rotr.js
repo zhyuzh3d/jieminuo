@@ -27,11 +27,13 @@ function* apihandler(next) {
 
     console.log('API RECV:', apinm);
 
-    //匹配到路由函数,路由函数异常自动返回错误,创建xdat用来传递共享数据
-    var apifn = _rotr.apis[apinm];
+    //创建xdat用来传递共享数据
     ctx.xdat = {
         apiName: apinm
     };
+
+    //匹配到路由函数,路由函数异常自动返回错误
+    var apifn = _rotr.apis[apinm];
 
     if (apifn && apifn.constructor == Function) {
         yield apifn.call(ctx, next).then(null, function (err) {
@@ -56,7 +58,10 @@ _rotr.apis.test = function () {
             body: ctx.body,
         };
 
-        ctx.body = __newMsg(1, 'ok', resdat);
+        ctx.body = __newMsg(1, 'ok', {
+            res: resdat,
+            ctx: ctx,
+        });
         return ctx;
     });
     return co;

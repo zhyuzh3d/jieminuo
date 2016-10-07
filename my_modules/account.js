@@ -128,7 +128,6 @@ _rotr.apis.acc_getMyInfo = function () {
         var ukey = ctx.cookies.get('m_ukey');
         if (!ukey) throw Error('没找到您的登录信息，请重新登陆或注册.');
 
-
         //登陆情况，读取用户id
         var mpkey = _rds.k.map_ukey2uid;
         var uid = yield _ctnu([_rds.cli, 'hget'], _rds.k.map_ukey2uid, ukey);
@@ -155,6 +154,7 @@ _rotr.apis.acc_getMyInfo = function () {
     });
     return co;
 };
+
 
 
 
@@ -453,8 +453,6 @@ _rotr.apis.acc_rstPwByPhone = function () {
 };
 
 
-
-
 /**
  * 向指定手机发送六位验证码
  * @param   {string} phone 目标手机，1开头11位数字
@@ -475,7 +473,7 @@ _account.acc_sendPhoneCodeCo = function (phone) {
         //发送验证码
         var minit = _cfg.dur.phoneCode / 60;
         var path = '/kingtto_media/106sms/106sms?mobile=' + phone;
-        path += '&content=【杰米诺】您的验证码是' + code + '，有效时间' + minit + '分钟，请不要告诉他人。';
+        path += '&content=【杰米诺课堂】您的验证码是' + code + '，有效时间' + minit + '分钟，请不要告诉他人，如非本人操作请忽略此短信。';
         path += '&tag=2'; //json格式返回
         path = encodeURI(path);
         var opt = {
