@@ -332,7 +332,7 @@ _rotr.apis.acc_loginOut = function () {
 
 
 /**
- * 向用户手机发送注册验证码的接口
+ * 向用户手机发送注册验证码的接口,需要使用验证码capKey和capVal
  * 检查map_uphone2uid
  * 写入tmp_phoneRegCode
  * @returns {null} null
@@ -345,6 +345,13 @@ _rotr.apis.acc_getPhoneRegCode = function () {
         var phone = ctx.query.phone || ctx.request.body.phone;
         if (!phone || !_cfg.regx.phone.test(phone)) throw Error('手机号码格式错误.');
 
+        var capKey = ctx.query.capKey || ctx.request.body.capKey;
+        if (!capKey || !_cfg.regx.ukey.test(capKey)) throw Error('验证码key错误，请刷新验证码再试.');
+
+        var capVal = ctx.query.capVal || ctx.request.body.capVal;
+        if (!capVal) throw Error('验证码输入格式错误，请重试.');
+
+
         //检查电话号码是否已经被注册
         var mapKey = _rds.k.map_uphone2uid;
         var hasUsed = yield _ctnu([_rds.cli, 'hget'], mapKey, phone);
@@ -356,7 +363,7 @@ _rotr.apis.acc_getPhoneRegCode = function () {
         if (hasSend) throw Error('您已经发送过注册验证码，请不要重复发送.');
 
         //发送验证码并记录到redis设定过期时间
-        var res = yield _account.acc_sendPhoneCodeCo(phone);
+        var res = yield _account.acc_sendPhoneCodeCo(phone, capKey, capVal);
         var code = res.code;
         _rds.cli.setex(codeKey, _cfg.dur.phoneCode, code);
 
@@ -369,7 +376,7 @@ _rotr.apis.acc_getPhoneRegCode = function () {
 
 
 /**
- * 向用户手机发送重置密码验证码的接口
+ * 向用户手机发送重置密码验证码的接口,需要使用验证码capKey和capVal
  * 检查map_uphone2uid
  * 写入tmp_phoneRstCode
  * @returns {null} null
@@ -382,6 +389,13 @@ _rotr.apis.acc_getPhoneRstCode = function () {
         var phone = ctx.query.phone || ctx.request.body.phone;
         if (!phone || !_cfg.regx.phone.test(phone)) throw Error('手机号码格式错误.');
 
+        var capKey = ctx.query.capKey || ctx.request.body.capKey;
+        if (!capKey || !_cfg.regx.ukey.test(capKey)) throw Error('验证码key错误，请刷新验证码再试.');
+
+        var capVal = ctx.query.capVal || ctx.request.body.capVal;
+        if (!capVal) throw Error('验证码输入格式错误，请重试.');
+
+
         //检查电话号码是否已经被注册
         var mapKey = _rds.k.map_uphone2uid;
         var hasUsed = yield _ctnu([_rds.cli, 'hget'], mapKey, phone);
@@ -393,7 +407,7 @@ _rotr.apis.acc_getPhoneRstCode = function () {
         if (hasSend) throw Error('您已经发送过重置验证码，请不要重复发送.');
 
         //发送验证码并记录到redis设定过期时间
-        var res = yield _account.acc_sendPhoneCodeCo(phone);
+        var res = yield _account.acc_sendPhoneCodeCo(phone, capKey, capVal);
         var code = res.code;
         _rds.cli.setex(codeKey, _cfg.dur.phoneCode, code);
 
@@ -454,13 +468,17 @@ _rotr.apis.acc_rstPwByPhone = function () {
 
 
 /**
- * 向指定手机发送六位验证码
+ * 向指定手机发送六位验证码,需要图像验证码正确
  * @param   {string} phone 目标手机，1开头11位数字
  * @returns {string} 六位验证码
  */
 
-_account.acc_sendPhoneCodeCo = function (phone) {
+_account.acc_sendPhoneCodeCo = function (phone, capKey, capVal) {
     var co = $co(function* () {
+        //校验图像验证码
+        var capcheck = yield _captcha.checkCo(capKey, capVal, true);
+        if (!capcheck) throw Error('验证码输入错误，请重试.');
+
         //生成认证码
         var code = String(Math.random()).substr(2, 6);
         if (code.length < 6) {

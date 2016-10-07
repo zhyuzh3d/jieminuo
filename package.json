@@ -19,6 +19,7 @@
     "crypto": "0.0.3",
     "koa": "^1.1.2",
     "koa-bodyparser": "^2.2.0",
+    "koa-canvas-captcha": "^0.1.4",
     "koa-cors": "0.0.16",
     "koa-gzip": "^0.1.0",
     "koa-router": "^5.4.0",
@@ -26,6 +27,7 @@
     "nodemailer": "^2.3.0",
     "qiniu": "^6.1.11",
     "redis": "^2.4.2",
-    "socket.io": "^1.4.5"
+    "socket.io": "^1.4.5",
+    "svg-captcha": "^1.0.6"
   }
 }

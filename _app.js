@@ -18,6 +18,7 @@ var $mailer = global.$mailer = require('nodemailer');
 var $redis = global.$redis = require('redis');
 var $uuid = global.$uuid = require('node-uuid');
 var $sktio = global.$sktio = require('socket.io');
+var $scaptcha = global.$scaptcha = require('svg-captcha');
 var $qiniu = global.$qiniu = require('qiniu');
 //var $cors = global.$cors = require('koa-cors');
 
@@ -31,6 +32,7 @@ global._mdwr = require('./my_modules/mdwr.js');
 global._ndwr = require('./my_modules/ndwr.js');
 global._rotr = require('./my_modules/rotr.js');
 global._rds = require('./my_modules/rds.js');
+global._captcha = require('./my_modules/captcha.js');
 global._qn = require('./my_modules/qn.js');
 
 //功能模块引入

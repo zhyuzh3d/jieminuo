@@ -46,17 +46,17 @@ _rds.k = {
     ladderHitHis: '_map:ldrHitHis', //ladder:预备榜击中历史，成员app.id-usr.id格式，set
     ladderWeight: '_map:ldrWei:app.id:wei', //ladder:排行榜权重记录，超过100次开始计算，zsort
 
+
+    tmp_captcha: function (key) { //验证码的键，存储正确答案，string
+        return '_tmp-captcha-' + key;
+    },
+
     //favor收藏相关
     usrFavorApps: function (uid) { //每个用户收藏的appId列表，set
         return 'uFavorApps-' + uid;
     },
 
 };
-
-
-
-
-
 
 
 

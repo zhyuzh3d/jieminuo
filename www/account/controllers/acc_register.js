@@ -9,7 +9,17 @@
 
     _app.controller(ctrlrName, fn);
 
-    function fn($rootScope, $scope, $location, $anchorScroll, $element, $mdToast, $mdDialog) {
+    function fn(
+        $rootScope,
+        $scope,
+        $location,
+        $anchorScroll,
+        $element,
+        $mdToast,
+        $mdDialog,
+        $mdMedia,
+        $filter
+    ) {
         $rootScope[ctrlrName] = $scope;
         $scope.ctrlrName = ctrlrName;
         $scope.autoRun = []; //自动运行的函数
@@ -69,7 +79,7 @@
                     //提示错误
                     $mdToast.show(
                         $mdToast.simple()
-                        .textContent('注销失败:' + res.text)
+                        .textContent('注销失败：' + res.text)
                         .position('top right')
                         .hideDelay(3000)
                     );
@@ -86,11 +96,16 @@
         $scope.getPhoneRegCode = function () {
             var api = _global.api('acc_getPhoneRegCode');
             var dat = {
-                phone: $scope.user.phone
+                phone: $scope.user.phone,
+                capKey: $scope.captchaKey,
+                capVal: $scope.captchaVal,
             };
 
             $.post(api, dat, function (res) {
                 console.log('POST', api, dat, res);
+                $scope.cancelDialog();
+                var tip = '发送成功，请注意查收';
+
                 if (res.code == 1) {
                     //启动倒计时
                     $scope.waiting = 120;
@@ -104,14 +119,15 @@
                         };
                     }, 1000);
                 } else {
-                    //提示错误
-                    $mdToast.show(
-                        $mdToast.simple()
-                        .textContent('发送失败:' + res.text)
-                        .position('top right')
-                        .hideDelay(3000)
-                    );
-                }
+                    tip = '发送失败:' + res.text;
+                };
+
+                $mdToast.show(
+                    $mdToast.simple()
+                    .textContent(tip)
+                    .position('top right')
+                    .hideDelay(3000)
+                );
             });
         };
 
@@ -167,6 +183,70 @@
                 console.log(ctrlrName + ':' + fn.name + ' auto run failed...');
             }
         }
+
+        //取消弹窗
+        $scope.cancelDialog = function () {
+            $mdDialog.hide();
+        };
+
+
+        //弹出验证弹窗
+        $scope.openCaptchaDialog = function () {
+            //监测电话号码输入格式
+            var regx = /^1+\d{10}$/;
+            if (!regx.test($scope.user.phone)) {
+                $mdToast.show(
+                    $mdToast.simple()
+                    .textContent('电话号码格式错误，请检查后再试')
+                    .position('top right')
+                    .hideDelay(3000)
+                );
+                return;
+            };
+
+            //清理数据
+            $scope.captchaVal = undefined;
+            $scope.captchaKey = undefined;
+            $scope.captchaSvg = undefined;
+
+            //重新请求验证码数据
+            $scope.refreshCaptcha();
+
+            //弹窗
+            $mdDialog.show({
+                skipHide: true,
+                contentElement: '#captchaDialog',
+                parent: angular.element(document.body),
+                clickOutsideToClose: true
+            });
+        };
+
+        //重新请求验证码数据
+        var capExpireOutN;
+        $scope.refreshCaptcha = function () {
+            var api = _global.api('captcha_get');
+            var dat = {};
+
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
+                if (res.code == 1) {
+                    _fns.applyScope($scope, function () {
+                        $scope.captchaKey = res.data.key;
+                        $scope.captchaSvg = res.data.svg;
+
+                        //设定倒计时过期
+                        if (capExpireOutN) clearTimeout(capExpireOutN);
+                        capExpireOutN = setTimeout(function () {
+                            $scope.captchaTimeOut = true;
+                        }, res.data.expire * 1000);
+                    });
+                }
+            });
+        };
+
+
+
+
 
         //end
         console.log(ctrlrName + '.js loading...');

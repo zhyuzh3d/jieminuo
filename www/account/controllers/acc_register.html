@@ -1,19 +1,22 @@
 <!--控制器界面部分-->
-<div id='acc_register' ng-controller='acc_register' class='container-fluid acc_register'>
+<div layout="column" id='acc_register' ng-controller='acc_register' class='container-fluid acc_register'>
     <style>
         .acc_register label {
             font-size: 2rem;
             font-family: inherit;
         }
+
         .acc_register input {
             font-size: 2rem;
             font-family: inherit;
         }
+
         .acc_register md-input-container {
             margin-top: 3rem;
             font-family: inherit;
         }
         /*覆盖toast位置*/
+
         md-toast {
             left: 0;
             right: 0;
@@ -25,11 +28,12 @@
             padding: 0;
             position: fixed;
         }
+
     </style>
-    <div class="demo-md-panel md-padding col-xs-12 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+    <div layout="column" class="demo-md-panel md-padding col-xs-12 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
         <div style='margin-top:3rem;margin-bottom:2rem'>
-        <span class='h2' style="margin-top:4rem">注册新用户</span>
-        <md-button md-no-ink class="md-primary" ng-click='goPage("acc_login")'>已经注册,直接登陆</md-button>
+            <span class='h2' style="margin-top:4rem">注册新用户</span>
+            <md-button md-no-ink class="md-primary" ng-click='goPage("acc_login")'>已经注册了,直接登陆</md-button>
         </div>
         <form name="userForm">
             <md-content class="md-no-momentum">
@@ -42,7 +46,7 @@
                     <div ng-messages="usrForm.phone.$error">
                         <div ng-if="userForm.phone.$error.pattern">必须使用真实号码，请确认输入正确</div>
                     </div>
-                    <md-button class="md-raised md-primary pull-right" ng-click='getPhoneRegCode()' ng-show='!waiting'>发送验证码</md-button>
+                    <md-button class="md-raised md-primary pull-right" ng-click='openCaptchaDialog()' ng-show='!waiting'>发送验证码</md-button>
                     <md-button class="md-raised md-primary pull-right" ng-show='waiting' ng-disabled='true'>重新发送({{waiting}})</md-button>
                 </md-input-container>
                 <md-input-container class="md-block" flex-gt-sm>
@@ -71,12 +75,38 @@
                 </div>
             </md-content>
         </form>
+
+        <!--      验证码弹窗-->
+        <div style="visibility: hidden">
+            <div class="md-dialog-container" id="captchaDialog" aria-label='a'>
+                <md-dialog layout-padding style='text-align:center;padding:24px;max-width:800px' aria-label='a'>
+                    <div>请输入下面的字符，5分钟后失效，点击刷新</div>
+                    <div>
+                        <div ng-click='refreshCaptcha()' ng-bind-html='captchaSvg | toTrustHtml' style='cursor:pointer'></div>
+                        <input type="text" class="form-control" placeholder="不区分大小写" ng-model='captchaVal'>
+                    </div>
+                    <div>
+                        <div class="md-button md-raised md-accent" ng-click='getPhoneRegCode()' aria-label='a'>确定发送</div>
+                        <div class="md-button" ng-click='cancelDialog()' aria-label='a'>取消</div>
+                    </div>
+                </md-dialog>
+            </div>
+        </div>
+
+
+
     </div>
+
+
+
+
+
 </div>
 
 <!--加载外部控制器js文件-->
 <script>
     _fns.addCtrlrJs('acc_register');
+
 </script>
 
 
