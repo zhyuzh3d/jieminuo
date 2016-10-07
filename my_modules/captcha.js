@@ -41,6 +41,7 @@ _rotr.apis.captcha_get = function () {
 
 
 
+
 /**
  * 验证图像识别码
  * @param   {key} rds存储的键名的基本key
