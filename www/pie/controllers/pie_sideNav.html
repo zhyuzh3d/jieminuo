@@ -19,7 +19,7 @@
 
         <md-list layout='column' flex='grow' style='padding:0;width:100%' layout-align='space-between start'>
             <div flex='grow' style="width:100%">
-                <md-menu-item style='width:100%' ng-repeat="item in menus" ng-click='$root.gotoCtrlr(item.ctrlr)'>
+                <md-menu-item style='width:100%' ng-repeat="item in menus" ng-click='gotoCtrlr(item.ctrlr)'>
                     <md-button ng-class="{true:'md-primary',false:''}[item.ctrlr==getCurCtrlr()]" aria-label='menu'>
                         <div style="text-align:left">
                             <span ng-class="item.icon" style="margin-right:1rem"></span>

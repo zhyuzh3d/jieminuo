@@ -32,7 +32,7 @@
             name: '我的收藏',
             icon: 'fa fa-heart',
             ctrlr: 'pie_favors',
-        },{
+        }, {
             name: 'What\'s New',
             icon: 'fa fa-bomb',
             ctrlr: 'pie_history',
@@ -50,7 +50,7 @@
             name: '短信验证管理',
             icon: 'fa fa-tty',
             ctrlr: 'pie_admsms',
-        },{
+        }, {
             name: '榜单管理',
             icon: 'fa fa-trophy',
             ctrlr: 'pie_admladder',
@@ -90,6 +90,15 @@
             cnanme = cnanme.substr(2);
             return cnanme;
         };
+
+        //左侧栏跳转，自动判断是否要关闭
+        $scope.gotoCtrlr = function (ctrlrname) {
+            $rootScope.gotoCtrlr(ctrlrname);
+            //根据当前页面大小决定是否隐藏左侧栏
+            if (!$mdMedia("gt-sm")) {
+                $rootScope.tagLeftMenu(false);
+            };
+        }
 
 
 
