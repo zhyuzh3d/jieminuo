@@ -44,11 +44,11 @@
         };
 
         $scope.gotoPie = function () {
-            var pieurl='http://' + location.host + '/pie/';
+            var pieurl = 'http://' + location.host + '/pie/';
             if ($scope.hasLogin) {
                 location.href = pieurl;
             } else {
-                location.href = 'http://' + location.host + '/account/?page=acc_login'+'&&okUrl='+pieurl;
+                location.href = 'http://' + location.host + '/account/?page=acc_login' + '&&okUrl=' + pieurl;
             }
         };
 
@@ -65,11 +65,13 @@
         };
 
         $scope.gotoReg = function () {
-            location.href = 'http://' + location.host + '/account/?page=acc_register';
+            var pieurl = 'http://' + location.host + '/pie/';
+            location.href = 'http://' + location.host + '/account/?page=acc_register' + '&&okUrl=' + pieurl;
         };
 
         $scope.gotoLogin = function () {
-            location.href = 'http://' + location.host + '/account/?page=acc_login';
+            var pieurl = 'http://' + location.host + '/pie/';
+            location.href = 'http://' + location.host + '/account/?page=acc_login' + '&&okUrl=' + pieurl;
         };
 
 

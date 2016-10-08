@@ -32,39 +32,47 @@
     </style>
     <div class="demo-md-panel md-padding col-xs-12 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
         <div style='margin-top:3rem;margin-bottm:2rem'>
+            <md-icon class='md-primary' ng-click='cancel()'>
+                <i class="fa fa-chevron-left fa-lg"></i>
+            </md-icon>
             <span class='h2' style="margin-top:4rem">重置密码</span>
             <md-button md-no-ink class="md-primary" ng-click='goPage("acc_login")'>返回登录页面</md-button>
         </div>
-        <form name="userForm">
+        <form name="userForm" autocomplete="off">
             <md-content class="md-no-momentum">
-                <md-input-container class="md-block" flex-gt-sm style='margin-top:2rem'>
+                <input name="phone" style='display:none' />
+                <md-input-container class="md-block" flex-gt-sm style='margin-top:40px'>
                     <md-icon>
                         <i class="fa fa-phone fa-lg"></i>
                     </md-icon>
                     <label>电话号码</label>
-                    <input name="phone" ng-model="user.phone" ng-pattern="/^1+\d{10}$/" />
+                    <input id='phoneipt' name="phone" ng-model="user.phone" ng-pattern="/^1+\d{10}$/" />
                     <div ng-messages="usrForm.phone.$error">
                         <div ng-if="userForm.phone.$error.pattern">必须使用真实号码，请确认输入正确</div>
                     </div>
                     <md-button class="md-raised md-primary pull-right" ng-click='openCaptchaDialog()' ng-show='!waiting'>发送验证码</md-button>
                     <md-button class="md-raised md-primary pull-right" ng-show='waiting' ng-disabled='true'>重新发送({{waiting}})</md-button>
                 </md-input-container>
-                <md-input-container class="md-block" flex-gt-sm>
+
+                <input name="phoneCode" style='display:none' />
+                <md-input-container class="md-block" flex-gt-sm style='margin-top:40px'>
                     <md-icon>
                         <i class="fa fa-key fa-lg"></i>
                     </md-icon>
                     <label>验证码</label>
-                    <input name="phoneCode" ng-model="user.phoneCode" ng-pattern="/^\d{6}$/" />
+                    <input id='codeipt' name="phoneCode" ng-model="user.phoneCode" ng-pattern="/^\d{6}$/" />
                     <div ng-messages="usrForm.phoneCode.$error">
                         <div ng-if="userForm.phoneCode.$error.pattern">六位数字，例如 898878</div>
                     </div>
                 </md-input-container>
-                <md-input-container class="md-block" flex-gt-sm>
+
+                <input name="pw" style='display:none' />
+                <md-input-container class="md-block" flex-gt-sm style='margin-top:40px'>
                     <md-icon>
                         <i class="fa fa-lock fa-lg"></i>
                     </md-icon>
                     <label>新密码</label>
-                    <input name="pw" type='password' ng-model="user.pw" ng-pattern="/^.{6,18}$/" />
+                    <input id='pwipt' name="pw" type='password' ng-model="user.pw" ng-pattern="/^.{6,18}$/" />
                     <div ng-messages="usrForm.pw.$error">
                         <div ng-if="userForm.pw.$error.pattern">6~18位任意数字</div>
                     </div>

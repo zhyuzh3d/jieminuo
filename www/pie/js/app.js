@@ -72,6 +72,9 @@ var _app = {}; //最高全局变量，angular
             _fns.changeCtrlrByHash();
         });
 
+        //共用的弹窗数据容器
+        $rootScope.tempDialogData = {};
+
         //通过锚点跳转控制器的函数,模拟a标签点击
         $rootScope.lastCtrlr; //上一个跳转的控制器
         $rootScope.ctlrHis = []; //上一个跳转的控制器

@@ -1,0 +1,16 @@
+
+</script>
+
+
+
+<md-dialog aria-label="a">
+    <h1>选择分享到</h1>
+    <md-menu-content layout='column'>
+        <a ng-href='share.url' ng-repeat='share in shares'>
+            <md-button flex='none' class="md-default" aria-label='a' style='color:#888;padding:6px 40px;margin:0'>
+                <span class='fa fa-trophy'></span>
+                <span ng-bind='share.title'></span>
+            </md-button>
+        </a>
+    </md-menu-content>
+</md-dialog>

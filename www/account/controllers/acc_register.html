@@ -32,11 +32,15 @@
     </style>
     <div layout="column" class="demo-md-panel md-padding col-xs-12 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
         <div style='margin-top:3rem;margin-bottom:2rem'>
+            <md-icon class='md-primary' ng-click='cancel()'>
+                <i class="fa fa-chevron-left fa-lg"></i>
+            </md-icon>
             <span class='h2' style="margin-top:4rem">注册新用户</span>
             <md-button md-no-ink class="md-primary" ng-click='goPage("acc_login")'>已经注册了,直接登陆</md-button>
         </div>
         <form name="userForm">
             <md-content class="md-no-momentum">
+                <input name="phone" style='display:none' />
                 <md-input-container class="md-block" flex-gt-sm style='margin-top:2rem'>
                     <md-icon>
                         <i class="fa fa-phone fa-lg"></i>
@@ -49,6 +53,8 @@
                     <md-button class="md-raised md-primary pull-right" ng-click='openCaptchaDialog()' ng-show='!waiting'>发送验证码</md-button>
                     <md-button class="md-raised md-primary pull-right" ng-show='waiting' ng-disabled='true'>重新发送({{waiting}})</md-button>
                 </md-input-container>
+
+                <input name="phoneCode" style='display:none' />
                 <md-input-container class="md-block" flex-gt-sm>
                     <md-icon>
                         <i class="fa fa-key fa-lg"></i>
@@ -59,6 +65,8 @@
                         <div ng-if="userForm.phoneCode.$error.pattern">六位数字，例如 898878</div>
                     </div>
                 </md-input-container>
+
+                <input name="pw" style='display:none' />
                 <md-input-container class="md-block" flex-gt-sm>
                     <md-icon>
                         <i class="fa fa-lock fa-lg"></i>

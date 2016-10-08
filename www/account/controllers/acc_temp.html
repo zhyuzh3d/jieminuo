@@ -30,44 +30,46 @@
         }
 
     </style>
-    <div class="demo-md-panel md-padding col-xs-12 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
-        <div style='margin-top:3rem;margin-bottom:4rem'>
-            <md-icon class='md-primary' ng-click='cancel()'>
-                <i class="fa fa-chevron-left fa-lg"></i>
-            </md-icon>
+
+
+
+    <a href="javascript:void(0);" onclick="window.open('http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url='+encodeURIComponent(document.location.href));return false;" title="分享到QQ空间"><img src="http://qzonestyle.gtimg.cn/ac/qzone_v5/app/app_share/qz_logo.png" alt="分享到QQ空间" /></a>
+
+
+
+    <div class="demo-md-panel md-padding col-xs-10  col-xs-offset-1 col-sm-6 col-sm-offset-3 col-lg-4 col-lg-offset-4">
+        <div style='margin-top:3rem;margin-bottom:4rem;text-align:left'>
             <span class='h2' style="margin-top:4rem">账号登录</span>
             <md-button md-no-ink class="md-primary" ng-click='goPage("acc_register")'>还没账号？立即注册</md-button>
         </div>
         <form name="userForm">
             <md-content class="md-no-momentum">
-
-                <input name="phone" style='display:none' />
                 <md-input-container class="md-block" flex-gt-sm style='margin-top:40px'>
                     <md-icon>
                         <i class="fa fa-phone fa-lg"></i>
                     </md-icon>
                     <label>电话号码</label>
-                    <input id='phoneipt' name="phone" ng-model="user.phone" ng-pattern="/^1+\d{10}$/" />
+                    <input name="phone" ng-model="user.phone" ng-pattern="/^1+\d{10}$/" />
                     <div ng-messages="usrForm.phone.$error">
                         <div ng-if="userForm.phone.$error.pattern">必须使用真实号码，请确认输入正确</div>
                     </div>
                 </md-input-container>
 
-                <input name="pw" style='display:none' />
                 <md-input-container class="md-block" flex-gt-sm style='margin-top:40px'>
                     <md-icon>
                         <i class="fa fa-lock fa-lg"></i>
                     </md-icon>
                     <label>密码</label>
-                    <input id='pwipt' name="pw" type='password' ng-model="user.pw" ng-pattern="/^.{6,18}$/" />
+                    <input name="pw" type='password' ng-model="user.pw" ng-pattern="/^.{6,18}$/" />
                     <div ng-messages="usrForm.pw.$error">
                         <div ng-if="userForm.pw.$error.pattern">6~18位任意数字</div>
                     </div>
                 </md-input-container>
 
+
+
                 <md-button md-no-ink class="md-primary" ng-click='goPage("acc_changePw")'>忘记密码了？点这里重置</md-button>
                 <br>
-
                 <div style="margin-top:3rem">
                     <md-button class="md-raised md-accent btn-lg col-xs-6" ng-click='loginByPhone()'>登陆</md-button>
                     <md-button class="md-raised md-default btn-lg" ng-click='cancel()'>取消</md-button>
@@ -82,7 +84,7 @@
 
 <!--加载外部控制器js文件-->
 <script>
-    _fns.addCtrlrJs('acc_login');
+    _fns.addCtrlrJs('acc_temp');
 
 </script>
 

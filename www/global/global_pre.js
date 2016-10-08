@@ -44,6 +44,8 @@ if (!_global) var _global = {};
         $.post(api, dat, function (res) {
             var isloginpage = (location.href.indexOf(_global.hostUrl + '/account/?page=acc_login') == 0);
             var isregpage = (location.href.indexOf(_global.hostUrl + '/account/?page=acc_register') == 0);
+            var ischangepwpage = (location.href.indexOf(_global.hostUrl + '/account/?page=acc_changePw') == 0);
+            var istemp = (location.href.indexOf(_global.hostUrl + '/account/?page=acc_temp') == 0);
             var ishomepage = (location.href == _global.hostUrl + '/') || (location.href == _global.hostUrl);
 
 
@@ -54,7 +56,7 @@ if (!_global) var _global = {};
             } else {
                 //没有登陆，跳转到登录页，把当前页地址作为参数传递（因为可能是单独调用接口注销的）
                 //如果当前页面已经是登录页或注册页就不要跳转了,站点首页不跳转
-                if (!isloginpage && !isregpage && !ishomepage) {
+                if (!isloginpage && !isregpage && !ischangepwpage && !istemp && !ishomepage) {
                     var tourl = _global.hostUrl + '/account/?page=acc_login&okUrl=';
                     tourl += encodeURI(location.href);
                     setTimeout(function () {

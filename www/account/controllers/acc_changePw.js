@@ -107,6 +107,11 @@
                 $scope.cancelDialog();
                 var tip = '发送成功，请注意查收';
 
+                $scope.$apply(function () {
+                    $scope.hasSendCode = true;
+                    $scope.user.phoneCode = undefined;
+                });
+
                 if (res.code == 1) {
                     //启动倒计时
                     $scope.waiting = 120;
@@ -233,8 +238,6 @@
 
 
 
-
-
         //测试
         $scope.print = function (str) {
             console.log(str);
@@ -254,6 +257,7 @@
                 console.log(ctrlrName + ':' + fn.name + ' auto run failed...');
             }
         }
+
 
         //end
         console.log(ctrlrName + '.js loading...')

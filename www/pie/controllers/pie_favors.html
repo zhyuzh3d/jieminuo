@@ -1,5 +1,6 @@
 <script>
     _fns.addCtrlrJs('pie_favors');
+    _fns.addDialogJs('share');
 
 </script>
 
@@ -69,6 +70,9 @@
                             </md-button>
                             <md-button flex='none' class="md-icon-button itbtn  md-default" ng-hide='item.hasfavor' aria-label='a' style='margin:0' data-toggle="tooltip" data-placement="bottom" ng-click='setFavorApp(item,true)' title="点击收藏">
                                 <span class='fa fa-heart'></span>
+                            </md-button>
+                            <md-button flex='none' class="md-icon-button itbtn md-primary" ng-click='openShare(item)' aria-label='a' style='margin:0' data-toggle="tooltip" data-placement="bottom" title="分享">
+                                <span class='fa fa-share-alt'></span>
                             </md-button>
                         </md-card-actions>
                     </md-card>

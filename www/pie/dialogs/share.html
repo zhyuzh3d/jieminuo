@@ -1,0 +1,30 @@
+<md-dialog id='pie_share_dialog' aria-label="a" style='padding:24px'>
+    <md-tabs md-dynamic-height md-border-bottom>
+        <md-tab label="一键分享" md-on-select='qcodeVisble=false' md-active='!qcodeVisble'>
+            <md-menu-content layout='column'>
+                <md-button flex='none' class="md-default" ng-repeat='(k,v) in shares' ng-click='goShare(k)' aria-label='a' style='color:#888;padding:6px 40px;margin:0;text-align:center'>
+                    <div style="width:200px;text-align:left">
+                        <img ng-src='{{v.icon}}' height='24px' />
+                        <span ng-bind='v.title'></span>
+                    </div>
+                </md-button>
+                <md-button flex='none' class="md-default" ng-click='showQcode()' aria-label='a' style='color:#888;padding:6px 40px;margin:0;text-align:center'>
+                    <div style="width:200px;text-align:left">
+                        <img src='http://www.xmgc360.com//_imgs/wechat.png' height='24px' />
+                        <span>微信扫一扫</span>
+                    </div>
+                </md-button>
+            </md-menu-content>
+        </md-tab>
+
+        <md-tab label="二维码与链接" md-on-select='showQcode()' md-active='qcodeVisble'>
+            <md-content style='background:#FFF'>
+                <a ng-href="{{$root.tempDialogData.url}}" target='_blank' style="padding:24px">
+                    <div id="qrcode" style="width:256px;height:256px"></div>
+                </a>
+                <p style='width:100%;text-transform:none;word-break:break-all;font-size:14px;color:#666' aria-label='a' ng-bind="$root.tempDialogData.url"></p>
+            </md-content>
+        </md-tab>
+    </md-tabs>
+
+</md-dialog>

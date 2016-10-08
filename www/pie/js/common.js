@@ -134,18 +134,36 @@ if (!_pie) var _pie = {};
         return _cfg.home + 'controllers/' + ctrlrname + ext;
     };
 
+    //设置获取dialog路径方法
+    _fns.getDialogUrl = function (dialogname, ext) {
+        if (!ext) ext = '.html';
+        return _cfg.home + 'dialogs/' + dialogname + ext;
+    };
+
     //添加控制器的js文件
     _fns.addCtrlrJs = function (ctrlrname) {
         var all_js = document.getElementsByTagName("script");
         var cur_js = $(all_js[all_js.length - 1]);
 
-        var url = './controllers/' + ctrlrname + '.js';
+        var url = _cfg.home + 'controllers/' + ctrlrname + '.js';
         cur_js.prev().append('<script src="' + url + '"><\/script>');
     };
+
+    //添加弹窗的js文件
+    _fns.addDialogJs = function (dialogname) {
+        var all_js = document.getElementsByTagName("script");
+        var cur_js = $(all_js[all_js.length - 1]);
+
+        var url = _cfg.home + 'dialogs/' + dialogname + '.js';
+        cur_js.prev().append('<script src="' + url + '"><\/script>');
+    };
+
+
 
     //向_xdat添加控制器，便于根据名称或Dom的id获取控制器的scope
     _fns.initCtrlr = function (scope, element, name, solo) {
         scope.ctrlrName = name || scope.ctrlrName;
+        scope.getCtrlrUrl = _fns.getCtrlrUrl;
 
         //获取父层传来的参数，写入scope.xargs;
         _fns.getCtrlrXags(scope, element);
@@ -750,8 +768,8 @@ if (!_pie) var _pie = {};
 
 
 /*把一个对象转化为数组{key1:val1,key2:val2,...} =>[val1,val2,...]
-* 使用usekv保留原有属性转为[{key:xx,val:xx},...],默认为假
-*/
+ * 使用usekv保留原有属性转为[{key:xx,val:xx},...],默认为假
+ */
 _fns.obj2arr = function (obj, usekv) {
     var arr = [];
     for (var attr in obj) {
@@ -800,6 +818,35 @@ _fns.arr2obj = function (arr, keyval, keyobj) {
     };
     return res;
 }
+
+
+
+
+
+
+//拼合分享链接
+_fns.buildShareurl = function (shareto, title, url, pic) {
+    if (!title) title = "我在杰米诺课堂学习编程啦，你也来吧！";
+    if (!url == undefined) url = "http://www.jieminuoketang.com";
+
+    var strp = "title=" + title + "&url=" + url + "&pic=" + pic;
+    var res;
+    switch (shareto) {
+        case 'qq':
+            res = "http://connect.qq.com/widget/shareqq/index.html?" + strp;
+            break;
+        case 'qzone':
+            res = "http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?" + strp + "&summary=我在杰米诺课堂学习编程啦，你也来吧！";
+            break;
+        case 'weibo':
+            res = "http://service.weibo.com/share/share.php?" + strp;
+            break;
+    };
+
+    return str;
+};
+
+
 
 
 

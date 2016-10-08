@@ -256,6 +256,21 @@
         };
 
 
+        //打开分享窗口
+        $scope.openShare = function (item) {
+            var url = item.url.replace('http://files.jieminuoketang', 'http://rtfiles.jieminuoketang');
+            $rootScope.tempDialogData = {
+                title: '我开发的WebApp:' + item.alias,
+                url: url + 'index.html',
+            };
+            $mdDialog.show({
+                controller: 'pie_dialog_share',
+                templateUrl: _fns.getDialogUrl('share'),
+                parent: angular.element(document.body),
+                clickOutsideToClose: true
+            })
+        };
+
 
         //end
     }

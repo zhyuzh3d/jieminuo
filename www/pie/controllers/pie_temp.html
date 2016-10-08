@@ -1,6 +1,6 @@
 <script>
     _fns.addCtrlrJs('pie_temp');
-
+    _fns.addDialogJs('share');
 </script>
 
 <!--控制器界面部分-->
@@ -10,6 +10,9 @@
 
     </style>
 
-    <div ng-bind-html='captcha | toTrustHtml'>xxx</div>
+    <div style="height:500px;width:500px">
+
+        <div class="btn btn-default" ng-click='showShareDialog()'>弹出分享</div>
+    </div>
 
 </div>

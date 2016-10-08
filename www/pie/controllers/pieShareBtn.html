@@ -1,0 +1,85 @@
+<!--
+mini控制器，相当于directive,可以直接使用
+xargs:xcolor='#FFFFFF',
+xargs*:xurl='http://xxxx',
+xargs*:xtitle='xxxx',
+xargs*:xpic='http://xxxx',
+
+示例：<div ng-include='getCtrlrUrl("pieShareBtn")' xtitle='标题' xurl='{{url}}' xcolor='#F00'></div>
+-->
+
+<script>
+    (function() {
+        'use strict';
+        var thisName = 'pieShareBtn';
+
+        _app.controller(thisName, thisFn);
+
+        function thisFn(
+            $rootScope,
+            $scope,
+            $location,
+            $anchorScroll,
+            $element,
+            $mdToast,
+            $mdDialog,
+            $mdMedia,
+            $filter
+        ) {
+            console.log(thisName + '.js is loading...');
+            _fns.initCtrlr($scope, $element, thisName, false);
+
+            $rootScope[thisName] = $scope;
+
+            if ($scope.xargs.xcolor) $element.find('#toggleBtn').css('color', $scope.xargs.xcolor);
+
+            //创建各个分享链接
+            $scope.refreshUrls = function() {
+                _fns.getCtrlrXags($scope, $element);
+
+                var xtitle = $scope.xargs.xtitle ? $scope.xargs.xtitle : "我在杰米诺课堂学习编程啦，你也来吧！";
+                var xurl = $scope.xargs.xurl ? $scope.xargs.xurl : "http://www.jieminuoketang.com";
+                var xpic = $scope.xargs.xpic ? $scope.xargs.xpic : '';
+
+                var strp = "title=" + encodeURIComponent(title) + "&url=" + encodeURIComponent(url) + "&pic=" + encodeURIComponent(pic);
+
+                $scope.shares = [];
+                $scope.shares.push({
+                    url: "http://connect.qq.com/widget/shareqq/index.html?" + strp,
+                    title: 'QQ',
+                    icon: '',
+                });
+
+                $scope.shares.push({
+                    url: "http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?" + strp + "&summary=我在杰米诺课堂学习编程啦，你也来吧！",
+                    title: 'QQ空间',
+                    icon: '',
+                });
+
+                $scope.shares.push({
+                    url: "http://service.weibo.com/share/share.php?" + strp,
+                    title: '新浪微博',
+                    icon: '',
+                });
+            };
+
+
+
+            //end
+        }
+    })();
+
+</script>
+
+<div ng-controller='pieShareBtn'>
+    <div class="btn-group">
+        <button id='toggleBtn' class="btn btn-default dropdown-toggle" ng-click='refreshUrls()' data-toggle="dropdown" style='background:#FFF;color:#666;border:none'>
+            <span class="fa fa-share-alt fa-lg"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            <li ng-repeat='v in shares'>
+                <a ng-href="{{v.url}}" ng-bind="v.title" style="padding:12px"></a>
+            </li>
+        </ul>
+    </div>
+</div>

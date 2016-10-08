@@ -48,11 +48,6 @@
         });
 
 
-        //取消
-        $scope.cancel = function () {
-            window.location.href = document.referrer;
-        };
-
 
 
         //注销当前账号
@@ -130,8 +125,13 @@
 
 
 
-
-
+        $(document).ready(function () {
+            console.log('>>>11>', $scope.user.phone);
+            _fns.applyScope($scope, function () {
+                $scope.user.phone = '';
+                console.log('>>>>', $scope.user.phone);
+            });
+        });
         //end
         console.log(ctrlrName + '.js loading...')
     };
