@@ -1192,6 +1192,16 @@
         });
 
 
+        //直接计算一个对象转为数组的长度
+
+        $scope.objLength = function (obj) {
+            var arr = _fns.obj2arr(obj);
+            console.log('length',obj,arr,arr.length);
+            return arr.length;
+        }
+
+
+
         //打开分享窗口
         $scope.openShare = function (item) {
             var url = item.url.replace('http://files.jieminuoketang', 'http://rtfiles.jieminuoketang');

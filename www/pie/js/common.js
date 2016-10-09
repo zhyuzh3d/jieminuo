@@ -46,7 +46,7 @@ if (!_pie) var _pie = {};
 
     //支持打开编辑的文件类型
     _cfg.editFileTypes = ['html', 'js', 'css', 'txt', 'json'];
-    _cfg.viewImageTypes = ['jpg', 'png', 'gif'];
+    _cfg.viewImageTypes = ['jpg', 'png', 'gif','jpeg'];
 
     //全部mimetype
     _cfg.mimeTypes = {
@@ -824,6 +824,7 @@ _fns.arr2obj = function (arr, keyval, keyobj) {
 
 
 
+
 //拼合分享链接
 _fns.buildShareurl = function (shareto, title, url, pic) {
     if (!title) title = "我在杰米诺课堂学习编程啦，你也来吧！";
@@ -845,6 +846,8 @@ _fns.buildShareurl = function (shareto, title, url, pic) {
 
     return str;
 };
+
+
 
 
 
