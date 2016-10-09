@@ -58,7 +58,8 @@
                 } else {
                     $scope[str] = val;
                 }
-            }
+            };
+            $scope.resizePreviewPart();
         };
 
         //检测Appname，如果没有那么后退
@@ -1095,7 +1096,8 @@
 
         //拖拽改变预览窗大小的功能
         $scope.draging = false;
-        (function () {
+
+        $scope.setDragBar = function () {
             //拖拽滑块改变窗格尺寸
             var startPrevWid = 480;
             var curPrevWid = 480;
@@ -1111,7 +1113,6 @@
             });
 
             //全局鼠标监听
-
             $(window).bind('mousemove', function (evt) {
                 if ($scope.draging) {
                     var curX = evt.clientX || evt.x;
@@ -1124,11 +1125,28 @@
                     $('#previewPart').css('width', newWid + 'px');
                 };
             });
+
             $(window).bind('mouseup', function (evt) {
                 $scope.draging = false;
                 $('#dragMask').hide();
             });
-        })();
+        };
+        $scope.setDragBar();
+
+       //重新匹配预览窗口，用于切换开关显示时候使用
+        $scope.resizePreviewPart = function () {
+            setTimeout(function () {
+                var mainwid = $('#mainbody').innerWidth();
+                var listwid = $scope.hideList ? 0 : $('#listPart').outerWidth(true);
+                var editwid = $('#editorPart').outerWidth(true) + 1;
+                var barwid = $('#dragPreSizeBar').outerWidth(true);
+
+                var wid = mainwid - listwid - editwid - barwid - 1;
+                if (wid < 480) wid = 480;
+                $('#previewPart').css('width', wid + 'px');
+            }, 200)
+        };
+
 
         //检查是否当前预览文件,文件列表栏标识预览文件
         $scope.fileStateStyle = function (item) {
