@@ -483,7 +483,7 @@
         $(document).ready(function () {
             setTimeout(function () {
                 if (!$rootScope.leftMenuOpen && $mdMedia("gt-sm")) {
-                    $('#leftnavbtn').click();
+                    //$('#leftnavbtn').click();
                 };
             }, 1000);
         });

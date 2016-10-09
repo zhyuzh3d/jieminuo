@@ -119,27 +119,44 @@ var _app = {}; //最高全局变量，angular
             };
         });
 
-        //侧栏
+        //侧栏,默认允许固定
+        $rootScope.leftMenuOpen = true;
+        $rootScope.enableBlockLeftNav = true;
         $rootScope.sideNavUrl = _fns.getCtrlrUrl('pie_sideNav');
+
+        //仅供测试
+        $rootScope.tempCtrlrUrl = _fns.getCtrlrUrl('pie_temp');
 
         //显示左侧栏,接收true／false
         $rootScope.tagLeftMenu = function (open) {
-            var isopen = $rootScope.leftMenuOpen = $mdSidenav('left').isOpen();
+
             if (open === undefined) {
-                $mdSidenav('left').toggle();
-                $rootScope.leftMenuFold = !$rootScope.leftMenuFold;
+                if ($mdSidenav('left').isLockedOpen()) {
+                    $rootScope.enableBlockLeftNav = false;
+                    $mdSidenav('left').close().then(function () {
+                        $rootScope.leftMenuOpen = $mdSidenav('left').isLockedOpen() ? true : $mdSidenav('left').isOpen();
+                    });
+                } else {
+                    $rootScope.enableBlockLeftNav = true;
+                    $mdSidenav('left').toggle().then(function () {
+                        $rootScope.leftMenuOpen = $mdSidenav('left').isLockedOpen() ? true : $mdSidenav('left').isOpen();
+                    });
+                };
             } else if (open) {
-                if (!isopen) {
-                    $mdSidenav('left').toggle();
-                    $rootScope.leftMenuFold = false;
-                }
+                if (!$mdSidenav('left').isLockedOpen() && !$mdSidenav('left').isOpen()) {
+                    $rootScope.enableBlockLeftNav = true;
+                    $mdSidenav('left').open().then(function () {
+                        $rootScope.leftMenuOpen = $mdSidenav('left').isLockedOpen() ? true : $mdSidenav('left').isOpen();
+                    });
+                };
             } else {
-                if (isopen) {
-                    $mdSidenav('left').toggle();
-                    $rootScope.leftMenuFold = true;
-                }
+                if ($mdSidenav('left').isLockedOpen() || $mdSidenav('left').isOpen()) {
+                    $rootScope.enableBlockLeftNav = false;
+                    $mdSidenav('left').close().then(function () {
+                        $rootScope.leftMenuOpen = $mdSidenav('left').isLockedOpen() ? true : $mdSidenav('left').isOpen();
+                    });
+                };
             };
-            $rootScope.leftMenuOpen = $mdSidenav('left').isOpen();
         };
 
     });

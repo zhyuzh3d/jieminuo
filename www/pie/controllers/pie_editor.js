@@ -1196,7 +1196,6 @@
 
         $scope.objLength = function (obj) {
             var arr = _fns.obj2arr(obj);
-            console.log('length', obj, arr, arr.length);
             return arr.length;
         }
 
@@ -1218,6 +1217,9 @@
         };
 
 
+        //关闭左侧栏
+        $rootScope.enableBlockLeftNav = false;
+        //$rootScope.tagLeftMenu(false);
 
         //ctrlr end
     }

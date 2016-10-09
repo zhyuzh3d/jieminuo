@@ -1,233 +1,45 @@
 <script>
-    _fns.addCtrlrJs('pie_welcome');
-    _fns.addDialogJs('share');
-
+    _fns.addCtrlrJs('pie_sideNav');
 </script>
 
 <!--控制器界面部分-->
-<div id='pie_welcome' ng-controller='pie_welcome' class='container-fluid pie_welcome'>
+<div layout layout-align='stretch stretch' id='pie_sideNav' ng-controller='pie_sideNav' class='pie_sideNav' style='width: 100%; height: 100%; overflow:visible;font-family: Verdana, Geneva, Arial, Helvetica, sans-serif'>
     <style>
         /*内部样式，以.doc_devWeb开头*/
-
-        .pie_welcome label {
-            font-size: 2rem;
-            font-family: inherit;
-            text-align: left;
-        }
-
-        .pie_welcome input {
-            font-size: 2rem;
-            font-family: inherit;
-        }
-
-        .pie_welcome md-input-container {
-            margin-top: 3rem
-        }
-
-        .pie_welcome .hint-min {
-            color: #AAA;
-            font-size: 12px;
-            text-align: left;
-        }
-
-        .pie_welcome .dropsub {
-            color: #888;
-            font-size: 14px;
-            padding: 4px 40px;
-            margin: 0;
-        }
-
-        .pie_welcome .avatar-md {
-            width: 32px;
-            height: 32px;
-            border-radius: 32px;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-        }
-
-        .md-icon-button .itbtn {
-            cursor: pointer;
-        }
-
     </style>
-    <div layout-padding>
-
-        <div>
-            <md-button hide-gt-sm class="md-icon-button" ng-click="$root.tagLeftMenu()" style='margin-left:0' aria-label='tagleft'>
-                <span class="fa fa-bars fa-lg"></span>
-            </md-button>
-            <md-button id='leftnavbtn' class="md-icon-button hidden-sm hidden-xs" ng-click="$root.tagLeftMenu()" style='margin-left:0;color:#AAA' aria-label='tagleft' data-toggle="tooltip" data-placement="bottom" title="显示／隐藏左侧菜单栏">
-                <span class="fa fa-chevron-left fa-lg" ng-show='$root.leftMenuOpen'></span>
-                <span class="fa fa-bars fa-lg" ng-hide='$root.leftMenuOpen'></span>
-            </md-button>
-            <md-button class="md-raised md-accent" ng-click='openCreateDialog()' aria-label='doCreateApp'>新建APP</md-button>
-            <md-button class="md-default" ng-click='getMyAppList()' aria-label='getMyAppList' ng-show>刷新</md-button>
-
-            <div class="dropdown pull-right" ng-show='hasLogin' style="margin-top:8px">
-                <button class="dropdown-toggle" id="ddmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="background:none;border:none">
-                    <span>
-                        <img class='avatar-md' ng-src='{{myUsrInfo.avatar?myUsrInfo.avatar+"-avatar32":""}}' />
-                    </span>
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="ddmenu1">
-                    <li class="btn" ng-click='gotoProfile()' style="width:100%">资料设置</li>
-                    <md-divider></md-divider>
-                    <li class="btn" ng-click='logout()' style="width:100%">退出</li>
-                </ul>
+    <!--控制器界面部分-->
+    <md-sidenav layout='column' md-component-id="left" class="site-sidenav md-sidenav-left" md-component-id="left" md-is-locked-open="($mdMedia('gt-sm'))&& $root.enableBlockLeftNav" style='width:100%;height:100%;padding:0;overflow-x:hidden;border-right:1px solid #00bfa5;box-shadow:none' md-whiteframe='8'>
+        <div layout layout-align='space-between stretch' ng-click='goHome()' md-colors='{background:"primary"}' layout-padding flex='initial' style='padding:0;height: 6rem;'>
+            <div flex='60' class='elips' style="font-size:1.4rem;color:#FFF;margin:1rem;width:200px;overflow:hidden;font-weight:bold;padding-left:0">
+                <span class="fa fa-home fa-lg"></span>
+                <span>杰米诺课堂xx</span>
+                <span style="vertical-align:super;font-size:10px">测</span>
             </div>
         </div>
-        <div layout layout-wrap class='container-fluid'>
-            <div style='width:100%' ng-show='myApps.count<1'>
-                <div style="text-align:center">～这里空空如也，立即创建自己的APP吧～</div>
-                <br>
-                <md-card style='position:relative' style='margin:12px 0'>
-                    <a href="https://ke.qq.com/course/156211" target="_blank">
-                        <img src='http://files.jieminuoketang.com/1/aaw6vsns2i5k/src/tutorBg.jpeg' width="100%">
-                    </a>
-                    <md-button class="md-raised md-accent" aria-label='a' style='position: absolute; padding: 4px 24px;left: 3%;bottom: 10%;font-size:18px' ng-click='gotoLink("https://ke.qq.com/course/156211")'>
-                        <span class="fa fa-play-circle fa-lg"></span>
-                        <span>编程入门视频课／完全免费</span>
+
+        <md-list layout='column' flex='grow' style='padding:0;width:100%' layout-align='space-between start'>
+            <div flex='grow' style="width:100%">
+                <md-menu-item style='width:100%' ng-repeat="item in menus" ng-click='gotoCtrlr(item.ctrlr)'>
+                    <md-button ng-class="{true:'md-primary',false:''}[item.ctrlr==getCurCtrlr()]" aria-label='menu'>
+                        <div style="text-align:left">
+                            <span ng-class="item.icon" style="margin-right:1rem"></span>
+                            <span ng-bind='item.name' style="font-size:1.3rem"></span>
+                        </div>
                     </md-button>
-                </md-card>
+                </md-menu-item>
+                <md-divider ng-show='isAdmin'></md-divider>
+                <md-menu-item ng-show='isAdmin'  style='width:100%' ng-repeat="item in adminMenus" ng-click='$root.gotoCtrlr(item.ctrlr)'>
+                    <md-button ng-class="{true:'md-primary',false:''}[item.ctrlr==getCurCtrlr()]" aria-label='menu'>
+                        <div style="text-align:left">
+                            <span ng-class="item.icon" style="margin-right:1rem"></span>
+                            <span ng-bind='item.name' style="font-size:1.3rem"></span>
+                        </div>
+                    </md-button>
+                </md-menu-item>
             </div>
-            <div class='col-xs-12 col-sm-6 col-md-4 col-lg-2' ng-repeat='item in myApps.apps' style='padding:0.5rem'>
-                <md-card md-theme="default" md-theme-watch style='margin:0;'>
-                    <md-card-title class="elips" style='padding:0;overflow:hidden;position:relative'>
-                        <div style="position:absolute;width:100%;height:100%;background-size:cover;opacity:0.4;border-radius: 4px 4px 0 0" ng-style='genCardBg2(item.val)'></div>
-                        <div style="position:absolute;width:100%;height:100%;background-size:cover;opacity:0.4;border-radius: 4px 4px 0 0" ng-style='genCardBg(item.val)'></div>
-                        <md-card-title-text class="elips" style='margin:16px;z-index:6'>
-                            <div class="md-headline elips" ng-click='openApp(item.key)' style="cursor:pointer;">
-                                <span class="md-headline elips" ng-bind='item.info.alias' style='color:#000;font-size:16px'></span>
-                            </div>
-                            <div class="md-subhead elips" ng-click='editApp(item.key)' style="cursor:pointer;color:#000;opacity:0.5;font-size:10px">
-                                <span>ID:</span>
-                                <span ng-bind='item.info.name | uppercase'></span>
-                            </div>
-                        </md-card-title-text>
-                    </md-card-title>
+        </md-list>
+    </md-sidenav>
 
-
-                    <!--   下拉菜单-->
-                    <md-card-actions layout-wrap layout="row" layout-align="end center" style='color:#AAA'>
-                        <md-button flex='none' class="md-icon-button itbtn" ng-click='openShare(item.info)' aria-label='a' style='color:#00bfa5;margin:0;padding:4px;' data-toggle="tooltip" data-placement="bottom" title="运行App主页">
-                            <span class='fa fa-share-alt'></span>
-                        </md-button>
-
-                        <md-button flex='none' class="md-icon-button itbtn" ng-click='openApp(item.key)' aria-label='a' style='color:#00bfa5;margin:0;padding:4px;' data-toggle="tooltip" data-placement="bottom" title="运行App主页">
-                            <span class='fa fa-rocket'></span>
-                        </md-button>
-
-                        <md-button flex='none' class="md-icon-button itbtn" ng-click='editApp(item.key)' aria-label='a' style='color:#00bfa5;margin:0;padding:4px;' data-toggle="tooltip" data-placement="bottom" title="编辑App代码">
-                            <span class='fa fa-pencil'></span>
-                        </md-button>
-
-                        <md-menu style='padding:0'>
-                            <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:40px;margin:0;' data-toggle="tooltip" data-placement="bottom" title="更多菜单功能">
-                                <p style="color:#00bfa5">
-                                    <span class="fa fa-bars"></span>
-                                </p>
-                            </md-button>
-                            <md-menu-content>
-                                <md-button flex='none' class="md-default" ng-click='openShare(item.info)' aria-label='a' style='color:#888;padding:6px 40px;margin:0'>
-                                    <span class='fa fa-share-alt'></span>
-                                    <span>分享</span>
-                                </md-button>
-                                <md-button flex='none' class="md-default" ng-click='openApp(item.key)' aria-label='a' style='color:#888;padding:6px 40px;margin:0'>
-                                    <span class='fa fa-rocket'></span>
-                                    <span>运行</span>
-                                </md-button>
-                                <md-button flex='none' class="md-default" ng-click='editApp(item.key)' aria-label='a' style='color:#888;padding:6px 40px;margin:0'>
-                                    <span class='fa fa-pencil'></span>
-                                    <span>编辑</span>
-                                </md-button>
-                                <md-button flex='none' class="md-default" ng-click='joinLadder(item)' aria-label='a' style='color:#888;padding:6px 40px;margin:0'>
-                                    <span class='fa fa-trophy'></span>
-                                    <span>打榜</span>
-                                </md-button>
-                                <md-button flex='none' class="md-default" ng-click='renameApp(item.val)' aria-label='a' style='color:#888;padding:6px 40px;margin:0'>
-                                    <span class='fa fa-tag'></span>
-                                    <span>改名</span>
-                                </md-button>
-                                <md-button flex='none' class="md-default" ng-click='openReInitDialog(item.info)' aria-label='a' style='color:#888;padding:6px 40px;margin:0'>
-                                    <span class='fa fa-refresh'></span>
-                                    <span>重置</span>
-                                </md-button>
-                                <md-button flex='none' class="md-default" ng-click='doRemoveApp(item.key)' aria-label='a' style='color:#888;padding:6px 40px;margin:0'>
-                                    <span class='fa fa-remove'></span>
-                                    <span>移除</span>
-                                </md-button>
-                            </md-menu-content>
-                        </md-menu>
-                    </md-card-actions>
-                </md-card>
-            </div>
-        </div>
-
-        <!--      新建弹窗-->
-        <div style="visibility: hidden">
-            <div class="md-dialog-container" id="createDialog">
-                <md-dialog layout-padding style='text-align:center;padding:24px;max-width:800px'>
-                    <form name="userForm" style="margin-top:12px;width:400px;">
-                        <md-content class="md-no-momentum" style='background:inherit'>
-                            <md-input-container class="md-block" flex-gt-sm style='margin-top:24px'>
-                                <label style="text-align:left;font-size:2rem">APP名称</label>
-                                <input name='alias' ng-model="newApp.alias" ng-pattern="/^[a-zA-Z\u0391-\uFFE5]+[0-9a-zA-Z\u0391-\uFFE5]{2,17}$/" style='font-size:2rem;font-family:simhei' />
-                                <div style='color:#AAA;text-align:left;font-size:12px'>中文,数字,字母都可以,3~18位非数字开头</div>
-                            </md-input-container>
-                            <md-input-container class="md-block" flex-gt-sm style='margin-top:48px'>
-                                <label style="text-align:left;font-size:2rem">使用模版</label>
-                                <md-select ng-model="selTemplate" style="text-align:left">
-                                    <md-option ng-repeat="(key,tmp) in templates" value="{{key}}" ng-bind='key'></md-option style="text-align:left">
-                                </md-select>
-                                <div style='color:#AAA;text-align:left;font-size:12px' ng-bind="templates[selTemplate].desc"></div>
-                            </md-input-container>
-                            <md-input-container class="md-block" flex-gt-sm style='margin-top:48px'>
-                                <label style="text-align:left;font-size:2rem">APP标识名</label>
-                                <input name='name' ng-model="newApp.name" ng-pattern="/^[a-zA-Z]+[0-9a-zA-Z]{2,31}$/" style='font-size:2rem;font-family:simhei' />
-                                <div style='color:#AAA;text-align:left;font-size:12px'>字母和数字，3~32位非数字开头。不可重名，设定后不可修改</div>
-                            </md-input-container>
-                        </md-content>
-                    </form>
-                    <div style="margin-top:1rem">
-                        <md-button class="md-raised md-primary btn-lg" ng-click='doCreateApp()' style='width:180px;color:#FFF'>确定创建</md-button>
-                        <md-button class="md-raised md-default btn-lg" ng-click='cancelDialog()'>取消</md-button>
-                    </div>
-                </md-dialog>
-            </div>
-        </div>
-
-
-        <!--        重新初始化模版的弹窗-->
-        <div style="visibility: hidden">
-            <div class="md-dialog-container" id="reInitDialog">
-                <md-dialog layout-padding style='text-align:center;padding:24px;max-width:800px'>
-                    <form name="userForm" style="margin-top:12px;width:400px;">
-                        <md-content class="md-no-momentum" style='background:inherit'>
-                            <md-input-container class="md-block" flex-gt-sm style='margin-top:48px'>
-                                <label style="text-align:left;font-size:2rem">使用模版</label>
-                                <md-select ng-model="RIselTemplate" style="text-align:left">
-                                    <md-option ng-repeat="(key,tmp) in templates" value="{{key}}" ng-bind='key' style="text-align:left"></md-option>
-                                </md-select>
-                                <div style='color:#AAA;text-align:left;font-size:12px' ng-bind="templates[RIselTemplate].desc"></div>
-                            </md-input-container>
-                        </md-content>
-                    </form>
-                    <div style="margin-top:1rem">
-                        <md-button class="md-raised md-primary btn-lg" ng-click='doReInitApp()' style='width:180px;color:#FFF'>重新初始化</md-button>
-                        <md-button class="md-raised md-default btn-lg" ng-click='cancelDialog()'>取消</md-button>
-                    </div>
-                </md-dialog>
-            </div>
-        </div>
-
-
-    </div>
-    <!--    页脚内容-->
-    <div flex class="container" style="margin:5rem 1rem 10rem 2rem">
-        <small style="color:#AAA">Create by zhyuzh</small>
-    </div>
 </div>
 
 
