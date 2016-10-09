@@ -1196,7 +1196,7 @@
 
         $scope.objLength = function (obj) {
             var arr = _fns.obj2arr(obj);
-            console.log('length',obj,arr,arr.length);
+            console.log('length', obj, arr, arr.length);
             return arr.length;
         }
 
@@ -1216,6 +1216,8 @@
                 clickOutsideToClose: true
             })
         };
+
+
 
         //ctrlr end
     }

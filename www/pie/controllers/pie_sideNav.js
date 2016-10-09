@@ -33,6 +33,10 @@
             icon: 'fa fa-heart',
             ctrlr: 'pie_favors',
         }, {
+            name: '入门教程',
+            icon: 'fa fa-envira',
+            ctrlr: 'pie_tutor',
+        }, {
             name: 'What\'s New',
             icon: 'fa fa-bomb',
             ctrlr: 'pie_history',

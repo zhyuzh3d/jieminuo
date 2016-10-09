@@ -39,14 +39,58 @@
 
         <!--        入门视频课-->
         <div style="padding:16px">
-            <md-card style='background:#FEFEFE url() cover'>
+            <md-card style='position:relative'>
+                <a href="https://ke.qq.com/course/156211" target="_blank">
+                    <img src='http://files.jieminuoketang.com/1/aaw6vsns2i5k/src/tutorBg.jpeg' width="100%">
+                </a>
+                <md-button class="md-raised md-accent" aria-label='a' style='position: absolute; padding: 4px 24px;left: 3%;bottom: 10%;font-size:18px' ng-click='gotoLink("https://ke.qq.com/course/156211")'>
+                    <span class="fa fa-play-circle fa-lg"></span>
+                    <span>编程入门视频课／完全免费</span>
+                </md-button>
             </md-card>
-            <a href="https://ke.qq.com/course/156211">
-            </a>
+
+
         </div>
 
-    </div>
+        <!--        学习资源/工具-->
+        <div style="padding:28px">
+            <md-tabs md-dynamic-height md-border-bottom>
+                <md-tab label="全部">
+                    <md-list class="md-dense" flex>
+                        <div ng-repeat="item in allitems" style="margin-bottom:24px">
+                            <h4  style="font-weight:bold">
+                                <img ng-src='{{item.icon}}' width="24px" height="24px" ng-show='item.icon' />
+                                <span ng-bind-html='item.title | toTrustHtml'></span>
+                            </h4>
+                            <p ng-bind-html='item.desc | toTrustHtml' style="color:#888"></p>
+                            <div style="border-left:3px solid #DDD;padding-left:12px">
+                                <a href="sub[1]" ng-bind='sub[0]' ng-repeat='sub in item.links' style="line-height:24px;margin-right:12px" target="_blank"></a>
+                            </div>
+                        </div>
+                    </md-list>
+                </md-tab>
 
+                <md-tab label="{{list[0]}}" ng-repeat='list in arrs'>
+                    <md-list class="md-dense" flex>
+                        <div ng-repeat="item in list[1]" style="margin-bottom:24px">
+                            <h4  style="font-weight:bold">
+                                <img ng-src='{{item.icon}}' width="24px" height="24px" ng-show='item.icon' />
+                                <span ng-bind-html='item.title | toTrustHtml'></span>
+                            </h4>
+                            <p ng-bind-html='item.desc | toTrustHtml' style="color:#888"></p>
+                            <div style="border-left:3px solid #DDD;padding-left:12px">
+                                <a href="sub[1]" ng-bind='sub[0]' ng-repeat='sub in item.links' style="line-height:24px;margin-right:12px" target="_blank"></a>
+                            </div>
+                        </div>
+                    </md-list>
+                </md-tab>
+            </md-tabs>
+        </div>
+
+
+        <div style="height:300px"></div>
+
+    </div>
 
 </div>
 

@@ -79,7 +79,19 @@
             </div>
         </div>
         <div layout layout-wrap class='container-fluid'>
-            <div style="text-align:center" ng-show='myApps.count<1'>～这里空空如也，立即创建自己的APP吧～</div>
+            <div style='width:100%' ng-show='myApps.count<1'>
+                <div style="text-align:center">～这里空空如也，立即创建自己的APP吧～</div>
+                <br>
+                <md-card style='position:relative' style='margin:12px 0'>
+                    <a href="https://ke.qq.com/course/156211" target="_blank">
+                        <img src='http://files.jieminuoketang.com/1/aaw6vsns2i5k/src/tutorBg.jpeg' width="100%">
+                    </a>
+                    <md-button class="md-raised md-accent" aria-label='a' style='position: absolute; padding: 4px 24px;left: 3%;bottom: 10%;font-size:18px' ng-click='gotoLink("https://ke.qq.com/course/156211")'>
+                        <span class="fa fa-play-circle fa-lg"></span>
+                        <span>编程入门视频课／完全免费</span>
+                    </md-button>
+                </md-card>
+            </div>
             <div class='col-xs-12 col-sm-6 col-md-4 col-lg-2' ng-repeat='item in myApps.apps' style='padding:0.5rem'>
                 <md-card md-theme="default" md-theme-watch style='margin:0;'>
                     <md-card-title class="elips" style='padding:0;overflow:hidden;position:relative'>

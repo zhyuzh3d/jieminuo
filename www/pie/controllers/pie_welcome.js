@@ -489,6 +489,12 @@
         });
 
 
+
+        //跳转到链接
+        $scope.gotoLink = function (str) {
+            window.open(str);
+        };
+
         //end
     }
 })();
