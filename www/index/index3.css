@@ -1,0 +1,324 @@
+#page-welcome {
+    background-image: url('http://files.10knet.com/1/ags4fvzumuxh/welcomebg.jpg');
+    background-color: black;
+    background-size: cover;
+}
+#page-list {
+    background-image: url('http://files.10knet.com/1/ava9bkwnlobp/listpage2.jpg');
+    background-color: black;
+    background-size: cover;
+}
+.page-list-bg {
+    background-image: url('http://files.10knet.com/1/ava9bkwnlobp/listpage2.jpg');
+    background-size: cover;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+}
+.page-pie-bg {
+    background-image: url('http://files.10knet.com/1/ags4fvzumuxh/welcomebg.jpg');
+    background-color: black;
+    background-size: contain;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+}
+.bgimg {
+    width: 50%;
+    max-width: 400px;
+    margin-top: 50px;
+    opacity: 0.2;
+}
+.tabbtn {
+    display: inline-block;
+    max-width: 25%;
+    background: #00bfa5;
+    padding: 8px 12px;
+    margin: 4px;
+    border-radius: 8px;
+}
+.tabbtn a {
+    color: white;
+}
+.slider-title {
+    padding: 8px 16px;
+    width: 0%;
+    color: #FFF;
+    text-align: center;
+}
+.line-tabs {
+    text-align: center;
+    border: none;
+}
+.tabicon {
+    max-width: 100%
+}
+.line-normal {
+    margin-bottom: 0;
+}
+.list-box {
+    border-radius: 16px;
+    width: 90%;
+    height: 95%;
+    margin-left: 5%;
+    overflow: hidden;
+    background: rgba(0, 191, 165, 0.33);
+    border: 5px solid rgba(0, 147, 127, 0.12);
+    padding: 12px;
+}
+.list {
+    text-align: center;
+    padding-bottom: 200px;
+    position: absolute;
+    top: 0
+}
+.teclist {
+    border: 1px solid #444;
+    font-size: 12px;
+    padding: 2px 12px;
+    line-height: 20px;
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.1);
+    color: #FFF;
+    margin: 2px;
+}
+.tiptxt {
+    opacity: 0.75;
+    color: #888;
+    font-size: 12px;
+    border: 1px solid #888;
+    border-radius: 12px;
+    padding: 4px 12px
+}
+.tectitle {
+    font-size: 24px;
+    margin: 4px 12px;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: white;
+}
+.circle {
+    height: 56px;
+    width: 56px;
+    border: 1px solid #FFF;
+    border-radius: 36px;
+    line-height: 40px;
+    cursor: pointer;
+    color: #FFF;
+    opacity: 0.5
+}
+.simhei {
+    font-family: simhei;
+}
+.circle:hover {
+    border: 1px solid #448AFF;
+    opacity: 1;
+    color: #448AFF;
+}
+.page-bg {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    background: black;
+}
+.page-center {
+    position: absolute;
+    width: 90%;
+    left: 5%;
+    top: 100px;
+}
+.line-center {
+    text-align: center;
+}
+.txt-link {
+    opacity: 0.66;
+    border: 1px solid #2096f4;
+    border-radius: 36px;
+    color: #2096f4;
+    background: rgba(0, 38, 98, 0.1);
+    cursor: pointer;
+}
+.txt-link div {
+    display: inline-block;
+}
+.txt-linkred {
+    opacity: 0.85;
+    border: 1px solid #FFF;
+    border-radius: 36px;
+    color: #FFF;
+    background: rgba(255, 0, 0, 0.33);
+    cursor: pointer;
+    padding: 6px 18px
+}
+.txt-linkred:hover {
+    opacity: 1;
+    color: #FFF;
+    border: 1px solid #ff68b9;
+}
+.txt-link:hover {
+    opacity: 1;
+    color: #448AFF;
+    border: 1px solid #448AFF;
+}
+.txt-white {
+    color: white;
+    font-weight: bold;
+}
+.uppercase {
+    text-transform: uppercase
+}
+.font-lg {
+    font-weight: bold;
+    font-size: 48px
+}
+.font-md {
+    font-weight: bold;
+    font-size: 24px
+}
+.font-sm {
+    font-weight: bold;
+    font-size: 18px
+}
+.font-xs {
+    font-weight: bold;
+    font-size: 14px
+}
+.divider {
+    margin: 6px 0;
+}
+.divider:before {
+    content: "------------- ";
+    font-weight: normal;
+}
+.divider:after {
+    content: " -------------";
+    font-weight: normal;
+}
+.line-space {
+    height: 12px;
+}
+.topnav {
+    position: absolute;
+    top: 0;
+    background: none;
+    border: none;
+    padding: 8px 16px;
+    width: 100%;
+}
+.topnavbtn {
+    border: none;
+    opacity: 1;
+    height: : 30px;
+    background: none;
+}
+.btnsline {
+    margin-bottom: 15%
+}
+.floatbtn {
+    position: absolute;
+    right: 20px;
+    bottom: 20px
+}
+.playbox {
+    border: 1px dashed #FFF;
+    width: 160px;
+    height: 120px;
+    display: inline-block;
+    padding: 20px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    position: relative;
+    cursor: pointer;
+}
+.playbox:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+.playbtn {
+    position: absolute;
+    font-size: 96px;
+    opacity: 0.5;
+    top: 12px;
+    color: #FFF;
+    left: 36px;
+}
+.playbtn:hover {
+    font-size: 96px;
+    opacity: 0.75;
+    color: #FFF;
+}
+.page-footer {
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    width: 100%;
+    color: #FFF;
+    opacity: 0.5;
+    font-size: 12px
+}
+.avatar-sm {
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.25);
+}
+.usrname {
+    margin-top: 6px;
+    background: none;
+    color: #2796e2;
+    border: none;
+    vertical-align: middle;
+    line-height: 26px;
+}
+.usrname:hover {
+    background: none;
+    color: #5fbcfc;
+    border: none;
+    vertical-align: middle;
+    line-height: 26px;
+}
+.usrname:active {
+    background: none;
+    color: #5fbcfc;
+    border: none;
+    vertical-align: middle;
+    line-height: 26px;
+}
+
+.usrname:visited {
+    color: #5fbcfc;
+}
+.ddbox {
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid #444;
+    color: #FFF;
+}
+
+.ddmenu{
+    width: 100%;
+    background: #(0,0,0,0.05);
+}
+.ddmenu:hover{
+    width: 100%;
+    background: #(0,0,0,0.05);
+    color: inherit;
+}
+
+
+/*logo*/
+.jmnktLogo{
+    background: #00907c;
+    width: 150px;
+    height:30px;
+    -webkit-mask:url(http://files.jieminuoketang.com/1/aaw6vsns2i5k/src/jmnkt2.svg) no-repeat 100% 100%;
+    mask:url(http://files.jieminuoketang.com/1/aaw6vsns2i5k/src/jmnkt2.svg) no-repeat 100% 100%;
+}
+.jmnktLogo:hover{
+    background: #00bfa5;
+}
+
+
+
