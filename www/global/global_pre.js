@@ -46,7 +46,7 @@ if (!_global) var _global = {};
             var isregpage = (location.href.indexOf(_global.hostUrl + '/account/?page=acc_register') == 0);
             var ischangepwpage = (location.href.indexOf(_global.hostUrl + '/account/?page=acc_changePw') == 0);
             var istemp = (location.href.indexOf(_global.hostUrl + '/account/?page=acc_temp') == 0);
-            var ishomepage = (location.href == _global.hostUrl + '/') || (location.href == _global.hostUrl) || (location.href.indexOf(_global.hostUrl + '/?=') == 0);
+            var ishomepage = (location.href == _global.hostUrl + '/') || (location.href == _global.hostUrl) || (location.href.indexOf(_global.hostUrl + '/?') == 0);
 
             if (res.code == 1) {
                 //已经登陆，把数据填充到用户
