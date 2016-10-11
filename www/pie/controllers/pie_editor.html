@@ -418,7 +418,7 @@
             <div layout='column' flex='none' id='previewPart' ng-hide='hidePreview' class='lboder' style='width:480px;height:100%' ng-style='{height:previewHei}'>
                 <!--            预览器-->
                 <iframe id='previewFrame' ng-hide='previewRt' style="border-style:none;height:100%;width:100%;"></iframe>
-                <div ng-show='previewRt' id='previewSec' style="border:1px dashed #DDD;padding:1px;height:100%;width:100%;">
+                <div ng-show='previewRt' id='previewSec' style="border:1px dashed #DDD;padding:1px;height:100%;width:100%;overflow-y:auto">
                     <div ng-bind-html='(editorFile.url==previewRtCssFile.url)?editorFile.data:previewRtCssFile.data| styleCss  | toTrustHtml'></div>
                     <div flex='grow' ng-bind-html='(editorFile.url==previewRtHtmlFile.url)?editorFile.data:previewRtHtmlFile.data  | onlyBody | noJsTag | toTrustHtml'></div>
                 </div>
