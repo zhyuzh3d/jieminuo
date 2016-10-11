@@ -215,8 +215,8 @@
         <div id='mainbody' layout='row' layout-align='start stretch' ng-style="{width:mbodyWid,height:mbodyHei}">
 
             <!--            文件列表部分-->
-            <div flex='none' id='listPart' ng-hide='hideList' style="width:240px;border-left:1px solid #DDD">
-                <div layout id='listMenus' style="min-width:200px;margin:1rem 1rem 0 1rem;padding:0.5rem">
+            <div flex='none' id='listPart' ng-hide='hideList' style="width:240px;border-left:1px solid #DDD;overflow-y:auto;">
+                <div layout id='listMenus' style="min-width:200px;margin:1rem 1rem 0 1rem;padding:0.5rem;">
                     <div flex='none' class="md-button md-default" style="min-width:2rem;min-height:2rem;width:2rem;padding:0;height:2rem;" ng-click='openShare(curApp)'>
                         <span class="fa fa-qrcode fa-2x"></span>
                     </div>

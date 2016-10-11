@@ -12,6 +12,18 @@
     background: #00bfa5;
 }
 
+.jmnktLogo2 {
+    width: 150px;
+    height: 20px;
+    cursor: pointer;
+    background-size: cover;
+    background-image:url(http://files.jieminuoketang.com/1/aaw6vsns2i5k/src/jmnkt2h20min.png);
+}
+.jmnktLogo2:hover {
+    background-image:url(http://files.jieminuoketang.com/1/aaw6vsns2i5k/src/jmnkt2gh20min.png);
+}
+
+
 /*avatar*/
 
 .avatar-sm {

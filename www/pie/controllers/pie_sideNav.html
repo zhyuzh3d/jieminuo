@@ -1,19 +1,19 @@
 <script>
     _fns.addCtrlrJs('pie_sideNav');
+
 </script>
 
 <!--控制器界面部分-->
 <div layout layout-align='stretch stretch' id='pie_sideNav' ng-controller='pie_sideNav' class='pie_sideNav' style='width: 100%; height: 100%; overflow:visible;font-family: Verdana, Geneva, Arial, Helvetica, sans-serif'>
     <style>
         /*内部样式，以.doc_devWeb开头*/
+
     </style>
     <!--控制器界面部分-->
     <md-sidenav layout='column' md-component-id="left" class="site-sidenav md-sidenav-left" md-component-id="left" md-is-locked-open="($mdMedia('gt-sm'))&& $root.enableBlockLeftNav" style='width:100%;height:100%;padding:0;overflow-x:hidden;border-right:1px solid #00bfa5;box-shadow:none' md-whiteframe='8'>
         <div layout layout-align='space-between stretch' ng-click='goHome()' md-colors='{background:"primary"}' layout-padding flex='initial' style='padding:0;height: 6rem;'>
-            <div flex='60' class='elips' style="font-size:1.4rem;color:#FFF;margin:1rem;width:200px;overflow:hidden;font-weight:bold;padding-left:0">
-                <span class="fa fa-home fa-lg"></span>
-                <span>杰米诺课堂</span>
-                <span style="vertical-align:super;font-size:10px">测</span>
+            <div flex='90' class='elips' style="font-size:1.4rem;color:#FFF;margin:1rem;width:200px;overflow:hidden;font-weight:bold;padding-left:0">
+                <img src="http://files.jieminuoketang.com/1/aaw6vsns2i5k/src/jmnkt2wh20min.png">
             </div>
         </div>
 
@@ -28,7 +28,7 @@
                     </md-button>
                 </md-menu-item>
                 <md-divider ng-show='isAdmin'></md-divider>
-                <md-menu-item ng-show='isAdmin'  style='width:100%' ng-repeat="item in adminMenus" ng-click='$root.gotoCtrlr(item.ctrlr)'>
+                <md-menu-item ng-show='isAdmin' style='width:100%' ng-repeat="item in adminMenus" ng-click='$root.gotoCtrlr(item.ctrlr)'>
                     <md-button ng-class="{true:'md-primary',false:''}[item.ctrlr==getCurCtrlr()]" aria-label='menu'>
                         <div style="text-align:left">
                             <span ng-class="item.icon" style="margin-right:1rem"></span>
