@@ -63,7 +63,7 @@
             if (!$mdMedia('gt-sm')) {
                 $scope.hidePreview = true;
             }
-        }
+        };
         $scope.layoutInit();
 
         //低于xs各个部分solo显示
@@ -76,8 +76,7 @@
                     $scope[str] = !$scope[str];
                 } else {
                     $scope[str] = val;
-                };
-
+                }
             } else {
                 if (val === undefined) {
                     $scope[str] = !$scope[str];
@@ -87,6 +86,7 @@
             };
             $scope.resizePreviewPart();
             $scope.fixLayout();
+            setTimeout(function () {}, 500)
         };
 
         //检测Appname，如果没有那么后退
@@ -588,177 +588,89 @@
         };
 
 
-        //cm编辑器部分--------------------------------
-        $scope.cmModes = {
-            'html': 'xml',
-            'css': 'css',
-            'js': 'javascript'
+
+
+
+
+
+        //编辑器部分--------------------
+
+        //通用:文件名到mode映射
+        $scope.editorModes = {
+            'html': 'ace/mode/html',
+            'css': 'ace/mode/css',
+            'js': 'ace/mode/javascript'
+        };
+
+        //通用：主题名映射
+        $scope.editorThemes = {
+            'dark': 'ace/theme/monokai',
+            'light': 'ace/theme/chrome'
+        };
+
+        //通用：切换主题
+        $scope.editorChangeTheme = function () {
+            if ($scope.editorCurTheme == 'dark') {
+                $scope.editorSetTheme('light');
+            } else {
+                $scope.editorSetTheme('dark');
+            };
+        };
+
+        //通用：设定主题
+        $scope.editorSetTheme = function (theme) {
+            if (!theme) theme = $scope.editorCurTheme;
+            var str = $scope.editorThemes[theme];
+            if (!str) return;
+            $scope.editor.setTheme(str);
+            $scope.editorCurTheme = theme;
+        };
+
+        //通用:切换mode
+        $scope.editorSetMode = function (mod) {
+            if (!mod) mod = $scope.editorCurMode;
+            var str = $scope.editorModes[mod];
+            if (!str) return;
+            console.log('editorSetMode', mod, str);
+            $scope.editor.getSession().setMode(str);
+            $scope.editorCurMode = mod;
+            $scope.fixLayout();
+        };
+
+        //通用:刷新窗口，适应大小
+        $scope.editorRefresh = function () {
+            if (!$scope.editor) return;
+            $scope.editor.resize();
+        };
+
+        //插入字符串
+        $scope.editorInsertChar = function (str) {
+            if (!$scope.editor) return;
+            $scope.editor.insert(str);
+            $scope.showCharBox = false;
+            $scope.editor.focus();
         };
 
 
-        //循环切换modes
-        $scope.nextMode = function () {
-            var mod;
-            if ($scope.cmOpt.mode == 'xml') mod = 'css';
-            if ($scope.cmOpt.mode == 'css') mod = 'javascript';
-            if ($scope.cmOpt.mode == 'javascript') mod = 'xml';
-            $scope.cmOpt.mode = mod;
-        };
-
-        //codemirror选项
-        $scope.cmOpt = {
-            mode: "xml",
-            htmlMode: true,
-
-            tabMode: "indent",
-            styleActiveLine: true,
-            autoCloseTags: true,
-
-            lineNumbers: true,
-            styleActiveLine: true,
-            matchBrackets: true,
-            lineWrapping: false,
-            extraKeys: {
-                //alt折叠当前行开始的代码块
-                'Alt': function (cm) {
-                    cm.foldCode(cm.getCursor());
-                },
-            },
-            foldGutter: true,
-            gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-            autoCloseBrackets: true,
-            lint: true,
-        };
+        //ace编辑器初始化
+        $scope.aceLoaded = function (editor) {
+            $scope.editor = editor;
+            $scope.editorSetTheme('dark');
+            $scope.fixLayout();
 
 
-        //换行开关
-        $scope.setWrap = function () {
-            var res = $scope.cmOpt.lineWrapping ? false : true;
-            $scope.cmOpt.lineWrapping = res;
-            $scope.cmEditor.setOption('lineWrapping', res);
-            if ($scope.cmEditor) $scope.cmEditor.refresh();
-        };
-
-        //错误提示开关
-        $scope.setLint = function () {
-            var res = $scope.cmOpt.lint ? false : true;
-            $scope.cmOpt.lint = res;
-            if (!$scope.cmEditor) return;
-
-            var arr = ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"];
-            if (!res) arr = ["CodeMirror-linenumbers", "CodeMirror-foldgutter"];
-            $scope.cmEditor.setOption('gutters', arr);
-            $scope.cmEditor.setOption('lint', res);
-
-            if ($scope.cmEditor) $scope.cmEditor.refresh();
-        };
-
-
-        //切换字体大小
-        $scope.useBigFont = false;
-        $scope.setFontSize = function () {
-            var big = $scope.useBigFont = !$scope.useBigFont;
-            $scope.useBigFont = big ? true : false;
-            var fsize = big ? 18 : 14;
-            var hei = big ? 24 : 20;
-            if (!$scope.cmEditor) return;
-            $scope.cmEditor.getWrapperElement().style["font-size"] = fsize + "px";
-            $scope.cmEditor.getWrapperElement().style["line-height"] = hei + 'px';
-            if ($scope.cmEditor) $scope.cmEditor.refresh();
-        };
-
-
-        //实现html错误提示,强制注册成为xml使用
-        CodeMirror.registerHelper("lint", "xml", function (text) {
-            var found = [],
-                message;
-            if (!window.HTMLHint) return found;
-            var messages = HTMLHint.verify(text, ruleSets);
-            for (var i = 0; i < messages.length; i++) {
-                message = messages[i];
-                var startLine = message.line - 1,
-                    endLine = message.line - 1,
-                    startCol = message.col - 1,
-                    endCol = message.col;
-                found.push({
-                    from: CodeMirror.Pos(startLine, startCol),
-                    to: CodeMirror.Pos(endLine, endCol),
-                    message: message.message,
-                    severity: message.type
-                });
-            }
-            return found;
-        });
-        var ruleSets = {
-            "tagname-lowercase": true,
-            "attr-lowercase": true,
-            "attr-value-double-quotes": true,
-            "doctype-first": true,
-            "tag-pair": true,
-            "spec-char-escape": true,
-            "id-unique": true,
-            "src-not-empty": true,
-            "attr-no-duplication": true
         };
 
 
 
 
-        //codemirror运行前设置
-        $scope.cmLoaded = function (cm) {
-            $scope.cm = cm;
-            var doc = $scope.cmDoc = cm.getDoc();
-            var editor = $scope.cmEditor = doc.getEditor();
 
 
-            //调整高度
-            var hei = $(window).height() - 78;
-            editor.setSize('100%', hei + 'px');
 
-            $(window).resize(function () {
-                var hei = $(window).height() - 78;
-                editor.setSize('100%', hei + 'px');
-            });
 
-            //初始化黑色主题
-            $scope.cmEditor.setOption('theme', 'mbo');
-            $scope.cmDoc.setValue('正在载入文件，请稍后...');
 
-            //调整字体
-            editor.getWrapperElement().style["font-size"] = "15px";
-            editor.getWrapperElement().style["line-height"] = '20px';
-            editor.getWrapperElement().style["font-family"] = "monospace,Monaco";
-            editor.refresh();
+        //编辑器部分结束------------------
 
-            //提示器
-            var selstr;
-            editor.on('keydown', function (cm, event) {
-                selstr = editor.doc.getSelection();
-            });
-
-            editor.on("keyup", function (cm, event) {
-                //结合anyword和javascript两个提示器
-                var char = String.fromCharCode(event.keyCode);
-
-                //对于非字母数字点或者按下ctrlalt的，忽略
-                if (!cm.state.completionActive && /[0-9A-Za-z\.\¾]/.test(char) && !event.altKey && !event.ctrlKey) {
-                    CodeMirror.showHint(cm, function (edtr, opts) {
-
-                        //根据模式自适应提示引擎
-                        var mod = $scope.cmOpt.mode;
-                        if (mod == 'xml') mod = 'html';
-                        var res = CodeMirror.hint[mod](edtr, opts);
-
-                        res = CodeMirror.hint.anyword(edtr, {
-                            list: (res && res.list) ? res.list : []
-                        });
-                        return res;
-                    }, {
-                        completeSingle: false
-                    });
-                };
-            });
-        };
 
 
         /*打开一个文件，将文件内容显示到编辑器
@@ -787,7 +699,7 @@
                     .ok('关闭'));
             } else if (allowftype) {
                 var url = _cfg.qn.BucketDomain + fkey;
-                $scope.openFile(url, fkey);
+                $scope.openFile(url, fkey, true);
             };
         };
 
@@ -866,10 +778,10 @@
                         $scope.tagPart('hideEditor', false);
 
                         //自动切换编辑器提示引擎
-                        if ($scope.cmModes[fext] != undefined) {
-                            $scope.cmOpt.mode = $scope.cmModes[fext];
+                        if ($scope.editorModes[fext] != undefined) {
                             //重置编辑器
-                            $scope.cmEditor.setOption('mode', $scope.cmOpt.mode);
+                            $scope.editorSetMode(fext);
+
                         } else if (ineditor) {
                             $mdToast.show(
                                 $mdToast.simple()
@@ -986,7 +898,7 @@
             var appName = $scope.getAppArg();
             var uid = $rootScope.myInfo.id;
             var fkey = $scope.editorFile.key.substr(uid.length + 1);
-            var data = $scope.cmDoc.getValue();
+            var data = $scope.editorFile.data;
 
 
             if (!fkey || !data) {
@@ -1283,19 +1195,6 @@
         };
 
 
-        //改变编辑器的主题
-        $scope.cmTheme = 'mbo';
-        $scope.changeCmEditorTheme = function () {
-
-            if ($scope.cmTheme == 'default') {
-                $scope.cmTheme = 'mbo';
-            } else {
-                $scope.cmTheme = 'default';
-            };
-            $scope.cmEditor.setOption('theme', $scope.cmTheme);
-        };
-
-
         //微信窗口修正
         var previewWid = (document.body.clientWidth > 480) ? '480px' : $('#menuSec').width() + 'px';
         $('#previewPart').css('width', previewWid);
@@ -1305,18 +1204,16 @@
             $('#mainbody').css('height', document.body.clientHeight + 'px');
             $('#mainbody').css('width', document.body.clientWidth + 'px');
 
-            //修正预览窗口
+            //计算自动更新预览窗尺寸
             $scope.previewHei = document.body.clientHeight - $('#menuSec').height() - 2 + 'px';
             $scope.mbodyHei = document.body.clientHeight - $('#menuSec').height() + 'px';
             $scope.mbodyWid = document.body.clientWidth + 'px';
 
-
-            //修正cm在移动端可能出现宽度越出的问题
-            if (!$scope.greatThan('sm')) {
-                $('#cmEditor').css('width', document.body.clientWidth + 'px');
-            }
-        }
-
+            //修正编辑器高度
+            var editorhei = document.body.clientHeight - $('#menuSec').height() - $('#editorMenuSec').height();
+            $('#aceEditor').css('height', editorhei + 'px');
+            $scope.editorRefresh();
+        };
         $scope.fixLayout();
         $(window).resize($scope.fixLayout);
 
@@ -1352,36 +1249,45 @@
         };
 
 
+        //打开字符输入窗口
+        $scope.openCharDialog = function (item) {
+            $rootScope.tempDialogData = {
+                editor: $scope.editor
+            };
+            $mdDialog.show({
+                controller: 'pie_dialog_chars',
+                templateUrl: _fns.getDialogUrl('chars'),
+                parent: angular.element(document.body),
+                clickOutsideToClose: true
+            })
+        };
+
+
+
+
+
+
+
         //关闭左侧栏
         $rootScope.enableBlockLeftNav = false;
 
 
-        //字符盒相关初始化charbox字符数据
+        //初始化charbox字符数据
         $scope.specialChars = "< > ( ) [ ] { } . ; , \" \' $ # && || + - * / = ! % _ ^ \\ @".split(' ');
+
 
         //打开charbox
         $scope.openCharBox = function () {
             if ($scope.showCharBox) {
                 $scope.showCharBox = false;
+                if (!$scope.editor) return;
+                $scope.editor.focus();
             } else {
                 $scope.showCharBox = true;
-            }
-            if ($scope.cmEditor) $scope.cmEditor.focus();
-        };
-
-        //插入字符
-        $scope.editorInsertChar = function (str) {
-            $scope.showCharBox = false;
-            if ($scope.cmDoc) $scope.cmDoc.replaceSelection(str, 'end');
-            if ($scope.cmEditor) {
-                $scope.cmEditor.focus();
+                if (!$scope.editor) return;
+                $scope.editor.focus();
             }
         };
-
-
-
-
-
 
 
 

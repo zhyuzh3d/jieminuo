@@ -595,9 +595,19 @@
             'js': 'javascript'
         };
 
+
+        //循环切换modes
+        $scope.nextMode = function () {
+            var mod;
+            if ($scope.cmOpt.mode == 'xml') mod = 'css';
+            if ($scope.cmOpt.mode == 'css') mod = 'javascript';
+            if ($scope.cmOpt.mode == 'javascript') mod = 'xml';
+            $scope.cmOpt.mode = mod;
+        };
+
         //codemirror选项
         $scope.cmOpt = {
-            mode: "txml",
+            mode: "xml",
             htmlMode: true,
 
             tabMode: "indent",
@@ -607,7 +617,7 @@
             lineNumbers: true,
             styleActiveLine: true,
             matchBrackets: true,
-            lineWrapping: true,
+            lineWrapping: false,
             extraKeys: {
                 //alt折叠当前行开始的代码块
                 'Alt': function (cm) {
@@ -618,6 +628,43 @@
             gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
             autoCloseBrackets: true,
             lint: true,
+        };
+
+
+        //换行开关
+        $scope.setWrap = function () {
+            var res = $scope.cmOpt.lineWrapping ? false : true;
+            $scope.cmOpt.lineWrapping = res;
+            $scope.cmEditor.setOption('lineWrapping', res);
+            if ($scope.cmEditor) $scope.cmEditor.refresh();
+        };
+
+        //错误提示开关
+        $scope.setLint = function () {
+            var res = $scope.cmOpt.lint ? false : true;
+            $scope.cmOpt.lint = res;
+            if (!$scope.cmEditor) return;
+
+            var arr = ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"];
+            if (!res) arr = ["CodeMirror-linenumbers", "CodeMirror-foldgutter"];
+            $scope.cmEditor.setOption('gutters', arr);
+            $scope.cmEditor.setOption('lint', res);
+
+            if ($scope.cmEditor) $scope.cmEditor.refresh();
+        };
+
+
+        //切换字体大小
+        $scope.useBigFont = false;
+        $scope.setFontSize = function () {
+            var big = $scope.useBigFont = !$scope.useBigFont;
+            $scope.useBigFont = big ? true : false;
+            var fsize = big ? 18 : 14;
+            var hei = big ? 24 : 20;
+            if (!$scope.cmEditor) return;
+            $scope.cmEditor.getWrapperElement().style["font-size"] = fsize + "px";
+            $scope.cmEditor.getWrapperElement().style["line-height"] = hei + 'px';
+            if ($scope.cmEditor) $scope.cmEditor.refresh();
         };
 
 
@@ -679,9 +726,8 @@
 
             //调整字体
             editor.getWrapperElement().style["font-size"] = "15px";
-            editor.getWrapperElement().style["font-family"] = "monospace,Monaco";
-
             editor.getWrapperElement().style["line-height"] = '20px';
+            editor.getWrapperElement().style["font-family"] = "monospace,Monaco";
             editor.refresh();
 
             //提示器
