@@ -18,7 +18,7 @@ var _app = {}; //最高全局变量，angular
         'app.directives',
         'app.controllers',
         'ngMaterial',
-        'ui.codemirror'
+        'ui.ace'
     ]);
 
     //基础设置

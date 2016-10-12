@@ -1,6 +1,7 @@
 <script>
     _fns.addCtrlrJs('pie_editor');
     _fns.addDialogJs('share');
+    _fns.addDialogJs('chars');
 
 </script>
 
@@ -22,7 +23,7 @@
             display: none;
         }
 
-        .ace_autocomplete{
+        .ace_autocomplete {
             min-height: 100px;
         }
 
@@ -51,10 +52,10 @@
         }
 
         .pie_editor .lboder {
-            /*            margin-left: 1px;*/
+            /* margin-left: 1px;*/
             border-left: 1px solid #DDD;
         }
-        /*        移动端预览控制弹出按钮*/
+        /*移动端预览控制弹出按钮*/
 
         .pie_editor .itbtn2 {
             margin-left: 0;
@@ -405,7 +406,7 @@
             <div flex id='editorPart' layout='column' id='editorPart' ng-hide='hideEditor' class='lboder' style="min-width:400px">
                 <!--            编辑器-->
                 <div flex='grow' id='editorSec' style="background:#888;overflow-y:hidden;box-shadow: 0 0 24px #666 inset;overflow-x: hidden;">
-                    <div id='aceEditor'  ui-ace="{
+                    <div id='aceEditor' ui-ace="{
                                  setShowPrintMargin:false,
                                  useWrapMode: false,
                                  showGutter:true,
@@ -419,21 +420,37 @@
                                         enableBasicAutocompletion: true,
                                         enableLiveAutocompletion: true
                                     }
-                                 }"  ng-model="editorFile.data" class="ace_editor"></div>
+                                 }" ng-model="editorFile.data" class="ace_editor"></div>
 
                 </div>
-                <!--            底部菜单-->
-                <div layout flex='none' layout-align='space-between center' id='editorMenuSec' style="height:48px;padding:0 1rem;border-top: 1px solid #DDD">
+
+
+                <!--            编辑器底部字符盒子-->
+                <div layout='column' flex='none' layout-align='space-between center' ng-show='showCharBox' id='charsbox' style="padding:12px 0px;border-top: 1px solid #DDD;text-align:center;opacity:0.8">
+                    <div>
+                        <div class="md-button md-raised" ng-repeat='item in specialChars' ng-bind='item' ng-click='editorInsertChar(item)' style="min-width:10%;margin:2px 6px"></div>
+                    </div>
+                </div>
+
+
+                <!--           编辑器底部菜单-->
+                <div layout flex='none' layout-align='space-between center' id='editorMenuSec' style="height:48px;padding:0 12px;border-top: 1px solid #DDD">
                     <div layout flex='grow'>
-                        <md-button class="md-raised md-accent itbtn" ng-click="doSaveFile()" aria-label='tagleft' style='color:#FFF;width:120px'>
+                        <md-button class="md-raised md-accent itbtn" ng-click="doSaveFile()" aria-label='tagleft' style='color:#FFF;width:80px'>
                             <span class="fa fa-cloud-upload"></span>
                             <span id='savebtn'>保存</span>
                         </md-button>
+
+
                     </div>
-                    <div flex='none' style="padding-right:20px">
-                        <md-button class="md-default itbtn" ng-click="editorChangeTheme()" aria-label='tagleft' style='color:#444;width:60px;margin-right:0;'>
-                            <span class="fa fa-circle" ng-hide='cmTheme=="default"'></span>
-                            <span class="fa fa-circle-o" ng-show='cmTheme=="default"'></span>
+                    <div flex='none'>
+                        <md-button class="md-default itbtn" ng-click="openCharBox()" aria-label='tagleft' style='color:#444;width:60px;margin-right:8px;'>
+                            <span class="fa fa-bolt"></span>
+                            <span>符号</span>
+                        </md-button>
+                        <md-button class="md-default itbtn" ng-click="editorChangeTheme()" aria-label='tagleft' style='color:#444;width:60px;margin-right:12px;'>
+                            <span class="fa fa-circle" ng-hide='editorCurTheme=="light"'></span>
+                            <span class="fa fa-circle-o" ng-show='editorCurTheme=="light"'></span>
                             <span>主题</span>
                         </md-button>
                         <md-button class="md-default itbtn" ng-click="useTemplate()" aria-label='tagleft' style='color:#444;margin-right:0;width:60px' ng-hide='true'>
@@ -444,7 +461,7 @@
 
                     <!--   编辑器语言mod-->
                     <div flex='none'>
-                        <md-input-container class="md-block" flex-gt-sm style='width:10rem;margin:0.2rem'>
+                        <md-input-container class="md-block" flex-gt-sm style='width:6rem;margin:0.2rem'>
                             <md-select ng-model="editorCurMode" md-on-close='editorSetMode()' aria-label='a'>
                                 <md-option ng-repeat="(mod,val) in editorModes" value="{{mod}}" ng-bind='mod'></md-option>
                             </md-select>
