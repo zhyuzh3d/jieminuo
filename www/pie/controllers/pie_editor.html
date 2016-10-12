@@ -76,7 +76,7 @@
         }
 
     </style>
-    <div layout='column' style="width:100%">
+    <div id='ctrlrbody' layout='column' style="width:100%">
         <div id='dragMask' style="width:100%;height:100%;opacity:0.1;position:absolute;background:#000;z-index:200;display:none"></div>
 
         <!--        顶部开关-->
@@ -427,7 +427,7 @@
                     <div layout flex='grow'>
                         <md-button class="md-raised md-accent itbtn" ng-click="doSaveFile()" aria-label='tagleft' style='color:#FFF;width:120px'>
                             <span class="fa fa-cloud-upload"></span>
-                            <span>保存</span>
+                            <span id='savebtn'>保存</span>
                         </md-button>
                     </div>
                     <div flex='none' style="padding-right:20px">

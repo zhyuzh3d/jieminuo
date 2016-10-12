@@ -85,9 +85,8 @@
                 }
             };
             $scope.resizePreviewPart();
-                $scope.fixLayout();
-            setTimeout(function () {
-            }, 500)
+            $scope.fixLayout();
+            setTimeout(function () {}, 500)
         };
 
         //检测Appname，如果没有那么后退
@@ -646,11 +645,17 @@
 
 
 
+
+
         //ace编辑器初始化
         $scope.aceLoaded = function (editor) {
             $scope.editor = editor;
             $scope.editorSetTheme('dark');
             $scope.fixLayout();
+
+
+
+
         };
 
 
@@ -1191,6 +1196,11 @@
         $('#previewPart').css('width', previewWid);
 
         $scope.fixLayout = function () {
+            //应对移动端键盘事件，更新mainbody高度
+            $('#mainbody').css('height',document.body.clientHeight+'px');
+            $('#mainbody').css('width',document.body.clientWidth+'px');
+
+            //计算自动更新预览窗尺寸
             $scope.previewHei = document.body.clientHeight - $('#menuSec').height() - 2 + 'px';
             $scope.mbodyHei = document.body.clientHeight - $('#menuSec').height() + 'px';
             $scope.mbodyWid = document.body.clientWidth + 'px';
