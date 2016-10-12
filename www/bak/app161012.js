@@ -18,7 +18,7 @@ var _app = {}; //最高全局变量，angular
         'app.directives',
         'app.controllers',
         'ngMaterial',
-        'ui.ace'
+        'ui.codemirror'
     ]);
 
     //基础设置
@@ -275,22 +275,6 @@ var _app = {}; //最高全局变量，angular
                 if (!str) str = '';
                 str = String(str);
                 var res = '<style>' + str + '</style>';
-                return res;
-            };;
-        }
-    );
-
-
-    //单纯的添加一些空行，默认10行
-    _app.filter(
-        'addEmptyLine',
-        function (n) {
-            return function (str) {
-                if (!n) n = 10;
-                if (!str) str = '';
-                for (var i = 0; i < n; i++) {
-                    str += '\n'
-                }
                 return res;
             };;
         }

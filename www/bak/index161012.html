@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+    <meta charset="utf-8" />
+    <title>零基础学编程</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initiaXl-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="keywords" content="杰米诺，代码派,零基础,学编程,人人编程,人人都是工程师,在线编辑器,web开发,h5,小程序,webapp,HTML, CSS,XML,JavaScript,jquery,bootstrap,angular">
+    <meta name="description" content="杰米诺，代码派，零基础在线学编程，人人都是工程师">
+
+    <link rel="icon" type="image/png" href="http://files.jieminuoketang.com/1/aaw6vsns2i5k/src/JMN32B.png">
+
+    <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="./global/global_pre.js"></script>
+
+    <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+    <link href="./index/index.css" rel="stylesheet" />
+
+    <script>
+        //百度统计
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?1e351cd79245c158ee413eed985ca2d4";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+
+    </script>
+</head>
+
+<body ng-controller='bodyController' style="overlow:auto;background:#FFF">
+    <div id='a' class="container-fluid" style="padding:0;overflow:auto;">
+
+        <nav class="navbar-static-top" style="background:#FFF;border-bottom:1px solid #DDD;height:48px">
+            <div class="inline pull-left hidden-xs hidden-sm" ng-click='gotoHome()' style="line-height:48px;margin-right:24px;width:200px">
+                <div class="jmnktLogo2" style="margin-top:14px;margin-left:8px"></div>
+            </div>
+
+            <div class="inline pull-left hidden-sm hidden-xs" style="line-height:48px">
+                <span class="textbtn" ng-click='gotoFS()' style="margin:0 8px">入门课程(免费)</span>
+                <span class="textbtn" ng-click='gotoTor()' style="margin:0 8px">学习资源</span>
+                <span class="textbtn" ng-click='gotoPie()' style="margin:0 8px">在线编程(代码派)</span>
+                <span class="textbtn" ng-click='gotoLadder()' style="margin:0 8px">作品排行榜</span>
+                <span class="textbtn" ng-click='goto360()' style="margin:0 8px">项目工场</span>
+            </div>
+
+            <div class="inline pull-left hidden-md hidden-lg" ng-show='hasLogin' style="line-height:48px;text-align:right;display:inline-block;margin-right:8px">
+                <div class="dropdown">
+                    <div class="dropdown-toggle" data-toggle="dropdown" style="cusor:pointer">
+                        <div class="jmnktLogo2 inline" style="margin-top:14px;margin-left:8px">
+                        </div>
+                        <div class="inline fa fa-angle-down" style="font-size:24px"></div>
+                    </div>
+                    <ul class="dropdown-menu" role="menu" style="margin-left:4px">
+                        <li><a href="#" ng-click='gotoHome()' style="line-height:36px">首页</a></li>
+                        <li class="divider" style="margin:0 0 4px 0"></li>
+                        <li><a href="#" ng-click='gotoFS()' style="line-height:36px">入门课程(免费)</a></li>
+                        <li><a href="#" ng-click='gotoTor()' style="line-height:36px">零基础教程</a></li>
+                        <li><a href="#" ng-click='gotoPie()' style="line-height:36px">在线编程(代码派)</a></li>
+                        <li><a href="#" ng-click='gotoLadder()' style="line-height:36px">作品排行榜</a></li>
+                        <li><a href="#" ng-click='goto360()' style="line-height:36px">项目工场</a></li>
+                    </ul>
+                </div>
+            </div>
+
+
+
+            <div class="inline pull-right" ng-show='hasLogin' style="line-height:48px;text-align:right;display:inline-block;margin-right:8px">
+                <div class="dropdown">
+                    <div class="dropdown-toggle" data-toggle="dropdown" style="cusor:pointer">
+                        <img class='avatar-sm' ng-src='{{(hasLogin)?myUsrInfo.avatar+"-avatar32":""}}' />
+                        <span ng-bind='myUsrInfo.nick'>未命名用户</span>
+                        <span class="caret"></span>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                        <li><a href="#" ng-click='gotoPie()' style="line-height:36px">我的APP</a></li>
+                        <li><a href="#" ng-click='gotoFavor()' style="line-height:36px">我的收藏</a></li>
+                        <li><a href="#" ng-click='gotoProfile()' style="line-height:36px">个人资料</a></li>
+                        <li class="divider" style="margin:2px"></li>
+                        <li><a href="#" ng-click='loginout()' style="line-height:36px">注销</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pull-right" ng-show='!hasLogin' style="line-height:48px;display:inline-block">
+                <span class="textbtn" ng-click='gotoLogin()' style="margin:0 8px">登录</span>
+                <span class="textbtn" ng-click='gotoReg()' style="margin:0 8px">注册</span>
+            </div>
+        </nav>
+
+
+        <!--            欢迎页-->
+        <div class='container' style='width:100%;padding:12px 5%'>
+            <div ng-click='gotoPie()' style="text-align:center;position:relative;padding:8px 12px;cursor:pointer">
+                <img src='http://files.jieminuoketang.com/1/aaw6vsns2i5k/src/tutorBg.jpeg' width="100%">
+            </div>
+
+            <div class="btn-lg col-xs-12 col-xs-12 col-md-6 col-lg-6" ng-click='gotoFS()' style="padding:8px 12px;;cursor:poiner">
+                <div class='btn btn-success' style="font-size:18px;padding:12px 3%;text-align:left;border-radius:0;width:100%">
+                    <span class="hidden-xs hidden-sm">零基础入门课程/录播+直播/限时免费开放</span>
+                    <span class="hidden-md hidden-lg" style="font-size:16px">零基础入门课程/录播+直播/限时免费开放</span>
+                    <br>
+                    <span>立即免费报名 </span>
+                    <span class='fa fa-chevron-right'></span>
+                </div>
+            </div>
+
+            <div class="btn-lg col-xs-12 col-xs-12 col-md-6 col-lg-6" ng-click='gotoPie()' style="padding:8px 12px">
+                <div class='btn btn-danger' style="font-size:18px;padding:12px 3%;text-align:left;border-radius:0;width:100%;cursor:poiner">
+                    <span class="hidden-xs hidden-sm">在线学编程／在线练习／在线发布／零安装</span>
+                    <span class="hidden-md hidden-lg" style="font-size:16px">在线学编程／在线练习／在线发布／零安装</span>
+                    <br>
+                    <span>马上开始编程 </span>
+                    <span class='fa fa-chevron-right'></span>
+                </div>
+            </div>
+
+            <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12' style="padding:0;margin-top:40px;width:100%">
+                <div style="font-size:20px;color:#AAA;padding-left:4px">
+                    <span class="fa fa-play-circle fa-lg"></span>
+                    <span>更多视频教程</span>
+                </div>
+                <hr style="margin-top:10px">
+
+                <!--            课程列表-->
+                <div style="padding:0 6px">
+                    <a class="col-xs-12 col-sm-6 col-md-4 col-lg-3" ng-repeat='ke in courses' ng-href='{{ke.url}}' style="padding:8px">
+                        <div class="panel panel-default " style="height:180px;overflow:hidden;position:relative;margin-bottom:4px">
+                            <div style='position:absolute;top:0;left:0;width:100%;height:100%;'>
+                                <img ng-src='{{ke.thum}}' width='100%' />
+                            </div>
+                            <div class='panel-footer elips' style='position:absolute;top:120px;left:0;width:100%;height:100%;text-align:center'>
+                                <span ng-bind='ke.title'></span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12' style="padding:0px;margin-top:40px;width:100%">
+                <div style="font-size:20px;color:#AAA;padding-left:4px">
+                    <span class="fa fa-book fa-lg"></span>
+                    <span>更多Web学习资源</span>
+                </div>
+                <hr style="margin-top:10px">
+
+                <!--            资源列表-->
+                <div ng-repeat='item in tutors' style="padding:8px;width:100%">
+                    <div style="margin-bottom:24px">
+                        <h4 style="font-weight:bold">
+                                <img ng-src='{{item.icon}}' width="24px" height="24px" ng-show='item.icon' />
+                                <span ng-bind='item.title'></span>
+                        </h4>
+                        <p ng-bind='item.desc' style="color:#888"></p>
+                        <div style="border-left:3px solid #DDD;padding-left:12px">
+                            <a ng-href="{{sub[1]}}" ng-bind='sub[0]' ng-repeat='sub in item.links' style="line-height:24px;margin-right:12px" target="_blank"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12' style="padding:0px;margin-top:40px;width:100%">
+                <div style="font-size:20px;color:#AAA;padding-left:4px">更多Web开发资源</div>
+                <hr style="margin-top:10px">
+
+                <!--            资源列表-->
+                <div ng-repeat='item in resources' style="padding:8px;width:100%">
+                    <div style="margin-bottom:24px">
+                        <h4 style="font-weight:bold">
+                                <img ng-src='{{item.icon}}' width="24px" height="24px" ng-show='item.icon' />
+                                <span ng-bind='item.title'></span>
+                        </h4>
+                        <p ng-bind='item.desc' style="color:#888"></p>
+                        <div style="border-left:3px solid #DDD;padding-left:12px">
+                            <a ng-href="{{sub[1]}}" ng-bind='sub[0]' ng-repeat='sub in item.links' style="line-height:24px;margin-right:12px" target="_blank"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+
+
+    </div>
+
+    <div class="class='col-xs-12 col-sm-12 col-md-12 col-lg-12" style="text-align:center;margin:100px 12px 8px 12px">
+        <div class="inline btn btn-default botbtn" ng-click='gotoPie()'>进入代码派</div>
+        <div class="inline btn btn-default botbtn" ng-click='gotoTX()'>进入杰米诺腾讯课堂首页</div>
+        <div class="inline btn btn-default botbtn" ng-click='gotoBD()'>进入杰米诺百度传课首页</div>
+        <div class="inline btn btn-default botbtn" ng-click='goto360()'>进入项目工场首页</div>
+
+    </div>
+    <div class="class='col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin:1rem 0">
+        <p style='text-align:center'><a href="http://www.miitbeian.gov.cn/">苏ICP备15036923号</a> | 本站点所有权归属于苏州高博应诺</p>
+    </div>
+
+
+
+
+</body>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/angular.js/1.3.20/angular.min.js"></script>
+<script src="./index/index.js"></script>
+
+<script>
+    //    百度索引
+    (function() {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+
+</script>
+
+
+</html>

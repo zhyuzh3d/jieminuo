@@ -3,10 +3,28 @@
     _fns.addDialogJs('share');
 
 </script>
+
+
 <!--控制器界面部分-->
 <div id='pie_editor' ng-controller='pie_editor' class='container-fluid pie_editor doc_ctrlr' layout='start stretch' style="width:100%;height:100%;padding:0;overflow-y:hidden;font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;background:#FFF">
     <style>
         /*内部样式，以.doc_devWeb开头*/
+
+        .ace_editor {
+            width: 100%;
+            height: calc(100vh + 24px);
+            font-size: 14px;
+            min-height: 400px;
+        }
+
+        .ace_print-margin-layer {
+            /*暴力隐藏ace编辑器打印边界*/
+            display: none;
+        }
+
+        .ace_autocomplete{
+            min-height: 100px;
+        }
 
         .pie_editor .itbtn {
             margin-left: 0;
@@ -51,12 +69,18 @@
             text-align: left;
         }
 
+        .pie_editor .displaytag {
+            margin: 0;
+            line-height: 30px;
+            border-radius: 0;
+        }
+
     </style>
     <div layout='column' style="width:100%">
         <div id='dragMask' style="width:100%;height:100%;opacity:0.1;position:absolute;background:#000;z-index:200;display:none"></div>
 
         <!--        顶部开关-->
-        <div layout flex='none' id='menuSec' style="height:30px;border-left:1px solid #DDD">
+        <div layout flex='none' id='menuSec' style="height:30px;border-left:1px solid #DDD;overflow:hidden">
             <div layout flex='grow'>
                 <md-button class="md-no-ink md-icon-button itbtn" ng-click="$root.tagLeftMenu()" aria-label='tagleft' style='width:39px;min-width:39px' data-toggle="tooltip" data-placement="bottom" title="显示／隐藏左侧菜单栏">
                     <p style="color:#888">
@@ -65,7 +89,7 @@
                     </p>
                 </md-button>
                 <md-divider></md-divider>
-                <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="tagPart('hideList')" aria-label='tagleft' style='width:90px' data-toggle="tooltip" data-placement="bottom" title="显示／隐藏文件列表">
+                <div flex="initial" class="md-button itbtn displaytag" md-no-ink ng-click="tagPart('hideList')" aria-label='tagleft' style='width:90px;' data-toggle="tooltip" data-placement="bottom" title="显示／隐藏文件列表">
                     <p ng-hide='hideList' class="minbtn" style="color:#00bfa5">
                         <span class="fa fa-files-o fa-1x"></span>
                         <span>文件列表</span>
@@ -74,9 +98,9 @@
                         <span class="fa fa-files-o fa-1x"></span>
                         <span>文件列表</span>
                     </p>
-                </md-button>
+                </div>
                 <md-divider></md-divider>
-                <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="tagPart('hideEditor')" aria-label='tagleft' style='width:70px' data-toggle="tooltip" data-placement="bottom" title="显示／隐藏编辑器">
+                <div flex="initial" class="md-button itbtn displaytag" md-no-ink ng-click="tagPart('hideEditor')" aria-label='tagleft' style='width:70px' data-toggle="tooltip" data-placement="bottom" title="显示／隐藏编辑器">
                     <p ng-hide='hideEditor' style="color:#00bfa5">
                         <span class="fa fa-edit fa-1x"></span>
                         <span>编辑器</span>
@@ -85,9 +109,9 @@
                         <span class="fa fa-edit fa-1x"></span>
                         <span>编辑器</span>
                     </p>
-                </md-button>
+                </div>
                 <md-divider></md-divider>
-                <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="tagPart('hidePreview')" aria-label='tagleft' style='width:71px' data-toggle="tooltip" data-placement="bottom" title="显示／隐藏预览窗">
+                <div flex="initial" class="md-button itbtn displaytag" md-no-ink ng-click="tagPart('hidePreview')" aria-label='tagleft' style='width:71px' data-toggle="tooltip" data-placement="bottom" title="显示／隐藏预览窗">
                     <p ng-hide='hidePreview' style="color:#00bfa5">
                         <span class="fa fa-eye fa-1x"></span>
                         <span>预览窗</span>
@@ -96,7 +120,7 @@
                         <span class="fa fa-eye-slash fa-1x"></span>
                         <span>预览窗</span>
                     </p>
-                </md-button>
+                </div>
                 <md-divider></md-divider>
             </div>
 
@@ -105,14 +129,14 @@
             <div layout flex="initial" ng-hide="greatThan('sm') || hidePreview">
                 <md-divider></md-divider>
                 <md-menu style='padding:0'>
-                    <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:50px;margin:0'>
+                    <div flex="initial" class="md-button itbtn displaytag" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:50px'>
                         <p>
                             <span class="fa fa-flask" ng-show='previewRt' style="color:#00bfa5"></span>
                             <span class="fa fa-flask" ng-hide='previewRt' style="color:#AAA"></span>
                         </p>
-                    </md-button>
+                    </div>
                     <md-menu-content width="4" style='overflow-x: hidden;'>
-                        <md-button flex="grow" md-no-ink class="itbtn2" ng-click="tagPreviewRt()" aria-label='tagleft'>
+                        <div flex="grow" md-no-ink class="md-button itbtn2" ng-click="tagPreviewRt()" aria-label='tagleft'>
                             <p ng-hide='previewRt' style="color:#AAA">
                                 <span class="fa fa-toggle-on fa-lg"></span>
                                 <span>手工</span>
@@ -121,19 +145,19 @@
                                 <span class="fa fa-toggle-off fa-lg"></span>
                                 <span>实时</span>
                             </p>
-                        </md-button>
-                        <md-button flex="grow" ng-show='!previewRt' md-no-ink class="itbtn2" ng-click="refreshPreviewFrameUrl()" aria-label='tagleft'>
+                        </div>
+                        <div flex="grow" ng-show='!previewRt' md-no-ink class="md-button itbtn2" ng-click="refreshPreviewFrameUrl()" aria-label='tagleft'>
                             <p style="color:#00bfa5">
                                 <span class="fa fa-refresh fa-lg"></span>
                                 <span>刷新</span>
                             </p>
-                        </md-button>
-                        <md-button flex="grow" class="itbtn2" md-no-ink ng-click="openUrl()" aria-label='tagleft'>
+                        </div>
+                        <div flex="grow" class="md-button itbtn2" md-no-ink ng-click="openUrl()" aria-label='tagleft'>
                             <p style="color:#00bfa5">
                                 <span class="fa fa-rocket fa-lg"></span>
                                 <span>运行</span>
                             </p>
-                        </md-button>
+                        </div>
                     </md-menu-content>
                 </md-menu>
             </div>
@@ -142,21 +166,21 @@
             <!-- PC端预览控制-->
             <div layout flex="initial" ng-show="greatThan('sm') && !hidePreview">
                 <md-divider></md-divider>
-                <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="openUrl()" aria-label='tagleft' style='width:70px' data-toggle="tooltip" data-placement="bottom" title="在新窗口打开APP首页">
+                <div flex="initial" class="md-button itbtn displaytag" md-no-ink ng-click="openUrl()" aria-label='tagleft' style='width:70px' data-toggle="tooltip" data-placement="bottom" title="在新窗口打开APP首页">
                     <p style="color:#00bfa5">
                         <span class="fa fa-rocket fa-lg"></span>
                         <span>运行</span>
                     </p>
-                </md-button>
+                </div>
                 <md-divider ng-show='!previewRt'></md-divider>
-                <md-button flex="initial" ng-show='!previewRt' md-no-ink class="md-icon-button itbtn" ng-click="refreshPreviewFrameUrl()" aria-label='tagleft' style='width:70px' data-toggle="tooltip" data-placement="bottom" title="重新载入预览页面">
+                <div flex="initial" ng-show='!previewRt' md-no-ink class="md-button itbtn displaytag" ng-click="refreshPreviewFrameUrl()" aria-label='tagleft' style='width:70px' data-toggle="tooltip" data-placement="bottom" title="重新载入预览页面">
                     <p style="color:#00bfa5">
                         <span class="fa fa-refresh fa-lg"></span>
                         <span>刷新</span>
                     </p>
-                </md-button>
+                </div>
                 <md-divider></md-divider>
-                <md-button flex="initial" md-no-ink class="md-icon-button itbtn" ng-click="tagPreviewRt()" aria-label='tagleft' style='width:70px' data-toggle="tooltip" data-placement="bottom" title="实时／手工预览切换，实时仅模拟html+css效果，手工模式真正完全预览">
+                <div flex="initial" md-no-ink class="md-button itbtn displaytag" ng-click="tagPreviewRt()" aria-label='tagleft' style='width:70px' data-toggle="tooltip" data-placement="bottom" title="实时／手工预览切换，实时仅模拟html+css效果，手工模式真正完全预览">
                     <p ng-hide='previewRt' style="color:#AAA">
                         <span class="fa fa-toggle-on fa-lg"></span>
                         <span>手工</span>
@@ -165,7 +189,7 @@
                         <span class="fa fa-toggle-off fa-lg"></span>
                         <span>实时</span>
                     </p>
-                </md-button>
+                </div>
 
             </div>
         </div>
@@ -228,13 +252,14 @@
                         <!--       存放上传过程中的文件的盒子-->
                         <div layout='column' id='uploadBox'>
                             <div layout ng-repeat='(key,val) in upFiles'>
-                                <md-button flex='none' class="md-default" ng-click="abortUploadFile(val)" aria-label='a' style='min-width:40px;color:#AAA;margin-right:0'>
+                                <div flex='none' class="md-button md-default" ng-click="abortUploadFile(val)" aria-label='a' style='min-width:40px;color:#AAA;margin:6px 0'>
                                     <span class='fa fa-remove'></span>
-                                </md-button>
+                                </div>
                                 <div flex='grow' class="md-primary elips" aria-label='a' style='margin-left:0;text-align:left;text-transform:none;line-height:4rem;position:relative'>
                                     <div style='background:#1ec38a;opacity:0.25;position:absolute;height:40px;margin-top:5px;' ng-style='{width:val.percent+"px"}' ng-show='val.percent<100'></div>
                                     <span flex='grow' aria-label='a' class='elips' style='margin-left:0;text-align:left;text-transform:none'>
                                     <span class="elips" ng-bind='val.name' style="color:#AAA"></span>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -244,34 +269,34 @@
 
                             <!--   下拉菜单-->
                             <md-menu style='padding:0'>
-                                <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:40px;margin-top:0px'>
+                                <div flex="initial" class="md-button itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:40px;margin-top:0px'>
                                     <p style="color:#AAA;margin:0">
                                         <span class="fa fa-file"></span>
                                     </p>
-                                </md-button>
+                                </div>
                                 <md-menu-content width="3" style='overflow-x: hidden;'>
-                                    <md-button flex='none' class="md-default leftmenu" ng-click="doOpenFile(item.key)" aria-label='a' style='color:#888;'>
+                                    <div flex='none' class="md-button md-default leftmenu" ng-click="doOpenFile(item.key)" aria-label='a' style='color:#888;'>
                                         <span class='fa fa-edit'></span>
                                         <span>编辑</span>
-                                    </md-button>
-                                    <md-button flex='none' ng-show='item.mimeType=="text/html"' class="md-default leftmenu" ng-click="openUrl(item.key)" aria-label='a' style='color:#888;'>
+                                    </div>
+                                    <div flex='none' ng-show='item.mimeType=="text/html"' class="md-button md-default leftmenu" ng-click="openUrl(item.key)" aria-label='a' style='color:#888;'>
                                         <span class='fa fa-rocket'></span>
                                         <span>运行</span>
-                                    </md-button>
-                                    <md-button flex='none' class="md-default leftmenu" ng-click='showFileInfoDialog(item)' aria-label='a' style='color:#888;'>
+                                    </div>
+                                    <div flex='none' class="md-button md-default leftmenu" ng-click='showFileInfoDialog(item)' aria-label='a' style='color:#888;'>
                                         <span class='fa fa-info-circle'></span>
                                         <span>信息</span>
-                                    </md-button>
-                                    <md-button flex='none' class="md-default leftmenu" ng-click="deleteFile(item)" aria-label='a' style='color:#888;'>
+                                    </div>
+                                    <div flex='none' class="md-button md-default leftmenu" ng-click="deleteFile(item)" aria-label='a' style='color:#888;'>
                                         <span class='fa fa-remove'></span>
                                         <span>删除</span>
-                                    </md-button>
+                                    </div>
                                 </md-menu-content>
                             </md-menu>
 
-                            <md-button flex='grow' ng-click="doOpenFile(item.key)" aria-label='a' style='margin-left:0;text-align:left;text-transform:none;margin:0' class='md-default elips'>
+                            <div flex='grow' ng-click="doOpenFile(item.key)" aria-label='a' style='margin-left:0;text-align:left;text-transform:none;margin:0' class='md-button md-default elips'>
                                 <span class="elips" ng-bind='item.key | fileName' ng-style="fileStateStyle(item)" style="padding-left:4px"></span>
-                            </md-button>
+                            </div>
                         </div>
 
 
@@ -281,32 +306,32 @@
                             <div layout style="width:100%">
                                 <!--   下拉菜单-->
                                 <md-menu style='padding:0'>
-                                    <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:40px;margin-top:0px'>
+                                    <div flex="initial" class="md-button itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:40px;margin-top:0px'>
                                         <p style="color:#AAA;margin:0">
                                             <span class="fa fa-folder-open" ng-show='val.expand'></span>
                                             <span class="fa fa-folder" ng-hide='val.expand'></span>
                                             <small ng-bind='objLength(val.items)'></small>
                                         </p>
-                                    </md-button>
+                                    </div>
                                     <md-menu-content width="3" style='overflow-x: hidden;'>
-                                        <md-button flex='none' class="md-default leftmenu" aria-label='a' style='color:#888' ng-click='val.expand=!val.expand'>
+                                        <div flex='none' class="md-button md-default leftmenu" aria-label='a' style='color:#888' ng-click='val.expand=!val.expand'>
                                             <span class='fa fa-folder-open'></span>
                                             <span>折叠/展开</span>
-                                        </md-button>
-                                        <md-button flex='none' class="md-default leftmenu" aria-label='a' style='color:#888' ng-click='upload2Folder(key)'>
+                                        </div>
+                                        <div flex='none' class="md-button md-default leftmenu" aria-label='a' style='color:#888' ng-click='upload2Folder(key)'>
                                             <span class='fa fa-cloud-upload'></span>
                                             <span>上传文件</span>
-                                        </md-button>
-                                        <md-button flex='none' class="md-default leftmenu" aria-label='a' style='color:#888' ng-click='deleteFolder(key)'>
+                                        </div>
+                                        <div flex='none' class="md-button md-default leftmenu" aria-label='a' style='color:#888' ng-click='deleteFolder(key)'>
                                             <span class='fa fa-remove'></span>
                                             <span>删除文件夹</span>
-                                        </md-button>
+                                        </div>
                                     </md-menu-content>
                                 </md-menu>
 
-                                <md-button flex='grow' aria-label='a' style='text-align:left;text-transform:none;margin:0' class='md-default elips' ng-click='val.expand=!val.expand'>
+                                <div flex='grow' aria-label='a' style='text-align:left;text-transform:none;margin:0' class='md-button md-default elips' ng-click='val.expand=!val.expand'>
                                     <span class="elips" ng-bind='key.replace(appPath,"")' style="padding-left:4px"></span>
-                                </md-button>
+                                </div>
                             </div>
 
                             <!-- 文件夹内文件列表-->
@@ -315,34 +340,34 @@
 
                                     <!--   下拉菜单-->
                                     <md-menu style='padding:0;padding-left:2rem'>
-                                        <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:40px;margin-top:0px'>
+                                        <div flex="initial" class="md-button itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:40px;margin-top:0px'>
                                             <p style="color:#AAA;margin:0">
                                                 <span class="fa fa-file"></span>
                                             </p>
-                                        </md-button>
+                                        </div>
                                         <md-menu-content width="3" style='overflow-x: hidden;'>
-                                            <md-button flex='none' class="md-default leftmenu" ng-click="doOpenFile(item.key)" aria-label='a' style='color:#888;'>
+                                            <div flex='none' class="md-button md-default leftmenu" ng-click="doOpenFile(item.key)" aria-label='a' style='color:#888;'>
                                                 <span class='fa fa-edit'></span>
                                                 <span>编辑</span>
-                                            </md-button>
-                                            <md-button flex='none' ng-show='item.mimeType=="text/html"' class="md-default leftmenu" ng-click="openUrl(item.key)" aria-label='a' style='color:#888;'>
+                                            </div>
+                                            <div flex='none' ng-show='item.mimeType=="text/html"' class="md-button md-default leftmenu" ng-click="openUrl(item.key)" aria-label='a' style='color:#888;'>
                                                 <span class='fa fa-rocket'></span>
                                                 <span>运行</span>
-                                            </md-button>
-                                            <md-button flex='none' class="md-default leftmenu" ng-click='showFileInfoDialog(item)' aria-label='a' style='color:#888;'>
+                                            </div>
+                                            <div flex='none' class="md-button md-default leftmenu" ng-click='showFileInfoDialog(item)' aria-label='a' style='color:#888;'>
                                                 <span class='fa fa-info-circle'></span>
                                                 <span>信息</span>
-                                            </md-button>
-                                            <md-button flex='none' class="md-default leftmenu" ng-click="deleteFile(item)" aria-label='a' style='color:#888;'>
+                                            </div>
+                                            <div flex='none' class="md-button md-default leftmenu" ng-click="deleteFile(item)" aria-label='a' style='color:#888;'>
                                                 <span class='fa fa-remove'></span>
                                                 <span>删除</span>
-                                            </md-button>
+                                            </div>
                                         </md-menu-content>
                                     </md-menu>
 
-                                    <md-button flex='grow' ng-click="doOpenFile(item.key)" aria-label='a' style='margin-left:0;text-align:left;text-transform:none;margin:0' class='md-default elips'>
+                                    <div flex='grow' ng-click="doOpenFile(item.key)" aria-label='a' style='margin-left:0;text-align:left;text-transform:none;margin:0' class='md-button md-default elips'>
                                         <span class="elips" ng-bind='item.key | fileName' ng-style="fileStateStyle(item)" style="padding-left:4px"></span>
-                                    </md-button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -353,22 +378,22 @@
                         <!--         列表下面的按钮组-->
                         <div layout='column' style="width:100%">
                             <md-menu style='padding:0'>
-                                <md-button flex="initial" class="md-raised md-primary" ng-click="$mdOpenMenu($event)" aria-label='a' style='min-width:40px;color:#FFF;margin-left:0'>
+                                <div flex="initial" class="md-button md-raised md-primary" ng-click="$mdOpenMenu($event)" aria-label='a' style='min-width:40px;color:#FFF;margin-left:0'>
                                     <span class="fa fa-plus"></span>
-                                </md-button>
+                                </div>
                                 <md-menu-content style='overflow-x: hidden;'>
-                                    <md-button flex='none' class="md-default leftmenu" aria-label='a' style='color:#888' ng-click="doAddNewFile()">
+                                    <div flex='none' class="md-button md-default leftmenu" aria-label='a' style='color:#888' ng-click="doAddNewFile()">
                                         <span class='fa fa-file-text-o'></span>
                                         <span>&nbsp;新建文件</span>
-                                    </md-button>
-                                    <md-button flex='none' class="md-default leftmenu" aria-label='a' style='color:#888;text-align:left' ng-click="doAddNewFolder()">
+                                    </div>
+                                    <div flex='none' class="md-button md-default leftmenu" aria-label='a' style='color:#888;text-align:left' ng-click="doAddNewFolder()">
                                         <span class='fa fa-folder-o'></span>
                                         <span>&nbsp;新建文件夹</span>
-                                    </md-button>
-                                    <md-button flex='none' class="md-default leftmenu" aria-label='a' style='color:#888;text-align:left' ng-click="showFolderSelDialog()">
+                                    </div>
+                                    <div flex='none' class="md-button md-default leftmenu" aria-label='a' style='color:#888;text-align:left' ng-click="showFolderSelDialog()">
                                         <span class='fa fa-cloud-upload'></span>
                                         <span>&nbsp;上传文件</span>
-                                    </md-button>
+                                    </div>
                                 </md-menu-content>
                             </md-menu>
                         </div>
@@ -380,10 +405,25 @@
             <div flex id='editorPart' layout='column' id='editorPart' ng-hide='hideEditor' class='lboder' style="min-width:400px">
                 <!--            编辑器-->
                 <div flex='grow' id='editorSec' style="background:#888;overflow-y:hidden;box-shadow: 0 0 24px #666 inset;overflow-x: hidden;">
-                    <div id='cmEditor' ng-model="editorFile.data" ui-codemirror-opts='cmOpt' ui-codemirror="{onLoad:cmLoaded}" style="box-shadow: 0 4px 4px #888888;boder:none;margin:-1px;min-height:200px;background:#AAA;width:100%" ui-refresh='cmRefresh'></div>
+                    <div id='aceEditor'  ui-ace="{
+                                 setShowPrintMargin:false,
+                                 useWrapMode: false,
+                                 showGutter:true,
+                                 theme:'twilight',
+                                 mode:'html',
+                                 firstLineNumber:1,
+                                 onLoad:aceLoaded,
+                                 onChange:aceChanged,
+                                 advanced: {
+                                        enableSnippets: true,
+                                        enableBasicAutocompletion: true,
+                                        enableLiveAutocompletion: true
+                                    }
+                                 }"  ng-model="editorFile.data" class="ace_editor"></div>
+
                 </div>
                 <!--            底部菜单-->
-                <div layout flex='none' layout-align='space-between center' id='menuSec' style="height:48px;padding:0 1rem;border-top: 1px solid #DDD">
+                <div layout flex='none' layout-align='space-between center' id='editorMenuSec' style="height:48px;padding:0 1rem;border-top: 1px solid #DDD">
                     <div layout flex='grow'>
                         <md-button class="md-raised md-accent itbtn" ng-click="doSaveFile()" aria-label='tagleft' style='color:#FFF;width:120px'>
                             <span class="fa fa-cloud-upload"></span>
@@ -391,7 +431,7 @@
                         </md-button>
                     </div>
                     <div flex='none' style="padding-right:20px">
-                        <md-button class="md-default itbtn" ng-click="changeCmEditorTheme()" aria-label='tagleft' style='color:#444;width:60px;margin-right:0;'>
+                        <md-button class="md-default itbtn" ng-click="editorChangeTheme()" aria-label='tagleft' style='color:#444;width:60px;margin-right:0;'>
                             <span class="fa fa-circle" ng-hide='cmTheme=="default"'></span>
                             <span class="fa fa-circle-o" ng-show='cmTheme=="default"'></span>
                             <span>主题</span>
@@ -405,8 +445,8 @@
                     <!--   编辑器语言mod-->
                     <div flex='none'>
                         <md-input-container class="md-block" flex-gt-sm style='width:10rem;margin:0.2rem'>
-                            <md-select ng-model="cmOpt.mode">
-                                <md-option ng-repeat="mod in cmModes" value="{{mod}}" ng-bind='mod'></md-option>
+                            <md-select ng-model="editorCurMode" md-on-close='editorSetMode()' aria-label='a'>
+                                <md-option ng-repeat="(mod,val) in editorModes" value="{{mod}}" ng-bind='mod'></md-option>
                             </md-select>
                         </md-input-container>
                     </div>

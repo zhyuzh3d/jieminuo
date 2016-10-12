@@ -1,25 +1,12 @@
 <script>
-    _fns.addCtrlrJs('pie_temp');
+    _fns.addCtrlrJs('pie_editor');
     _fns.addDialogJs('share');
 
 </script>
-
-
 <!--控制器界面部分-->
 <div id='pie_editor' ng-controller='pie_editor' class='container-fluid pie_editor doc_ctrlr' layout='start stretch' style="width:100%;height:100%;padding:0;overflow-y:hidden;font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;background:#FFF">
     <style>
         /*内部样式，以.doc_devWeb开头*/
-
-        .ace_editor {
-            width: 100%;
-            height: calc(100% + 20px);
-            font-size: 14px;
-        }
-
-        .ace_print-margin-layer {
-            /*暴力隐藏ace编辑器打印边界*/
-            display: none;
-        }
 
         .pie_editor .itbtn {
             margin-left: 0;
@@ -64,10 +51,9 @@
             text-align: left;
         }
 
-        .pie_editor .displaytag {
+        .pie_editor .displaytag{
             margin: 0;
             line-height: 30px;
-            border-radius: 0;
         }
 
     </style>
@@ -75,7 +61,7 @@
         <div id='dragMask' style="width:100%;height:100%;opacity:0.1;position:absolute;background:#000;z-index:200;display:none"></div>
 
         <!--        顶部开关-->
-        <div layout flex='none' id='menuSec' style="height:30px;border-left:1px solid #DDD;overflow:hidden">
+        <div layout flex='none' id='menuSec' style="height:30px;border-left:1px solid #DDD">
             <div layout flex='grow'>
                 <md-button class="md-no-ink md-icon-button itbtn" ng-click="$root.tagLeftMenu()" aria-label='tagleft' style='width:39px;min-width:39px' data-toggle="tooltip" data-placement="bottom" title="显示／隐藏左侧菜单栏">
                     <p style="color:#888">
@@ -247,14 +233,13 @@
                         <!--       存放上传过程中的文件的盒子-->
                         <div layout='column' id='uploadBox'>
                             <div layout ng-repeat='(key,val) in upFiles'>
-                                <div flex='none' class="md-button md-default" ng-click="abortUploadFile(val)" aria-label='a' style='min-width:40px;color:#AAA;margin:6px 0'>
+                                <div flex='none' class="md-button md-default" ng-click="abortUploadFile(val)" aria-label='a' style='min-width:40px;color:#AAA;margin-right:0'>
                                     <span class='fa fa-remove'></span>
                                 </div>
                                 <div flex='grow' class="md-primary elips" aria-label='a' style='margin-left:0;text-align:left;text-transform:none;line-height:4rem;position:relative'>
                                     <div style='background:#1ec38a;opacity:0.25;position:absolute;height:40px;margin-top:5px;' ng-style='{width:val.percent+"px"}' ng-show='val.percent<100'></div>
                                     <span flex='grow' aria-label='a' class='elips' style='margin-left:0;text-align:left;text-transform:none'>
                                     <span class="elips" ng-bind='val.name' style="color:#AAA"></span>
-                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -400,22 +385,7 @@
             <div flex id='editorPart' layout='column' id='editorPart' ng-hide='hideEditor' class='lboder' style="min-width:400px">
                 <!--            编辑器-->
                 <div flex='grow' id='editorSec' style="background:#888;overflow-y:hidden;box-shadow: 0 0 24px #666 inset;overflow-x: hidden;">
-                    <div ui-ace="{
-                                 setShowPrintMargin:false,
-                                 useWrapMode: false,
-                                 showGutter:true,
-                                 theme:'twilight',
-                                 mode:'html',
-                                 firstLineNumber:1,
-                                 onLoad:aceLoaded,
-                                 onChange:aceChanged,
-                                 advanced: {
-                                        enableSnippets: true,
-                                        enableBasicAutocompletion: true,
-                                        enableLiveAutocompletion: true
-                                    }
-                                 }" ng-model="editorFile.data" class="ace_editor"></div>
-
+                    <div id='cmEditor' ng-model="editorFile.data" ui-codemirror-opts='cmOpt' ui-codemirror="{onLoad:cmLoaded}" style="box-shadow: 0 4px 4px #888888;boder:none;margin:-1px;min-height:200px;background:#AAA;width:100%" ui-refresh='cmRefresh'></div>
                 </div>
                 <!--            底部菜单-->
                 <div layout flex='none' layout-align='space-between center' id='menuSec' style="height:48px;padding:0 1rem;border-top: 1px solid #DDD">
@@ -426,7 +396,7 @@
                         </md-button>
                     </div>
                     <div flex='none' style="padding-right:20px">
-                        <md-button class="md-default itbtn" ng-click="editorChangeTheme()" aria-label='tagleft' style='color:#444;width:60px;margin-right:0;'>
+                        <md-button class="md-default itbtn" ng-click="changeCmEditorTheme()" aria-label='tagleft' style='color:#444;width:60px;margin-right:0;'>
                             <span class="fa fa-circle" ng-hide='cmTheme=="default"'></span>
                             <span class="fa fa-circle-o" ng-show='cmTheme=="default"'></span>
                             <span>主题</span>
@@ -440,8 +410,8 @@
                     <!--   编辑器语言mod-->
                     <div flex='none'>
                         <md-input-container class="md-block" flex-gt-sm style='width:10rem;margin:0.2rem'>
-                            <md-select ng-model="editorCurMode" md-on-close='editorSetMode()' aria-label='a'>
-                                <md-option ng-repeat="(mod,val) in editorModes" value="{{mod}}" ng-bind='mod'></md-option>
+                            <md-select ng-model="cmOpt.mode" aria-label='a'>
+                                <md-option ng-repeat="mod in cmModes" value="{{mod}}" ng-bind='mod'></md-option>
                             </md-select>
                         </md-input-container>
                     </div>
