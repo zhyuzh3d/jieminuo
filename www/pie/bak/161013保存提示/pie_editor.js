@@ -761,17 +761,9 @@
                 };
             });
 
-            //这个可以避免使用自动提示后移动端光标跳跃
-            editor.on("keyup", function (cm, obj) {
-                editor.focus();
-            });
-
             //有内容变化的时候动作
-            editor.on("change", function (cm, obj) {
-                setTimeout(function () {
-                    editor.focus(); //focus，避免使用自动提示后移动端键盘折叠
-                }, 500);
-                $scope.editorChanged = true;
+            editor.on("keyup", function (cm, obj) {
+                editor.focus(); //focus，避免使用自动提示后移动端键盘折叠
             });
 
         };
@@ -813,7 +805,7 @@
 
 
 
-        /*打开一个文件，这里先检查类型是否能打开
+        /*打开一个文件，将文件内容显示到编辑器
          */
         $scope.doOpenFile = function (fkey) {
             //只能打开指定类型的文件
@@ -870,45 +862,13 @@
         $scope.previewRtCssFile = {};
 
 
-        //打开文件,这里先检查当前文件是否已被更改，如果已经被更改则提示保存
-        $scope.openFile = function (url, fkey, ineditor) {
-            if (ineditor === undefined) ineditor = true;
-            if (ineditor && $scope.editorChanged) {
-                $mdDialog.show($mdDialog.confirm()
-                    .title('当前的编辑文件已经更改，是否要保存？')
-                    .textContent('舍弃将丢失所有未保存的更改')
-                    .ariaLabel('App name')
-                    .ok('保存')
-                    .cancel('舍弃')).then(function () {
-                    //保存文件
-                    $scope.doSaveFile(function () {
-                        //然后读取
-                        $scope.realOpenFile(url, fkey, ineditor);
-                        $mdToast.show(
-                            $mdToast.simple()
-                            .textContent('正在为您读取文件.')
-                            .position('top right')
-                            .hideDelay(3000)
-                        );
-                    });
-                }, function () {
-                    $scope.realOpenFile(url, fkey, ineditor);
-                });
-            } else {
-                //直接读取
-                $scope.realOpenFile(url, fkey, ineditor);
-            }
-        };
-
-
-
 
         /*打开文件显示到cm的函数,都使用html读取，否则没有回调
         url为绝对完整地址
         延迟100毫秒执行
         */
 
-        $scope.realOpenFile = function (url, fkey, ineditor) {
+        $scope.openFile = function (url, fkey, ineditor) {
             var appName = $scope.getAppArg();
             var uid = $rootScope.myInfo.id;
             if (!url) url = _cfg.qn.BucketDomain + uid + '/' + appName + '/index.html';
@@ -954,7 +914,7 @@
                             $scope.cmOpt.mode = $scope.cmModes[fext];
                             //重置编辑器
                             $scope.cmEditor.setOption('mode', $scope.cmOpt.mode);
-                        } else {
+                        } else if (ineditor) {
                             $mdToast.show(
                                 $mdToast.simple()
                                 .textContent('编辑器不支持您的文件格式.')
@@ -977,12 +937,6 @@
                             .position('top right')
                             .hideDelay(500)
                         );
-
-
-                        //延迟设置changed函数，避免编辑器正在刷新
-                        setTimeout(function () {
-                            $scope.editorChanged = false;
-                        }, 1000);
                     };
 
                     //不管是否载入编辑器，都改变预览文件参数
@@ -1065,9 +1019,12 @@
 
 
 
-        /*保存当前编辑器内容到当前文件url,okfn保存完成返回后执行
+
+
+
+        /*保存当前编辑器内容到当前文件url
          */
-        $scope.doSaveFile = function (okfn) {
+        $scope.doSaveFile = function () {
 
             //截取uid/后面的部分
             var appName = $scope.getAppArg();
@@ -1107,11 +1064,6 @@
                         .position('top right')
                         .hideDelay(1000)
                     );
-                    if (okfn) {
-                        try {
-                            okfn(fkey, tsdata)
-                        } catch (err) {};
-                    }
                 });
             };
         };
@@ -1128,20 +1080,7 @@
                 type: mime
             });
 
-            var xhr = _fns.uploadFileQn(fkey, blob, undefined, function (f, res) {
-                //检查当前保存的文件是否是编辑器中的文件，如果是就更新change状态
-                var reskey = $rootScope.myInfo.id + '/' + fkey;
-                if (reskey == $scope.editorFile.key) {
-                    $scope.editorChanged = false;
-                };
-
-                //执行传进来的okfn
-                if (okfn) {
-                    try {
-                        okfn(f, res)
-                    } catch (err) {}
-                }
-            }, function () {
+            var xhr = _fns.uploadFileQn(fkey, blob, undefined, okfn, function () {
                 $mdToast.show(
                     $mdToast.simple()
                     .textContent('文件存储失败，请重新尝试')
@@ -1278,32 +1217,7 @@
 
 
         //新窗口打开url地址，非html打开preview，否则打开当前页,添加时间戳
-        //检查是否需要保存
-
         $scope.openUrl = function (key) {
-            if ($scope.editorChanged) {
-                $mdDialog.show($mdDialog.confirm()
-                    .title('当前的编辑文件已经更改，是否要保存？')
-                    .textContent('取消将可能丢失更改内容或预览效果不是最新')
-                    .ariaLabel('App name')
-                    .ok('保存')
-                    .cancel('取消')).then(function () {
-                    //保存文件
-                    $scope.doSaveFile(function () {
-                        $scope.realOpenUrl(key);
-                    });
-                }, function () {
-                    $scope.realOpenUrl(key);
-                });
-            } else {
-                $scope.realOpenUrl(key);
-            }
-        };
-
-
-        //真实的打开url函数
-        $scope.realOpenUrl = function (key) {
-
             var url;
             if (key) {
                 url = _cfg.qn.BucketDomain + key;

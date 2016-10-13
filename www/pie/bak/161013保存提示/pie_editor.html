@@ -1,5 +1,5 @@
 <script>
-    _fns.addCtrlrJs('pie_temp');
+    _fns.addCtrlrJs('pie_editor');
 
     _fns.addDialogJs('share');
 
@@ -238,10 +238,10 @@
                         <!--       存放上传过程中的文件的盒子-->
                         <div layout='column' id='uploadBox'>
                             <div layout ng-repeat='(key,val) in upFiles'>
-                                <div flex='none' class="md-button md-default" ng-click="abortUploadFile(val)" aria-label='a' style='min-width:40px;color:#AAA;margin:4px'>
+                                <div flex='none' class="md-button md-default" ng-click="abortUploadFile(val)" aria-label='a' style='min-width:40px;color:#AAA;margin-right:0'>
                                     <span class='fa fa-remove'></span>
                                 </div>
-                                <div flex='grow' class="md-primary elips" aria-label='a' style='margin-left:0;text-align:left;text-transform:none;line-height:44px;position:relative'>
+                                <div flex='grow' class="md-primary elips" aria-label='a' style='margin-left:0;text-align:left;text-transform:none;line-height:4rem;position:relative'>
                                     <div style='background:#1ec38a;opacity:0.25;position:absolute;height:40px;margin-top:5px;' ng-style='{width:val.percent+"px"}' ng-show='val.percent<100'></div>
                                     <span flex='grow' aria-label='a' class='elips' style='margin-left:0;text-align:left;text-transform:none'></span>
                                     <span class="elips" ng-bind='val.name' style="color:#AAA"></span>
@@ -254,7 +254,7 @@
 
                             <!--   下拉菜单-->
                             <md-menu style='padding:0'>
-                                <div flex="initial" class="md-button itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:40px;margin:4px'>
+                                <div flex="initial" class="md-button itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:40px;margin-top:0px'>
                                     <p style="color:#AAA;margin:0">
                                         <span class="fa fa-file"></span>
                                     </p>
@@ -279,7 +279,7 @@
                                 </md-menu-content>
                             </md-menu>
 
-                            <div flex='grow' ng-click="doOpenFile(item.key)" aria-label='a' style='margin-left:0;text-align:left;text-transform:none;margin:0;line-height:44px' class='md-button md-default elips'>
+                            <div flex='grow' ng-click="doOpenFile(item.key)" aria-label='a' style='margin-left:0;text-align:left;text-transform:none;margin:0' class='md-button md-default elips'>
                                 <span class="elips" ng-bind='item.key | fileName' ng-style="fileStateStyle(item)" style="padding-left:4px"></span>
                             </div>
                         </div>
@@ -291,7 +291,7 @@
                             <div layout style="width:100%">
                                 <!--   下拉菜单-->
                                 <md-menu style='padding:0'>
-                                    <div flex="initial" class="md-button itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:40px;margin:4px'>
+                                    <div flex="initial" class="md-button itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:40px;margin-top:0px'>
                                         <p style="color:#AAA;margin:0">
                                             <span class="fa fa-folder-open" ng-show='val.expand'></span>
                                             <span class="fa fa-folder" ng-hide='val.expand'></span>
@@ -314,7 +314,7 @@
                                     </md-menu-content>
                                 </md-menu>
 
-                                <div flex='grow' aria-label='a' style='text-align:left;text-transform:none;margin:0;line-height:44px' class='md-button md-default elips' ng-click='val.expand=!val.expand'>
+                                <div flex='grow' aria-label='a' style='text-align:left;text-transform:none;margin:0' class='md-button md-default elips' ng-click='val.expand=!val.expand'>
                                     <span class="elips" ng-bind='key.replace(appPath,"")' style="padding-left:4px"></span>
                                 </div>
                             </div>
@@ -325,7 +325,7 @@
 
                                     <!--   下拉菜单-->
                                     <md-menu style='padding:0;padding-left:2rem'>
-                                        <div flex="initial" class="md-button itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:40px;margin:4px'>
+                                        <div flex="initial" class="md-button itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:40px;margin-top:0px'>
                                             <p style="color:#AAA;margin:0">
                                                 <span class="fa fa-file"></span>
                                             </p>
@@ -350,7 +350,7 @@
                                         </md-menu-content>
                                     </md-menu>
 
-                                    <div flex='grow' ng-click="doOpenFile(item.key)" aria-label='a' style='margin-left:0;text-align:left;text-transform:none;margin:0;line-height:44px' class='md-button md-default elips'>
+                                    <div flex='grow' ng-click="doOpenFile(item.key)" aria-label='a' style='margin-left:0;text-align:left;text-transform:none;margin:0' class='md-button md-default elips'>
                                         <span class="elips" ng-bind='item.key | fileName' ng-style="fileStateStyle(item)" style="padding-left:4px"></span>
                                     </div>
                                 </div>
