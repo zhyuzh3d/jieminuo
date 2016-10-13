@@ -171,6 +171,12 @@
 
         //学习资源
         $scope.tutors = [{
+            title: '零基础，1分钟带你做闪瞎眼的Hello world!',
+            desc: '看1分钟视频，敲7行代码，挑战你能不能搞定编程！',
+            links: [
+                ['教程链接', 'http://rtfiles.jieminuoketang.com/1/ax0uonxp39is/index.html'],
+            ],
+        },{
             title: 'W3school在线教程中文站',
             desc: '全面的WEB开发入门学习资源，详细列出了Html的全部标记、css3全部样式属性、Javascript全部函数方法，是初学者必不可少的技术参考资料',
             links: [
