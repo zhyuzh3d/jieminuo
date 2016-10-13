@@ -80,7 +80,7 @@
             }
         };
 
-         $scope.gotoProfile = function () {
+        $scope.gotoProfile = function () {
             var pieurl = 'http://' + location.host + '/account/?page=acc_profile';
             if ($scope.hasLogin) {
                 location.href = pieurl;
@@ -130,22 +130,6 @@
 
         //课程列表
         $scope.courses = [{
-            title: '从0基础到精通 C++开发工程师 第一季',
-            url: 'https://ke.qq.com/course/153750',
-            thum: 'https://10.url.cn/qqcourse_logo_ng/ajNVdqHZLLCZJYdKRN72JSthrplnp1Vm8OY8DBFibmYaKSE2LfLRwx3nKQvfibj4w0XejTfrQc59w/510',
-        }, {
-            title: '从0基础到精通 C++开发工程师 第二季',
-            url: 'https://ke.qq.com/course/153750',
-            thum: 'https://10.url.cn/qqcourse_logo_ng/ajNVdqHZLLBdZYiaEq3IzfvaBeDSKhAtbMU5e228hE3HwbzdCuE7tBvkDQCLc7FLpwDHZy69ra6E/510',
-        }, {
-            title: '从0基础到精通 C++开发工程师 第三季',
-            url: 'https://ke.qq.com/course/153800',
-            thum: 'https://10.url.cn/qqcourse_logo_ng/ajNVdqHZLLDTMckpb4zSKB1IegmF5KHM6pltarM1ggsdBmiadTtACj9IcgsIzGFzic5VoXq2WWSbg/510',
-        }, {
-            title: '从0基础到精通 C++开发工程师 第四季',
-            url: 'https://ke.qq.com/course/153804',
-            thum: 'https://10.url.cn/qqcourse_logo_ng/ajNVdqHZLLApC3BOzNFzMZT0WbZRd1oWqMia4nb6x0uQeyRSErWwKZicDZg69VQScfOStiadx1J9WQ/510',
-        }, {
             title: 'Web前端开发工程师 微信小程序/CSS/html5/JavaScript/全栈开发',
             url: 'https://ke.qq.com/course/156211',
             thum: 'https://10.url.cn/qqcourse_logo_ng/ajNVdqHZLLBwjla2vMFeR026JSQL6ic7YeaFfGcxfR1EVfkceyLkQG851hp2GLtwXIu7hmzpKZibU/510',
@@ -161,6 +145,22 @@
             title: '0基础成为年薪20W的UI设计师',
             url: 'http://www.chuanke.com/7227624-187659.html',
             thum: 'http://web.img.chuanke.com/course/2016-08/25/78950c50e1356059fe9b74fbbcec43d8.jpg',
+        }, {
+            title: '从0基础到精通 C++开发工程师 第一季',
+            url: 'https://ke.qq.com/course/153750',
+            thum: 'https://10.url.cn/qqcourse_logo_ng/ajNVdqHZLLCZJYdKRN72JSthrplnp1Vm8OY8DBFibmYaKSE2LfLRwx3nKQvfibj4w0XejTfrQc59w/510',
+        }, {
+            title: '从0基础到精通 C++开发工程师 第二季',
+            url: 'https://ke.qq.com/course/153750',
+            thum: 'https://10.url.cn/qqcourse_logo_ng/ajNVdqHZLLBdZYiaEq3IzfvaBeDSKhAtbMU5e228hE3HwbzdCuE7tBvkDQCLc7FLpwDHZy69ra6E/510',
+        }, {
+            title: '从0基础到精通 C++开发工程师 第三季',
+            url: 'https://ke.qq.com/course/153800',
+            thum: 'https://10.url.cn/qqcourse_logo_ng/ajNVdqHZLLDTMckpb4zSKB1IegmF5KHM6pltarM1ggsdBmiadTtACj9IcgsIzGFzic5VoXq2WWSbg/510',
+        }, {
+            title: '从0基础到精通 C++开发工程师 第四季',
+            url: 'https://ke.qq.com/course/153804',
+            thum: 'https://10.url.cn/qqcourse_logo_ng/ajNVdqHZLLApC3BOzNFzMZT0WbZRd1oWqMia4nb6x0uQeyRSErWwKZicDZg69VQScfOStiadx1J9WQ/510',
         }, {
             title: '0基础成为年薪20W的JAVA开发工程师',
             url: 'http://www.chuanke.com/7227624-187654.html',
