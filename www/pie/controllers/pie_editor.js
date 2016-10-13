@@ -1,5 +1,6 @@
 //编辑器的控制器函数
 
+
 (function () {
     'use strict';
     var thisName = 'pie_editor';
@@ -587,7 +588,6 @@
             _fns.abortUpload(f);
         };
 
-
         //cm编辑器部分--------------------------------
         $scope.cmModes = {
             'html': 'xml',
@@ -610,12 +610,12 @@
             mode: "xml",
             htmlMode: true,
 
-            tabMode: "indent",
-            styleActiveLine: true,
+            autoCloseBrackets: true,
             autoCloseTags: true,
 
             lineNumbers: true,
             styleActiveLine: true,
+            tabMode: "indent",
             matchBrackets: true,
             lineWrapping: false,
             extraKeys: {
@@ -626,7 +626,6 @@
             },
             foldGutter: true,
             gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-            autoCloseBrackets: true,
             lint: true,
         };
 
