@@ -42,6 +42,7 @@ _rotr.apis.acc_regByPhone = function () {
         mu.hset(usrKey, 'phone', phone);
         mu.hset(usrKey, 'pw', pw);
         mu.hset(usrKey, 'ukey', ukey);
+        mu.hset(usrKey, 'regtime', (new Date()).getTime());
 
         mu.del(codeKey);
         var res = yield _ctnu([mu, 'exec']);
@@ -109,9 +110,6 @@ _rotr.apis.acc_getUidByUkey = function () {
 
 
 
-
-
-
 /**
  * 兼容jsonp
  * 获取用户自己信息的接口，可以用来检测是否已经登陆,根据cookie里面的m_ukey判断
@@ -132,6 +130,7 @@ _rotr.apis.acc_getMyInfo = function () {
         var mpkey = _rds.k.map_ukey2uid;
         var uid = yield _ctnu([_rds.cli, 'hget'], _rds.k.map_ukey2uid, ukey);
 
+
         //未登录情况,清除ukey并返回错误
         if (!uid) {
             ukey = undefined;
@@ -141,6 +140,9 @@ _rotr.apis.acc_getMyInfo = function () {
             });
             throw Error('错误或无效的登录信息，请您手工登陆或注册.')
         }
+
+        //异步记录访问时间
+        _rds.cli.hset(_rds.k.usr(uid), 'lasttime', (new Date()).getTime());
 
         //读取用户全部信息，仅返回部分安全信息
         var dat = yield _account.acc_getUsrInfoCo(uid);
