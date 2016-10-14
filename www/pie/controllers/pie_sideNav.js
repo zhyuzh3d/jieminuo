@@ -37,6 +37,10 @@
             icon: 'fa fa-envira',
             ctrlr: 'pie_tutor',
         }, {
+            name: '相关资源',
+            icon: 'fa fa-chain',
+            ctrlr: 'pie_links',
+        }, {
             name: 'What\'s New',
             icon: 'fa fa-bomb',
             ctrlr: 'pie_history',

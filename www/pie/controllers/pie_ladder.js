@@ -96,11 +96,7 @@
             var api = _global.api('pie_ladderGetTopApps');
 
             //自动根据页面设定读取showapp数量
-            var count = 1;
-            if ($mdMedia("gt-xs")) count = 2;
-            if ($mdMedia("gt-sm")) count = 3;
-            if ($mdMedia("gt-md")) count = 6;
-
+            var count = 10;
 
             var dat = {
                 count: count - 1,

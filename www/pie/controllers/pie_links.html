@@ -1,10 +1,10 @@
 <script>
-    _fns.addCtrlrJs('pie_tutor');
+    _fns.addCtrlrJs('pie_links');
 
 </script>
 
 <!--控制器界面部分-->
-<div layout layout-align='stretch stretch' id='pie_tutor' ng-controller='pie_tutor' class='pie_tutor' style='width: 100%; height: 100%; overflow:visible;background:#FFF'>
+<div layout layout-align='stretch stretch' id='pie_links' ng-controller='pie_links' class='pie_links' style='width: 100%; height: 100%; overflow:visible;background:#FFF'>
     <style>
         /*内部样式，以控制器名为class开头*/
 
@@ -37,20 +37,6 @@
             </div>
         </div>
 
-        <!--        入门视频课-->
-        <div style="display:none;padding:16px">
-            <md-card style='position:relative'>
-                <a href="https://ke.qq.com/course/156211" target="_blank">
-                    <img src='http://files.jieminuoketang.com/1/aaw6vsns2i5k/src/tutorBg.jpeg' width="100%">
-                </a>
-                <md-button class="md-raised md-accent" aria-label='a' style='position: absolute; padding: 4px 24px;left: 3%;bottom: 10%;font-size:18px' ng-click='gotoLink("https://ke.qq.com/course/156211")'>
-                    <span class="fa fa-play-circle fa-lg"></span>
-                    <span>编程入门视频课／完全免费</span>
-                </md-button>
-            </md-card>
-
-
-        </div>
 
         <!--        学习资源/工具-->
         <div style="padding:28px">
@@ -79,7 +65,7 @@
                             </h4>
                             <p ng-bind-html='item.desc | toTrustHtml' style="color:#888"></p>
                             <div style="border-left:3px solid #DDD;padding-left:12px">
-                                <a ng-href="{{sub[1]}}" ng-bind='sub[0]' ng-repeat='sub in item.links' style="line-height:24px;margin-right:12px;display:block" target="_blank"></a>
+                                <a ng-href="{{sub[1]}}" ng-bind='sub[0]' ng-repeat='sub in item.links' style="line-height:24px;margin-right:12px" target="_blank"></a>
                             </div>
                         </div>
                     </md-list>
