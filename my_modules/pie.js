@@ -111,8 +111,6 @@ _rotr.apis.pie_getAppInfo = function () {
             time: dat.time,
             uid: dat.uid,
             url: dat.url,
-            useicon: dat.useicon,
-            usedesc: dat.usedesc,
             update: dat.update,
         };
 
@@ -425,8 +423,6 @@ _pie.ladderProcAppsShowCo = function (apps, uid, asKey) {
                 hit: resadd[1],
                 hashit: resadd[2],
                 hasfavor: ufavors.indexOf(appinfo.id) != -1,
-                useicon: appinfo.useicon,
-                usedesc: appinfo.usedesc,
                 update: appinfo.update,
             };
 
@@ -634,8 +630,6 @@ _rotr.apis.pie_favorGetApps = function () {
                     color: author.color,
                     avatar: author.avatar,
                 },
-                useicon: item.useicon,
-                usedesc: item.usedesc,
                 update: item.update,
             })
         };
@@ -681,87 +675,6 @@ _rotr.apis.pie_admGetLadderList = function () {
 
         //返回数据
         ctx.body = __newMsg(1, 'ok', res);
-        return ctx;
-    });
-    return co;
-};
-
-
-/**
- * 设定自己的app的useicon字段
- * @param {appId} app的id
- * @param {value} 0或1，0代表没有图标;默认为0;
- * @returns {}
- */
-
-_rotr.apis.pie_setAppUseIcon = function () {
-    var ctx = this;
-
-    var co = $co(function* () {
-
-        var uid = yield _fns.getUidByCtx(ctx);
-
-        var appId = ctx.query.appId || ctx.request.body.appId;
-        if (appId === undefined) throw Error('appID不能都为空.');
-
-        var value = ctx.query.value || ctx.request.body.value;
-        if (value === undefined) {
-            value = 0;
-        } else {
-            value = 1;
-        };
-
-        var appKey = _rds.k.app(appId);
-
-        //检查是否拥有此app
-        var rdsUid = yield _ctnu([_rds.cli, 'hget'], appKey, 'uid');
-        if (rdsUid != uid) throw Error('权限验证失败.');
-
-        //异步执行修改
-        _rds.cli.hset(appKey, 'useicon', value);
-
-        //返回数据
-        ctx.body = __newMsg(1, 'ok');
-        return ctx;
-    });
-    return co;
-};
-
-/**
- * 设定自己的app的usedesc字段
- * @param {appId} app的id
- * @param {value} 0或1，0代表没有图标;默认为0;
- * @returns {}
- */
-
-_rotr.apis.pie_setAppUseDesc = function () {
-    var ctx = this;
-
-    var co = $co(function* () {
-
-        var uid = yield _fns.getUidByCtx(ctx);
-
-        var appId = ctx.query.appId || ctx.request.body.appId;
-        if (appId === undefined) throw Error('appID不能都为空.');
-
-        var value = ctx.query.value || ctx.request.body.value;
-        if (value === undefined) {
-            value = 0;
-        } else {
-            value = 1;
-        };
-
-        var appKey = _rds.k.app(appId);
-
-        //检查是否拥有此app
-        var rdsUid = yield _ctnu([_rds.cli, 'hget'], appKey, 'uid');
-        if (rdsUid != uid) throw Error('权限验证失败.');
-
-        //异步执行修改
-        _rds.cli.hset(appKey, 'usedesc', value);
-
-        //返回数据
-        ctx.body = __newMsg(1, 'ok');
         return ctx;
     });
     return co;
