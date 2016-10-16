@@ -1,4 +1,4 @@
-//在所有脚本之前，jquery之后执行，比如检测登陆情况，需要jqeury支持
+//在所有脚本之前，jquery之后执行，比如检测登陆情况
 console.info('global_pre loading...');
 
 if (!_global) var _global = {};
@@ -8,10 +8,8 @@ if (!_global) var _global = {};
 
     //全局设置，所有的路径结尾都不带斜杠,自动匹配10knet和jieminuoketang
     if (/^\w*\.10knet\.com$/.test(location.host)) {
-        _global.host = 'www.10knet.com';
         _global.hostUrl = 'http://www.10knet.com';
     } else if (/^\w*\.jieminuoketang\.com$/.test(location.host)) {
-        _global.host = 'www.jieminuoketang.com';
         _global.hostUrl = 'http://www.jieminuoketang.com';
     }
     _global.apiPrefix = _global.hostUrl + '/api';
@@ -20,8 +18,6 @@ if (!_global) var _global = {};
 
 (function () {
     'use strict';
-
-    if (!jQuery) return;
 
     //修改标题
     $('title').html('杰米诺 | ' + $('title').html());
@@ -33,13 +29,12 @@ if (!_global) var _global = {};
 (function () {
     'use strict';
 
-    //如果没有jquery直接跳过
-    if (!jQuery) return;
-
     //获取api路径
     _global.api = function (str) {
         return _global.apiPrefix + '/' + str;
     };
+
+
 
     //先检查是否登陆，没有登陆的话直接跳往登陆注册页面
     _global.chkLogin = function () {
@@ -47,67 +42,30 @@ if (!_global) var _global = {};
         var dat = {};
 
         $.post(api, dat, function (res) {
+            var isloginpage = (location.href.indexOf(_global.hostUrl + '/account/?page=acc_login') == 0);
+            var isregpage = (location.href.indexOf(_global.hostUrl + '/account/?page=acc_register') == 0);
+            var ischangepwpage = (location.href.indexOf(_global.hostUrl + '/account/?page=acc_changePw') == 0);
+            var istemp = (location.href.indexOf(_global.hostUrl + '/account/?page=acc_temp') == 0);
+            var ishomepage = (location.href == _global.hostUrl + '/') || (location.href == _global.hostUrl) || (location.href.indexOf(_global.hostUrl + '/?') == 0);
 
             if (res.code == 1) {
                 //已经登陆，把数据填充到用户
                 _global.myUsrInfo = res.data;
                 _global.hasLogin = true;
             } else {
-                var jumptype = 2; //跳转类型,0不跳转，1直接跳转，2跳转到注册欢迎页面
-
-                var indomain = (location.host == _global.host);
-                var url = location.href.replace(/[\/]+/g, '/'); //去掉可能存在的双斜杠，http://也会变http:/
-                var urlarr = url.split('/');
-
-                if (indomain) {
-                    //www域名下,mod模块名称
-                    var modname = urlarr[2] || '';
-
-                    //page参数名称
-                    var pagestr = url.match(/page=[\w\d_]+/g) || [''];
-                    var pagename = pagestr[0].split('=')[1];
-
-                    //登陆页不跳转
-                    var accnojump = ['acc_login', 'acc_register', 'acc_changePw', 'acc_temp'];
-                    if (modname == 'account' && accnojump.indexOf(pagename) != -1) {
-                        jumptype = 0;
-                    };
-
-                    //首页不跳转
-                    var homeregx = /^(index[\.\d\w]*)*(\?[\d\w\_]*=[\d\w\_]*)*$/;
-                    if (homeregx.test(modname)) jumptype = 0;
-                } else {
-                    //其他情况files域名下都采用弹窗提示，不强制注册
-                    jumptype = 2;
-                };
-
-                if (jumptype == 1) {
-                    //跳转目标，传递okUrl参数
+                //没有登陆，跳转到登录页，把当前页地址作为参数传递（因为可能是单独调用接口注销的）
+                //如果当前页面已经是登录页或注册页就不要跳转了,站点首页不跳转
+                if (!isloginpage && !isregpage && !ischangepwpage && !istemp && !ishomepage) {
                     var tourl = _global.hostUrl + '/account/?page=acc_login&okUrl=';
                     tourl += encodeURI(location.href);
-                    window.location.href = tourl;
-                } else if (jumptype == 2) {
-                    //跳转目标，传递okUrl参数
-                    var tourl = _global.hostUrl + '/account/welcome.html?&okUrl=';
-                    tourl += encodeURI(location.href);
-                    window.location.href = tourl;
+                    setTimeout(function () {
+                        window.location.href = tourl;
+                    }, 100);
                 };
             };
         }, 'jsonp');
     };
-
-    //如果非匿名anon模式就自动获取用户信息
-    (function () {
-        var url = decodeURI(location.search);
-        var para = url.match(/_anonymous=[\s\S]*/g);
-        var anon = false;
-        if (para && para.length > 0 && para[0].split('=')[1] == 'true') {
-            anon = true;
-        };
-        if (!anon) {
-            _global.chkLogin();
-        }
-    })();
+    _global.chkLogin();
 
 
     //注销账号

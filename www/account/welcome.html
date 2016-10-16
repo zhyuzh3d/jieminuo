@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>零基础学编程</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initiaXl-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="keywords" content="杰米诺，代码派,零基础,学编程,人人编程,人人都是工程师,在线编辑器,web开发,h5,小程序,webapp,HTML, CSS,XML,JavaScript,jquery,bootstrap,angular">
+    <meta name="description" content="杰米诺，代码派，零基础在线学编程，人人都是工程师">
+
+    <link rel="icon" type="image/png" href="http://files.jieminuoketang.com/1/aaw6vsns2i5k/src/JMN32B.png">
+
+    <script>
+        //百度统计
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?1e351cd79245c158ee413eed985ca2d4";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+
+    </script>
+</head>
+
+<body style="overlow:auto;background:#FFF">
+    <style>
+    a:link {
+            text-decoration: none;
+            color: #ec407a;
+        }
+
+        a:active {
+            text-decoration: none;
+            color: ##ff5991;
+        }
+
+        a:hover {
+            text-decoration: none;
+            color: #ff5991;
+        }
+
+        a:visited {
+            text-decoration: none;
+            color: #ec407a;
+        }
+
+        .abtn {
+            display: inline-block;
+            background: #00bfa5;
+            max-width: 500px;
+            min-width: 300px;
+            line-height: 48px;
+            padding: 0 16px;
+            color: #FFF;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 8px
+        }
+
+        .abtn:hover {
+            background: #06e3c5;
+        }
+    }
+
+    </style>
+    <div style="text-align:center;margin-top:50px">
+        <div style="text-align:center">
+            <p style="line-height:2rem">
+                <span>您访问的页面来自杰米诺课堂</span>
+                <br>
+                <span style="color:#AAA">可能需要注册和登录后才能查看页面完整内容</span>
+            </p>
+            <h3>杰米诺，零基础全民编程</h3>
+            <h2>几分钟就能上手编程的神奇网站</h2>
+            <a href="http://www.jieminuoketang.com"><h4>&rarr;点击开启我的编程之旅！</h4></a>
+        </div>
+
+        <div style="text-align:center;margin-top:30px">
+            <div id='regbtn' class="abtn">立即注册，查看页面完整内容</div>
+            <div id='urlbtn' class="abtn">先不注册，只想打开页面看看</div>
+        </div>
+    </div>
+    <script>
+        var url = decodeURIComponent(location.href);
+        var paras = decodeURIComponent(location.search);
+
+        var okurl = paras.substr(paras.indexOf('okUrl') + 6);
+        var regurl = 'http://www.jieminuoketang.com/account/?page=acc_register&' + paras.substr(1);
+        document.getElementById('regbtn').onclick = function() {
+            location.href = regurl;
+        };
+        document.getElementById('urlbtn').onclick = function() {
+            location.href = okurl + '&_anonymous=true';;
+        };
+
+    </script>
+
+
+</body>
+<script>
+    //    百度索引
+    (function() {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+
+</script>
+
+
+</html>
