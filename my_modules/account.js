@@ -415,10 +415,8 @@ _rotr.apis.acc_getPhoneRstCode = function () {
         var code = res.code;
         _rds.cli.setex(codeKey, _cfg.dur.phoneCode, code);
 
-
         //返回数据
         ctx.body = __newMsg(1, 'ok', res.res);
-        console.log('res', res);
         return ctx;
     });
     return co;
@@ -464,6 +462,9 @@ _rotr.apis.acc_rstPwByPhone = function () {
             expires: new Date((new Date()).getTime() + _cfg.dur.browserUkey),
         });
 
+        //删除验证码
+        _rds.cli.del(codeKey);
+
         //返回数据
         ctx.body = __newMsg(1, 'ok');
         return ctx;
@@ -473,7 +474,7 @@ _rotr.apis.acc_rstPwByPhone = function () {
 
 
 /**
- * 向指定手机发送六位验证码,需要图像验证码正确
+ * 凯信通版本：向指定手机发送六位验证码,需要图像验证码正确
  * @param   {string} phone 目标手机，1开头11位数字
  * @returns {string} 六位验证码
  */
@@ -498,6 +499,7 @@ _account.acc_sendPhoneCodeCo = function (phone, capKey, capVal) {
         var path = '/kingtto_media/106sms/106sms?mobile=' + phone;
         path += '&content=【杰米诺课堂】您的验证码是' + code + '，有效时间' + minit + '分钟，请不要告诉他人，如非本人操作请忽略此短信。';
         path += '&tag=2'; //json格式返回
+
         path = encodeURI(path);
         var opt = {
             hostname: 'apis.baidu.com',
@@ -514,10 +516,8 @@ _account.acc_sendPhoneCodeCo = function (phone, capKey, capVal) {
 
         //如果失败，抛出错误
         var msg = JSON.safeParse(res.body);
-        if (!msg || msg.returnstatus != 'Success') {
-            console.log('>acc_sendPhoneCodeCo:', res.body);
-            throw Error('发送失败，请稍后再试.');
-        };
+        console.log('>acc_sendPhoneCodeCo info:', phone, code, msg);
+        if (!msg || msg.returnstatus != 'Success') throw Error('发送失败，请稍后再试.');
 
         return {
             code: code,
@@ -526,6 +526,71 @@ _account.acc_sendPhoneCodeCo = function (phone, capKey, capVal) {
     });
     return co;
 }
+
+
+
+/**
+ * 短信网版本：向指定手机发送六位验证码,需要图像验证码正确;待测试
+ * @param   {string} phone 目标手机，1开头11位数字
+ * @returns {string} 六位验证码
+ */
+
+_account.acc_sendPhoneCodeCo2 = function (phone, capKey, capVal) {
+    var co = $co(function* () {
+        //校验图像验证码
+        var capcheck = yield _captcha.checkCo(capKey, capVal, true);
+        if (!capcheck) throw Error('验证码输入错误，请重试.');
+
+        //生成认证码
+        var code = String(Math.random()).substr(2, 6);
+        if (code.length < 6) {
+            var n = 6 - code.length;
+            for (var i = 0; i < n; i++) {
+                code += '0';
+            }
+        };
+
+        //发送验证码
+        var minit = _cfg.dur.phoneCode / 60;
+        var path = '/sms_net/smsapi/smsapi?mobile=' + phone;
+        path += '&content=【杰米诺课堂】您的验证码是' + code + '，有效时间' + minit + '分钟，请不要告诉他人，如非本人操作请忽略此短信。';
+        path += '&tag=2'; //json格式返回
+
+        path = encodeURI(path);
+        var opt = {
+            hostname: 'apis.baidu.com',
+            port: 80,
+            path: path,
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'apikey': _xcfg.baidu.apikey,
+            },
+        };
+
+        var res = yield _fns.httpReqPrms(opt);
+
+        //如果失败，抛出错误
+        var msg = JSON.safeParse(res.body);
+        console.log('>acc_sendPhoneCodeCo2 info:', phone, code, path, msg, res);
+        if (!msg || msg.returnstatus != 'Success') throw Error('发送失败，请稍后再试.');
+
+        return {
+            code: code,
+            res: res
+        };
+    });
+    return co;
+}
+
+
+
+
+
+
+
+
+
 
 
 
@@ -630,7 +695,7 @@ _rotr.apis.acc_admRemoveUsr = function () {
         if (uid != 1) throw Error('权限验证失败，当前用户无权进行此操作');
 
         var id = ctx.query.id || ctx.request.body.id;
-        if (!id) throw Error('没有收到目标用户id.');
+        if (!id) throw Error('没有收到目标用户id');
 
         //获取用户的phone和ukey
         var theusrkey = _rds.k.usr(id);

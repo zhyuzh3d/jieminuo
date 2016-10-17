@@ -92,7 +92,7 @@
             location.href = regurl;
         };
         document.getElementById('urlbtn').onclick = function() {
-            location.href = okurl + '&_anonymous=true';;
+            location.href = (okurl.indexOf('?') == -1) ? okurl + '?_anonymous=true' : okurl + '&_anonymous=true';
         };
 
     </script>
