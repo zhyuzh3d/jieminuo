@@ -373,6 +373,7 @@
                 ok: 0,
                 total: 0,
             };
+
             var files = $scope.templates[tmpname].files;
             if (!files) {
                 $mdToast.show(
@@ -401,7 +402,9 @@
                 var uid = $rootScope.myInfo.id;
 
                 //对res内的uid和appName进行处理替换
-                res = res.replace(/\[\[uid\]\]/g, uid).replace(/\[\[appName\]\]/g, appname);
+                if (typeof (res) == 'string') {
+                    res = res.replace(/\[\[uid\]\]/g, uid).replace(/\[\[appName\]\]/g, appname);
+                };
 
                 var blob = new Blob([res], {
                     type: mime
@@ -422,7 +425,7 @@
                         }
                     };
                 });
-            });
+            },"text");
         };
 
 

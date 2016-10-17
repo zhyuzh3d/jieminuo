@@ -54,6 +54,7 @@ _rotr.apis.pie_createApp = function () {
             'uid': uid,
             'pkey': __uuid(),
             'time': (new Date()).getTime(),
+            'update': (new Date()).getTime(),
             'url': _qn.cfg.BucketDomain + uid + '/' + appName + '/',
         };
         for (var attr in dat) {

@@ -14,6 +14,9 @@ if (!_pie) var _pie = {};
     _pie.useNavBar = 'top';
     _cfg.startPage = 'pie_welcome';
 
+    _cfg.defaultIconSm = 'http://files.jieminuoketang.com/1/aaw6vsns2i5k/src/defaultIcon128.png';
+    _cfg.defaultIconLg = 'http://rtfiles.jieminuoketang.com/1/aaw6vsns2i5k/src/defaultIcon512.png';
+
 
     //七牛文件上传接口设定
     _cfg.qn = {
@@ -25,6 +28,7 @@ if (!_pie) var _pie = {};
     //自动调整上传接口
     if (/^\w*\.jieminuoketang\.com$/.test(location.host)) {
         _cfg.qn.BucketDomain = 'http://files.jieminuoketang.com/';
+        _cfg.qn.RtBucketDomain = 'http://rtfiles.jieminuoketang.com/';
     };
 
 
@@ -46,7 +50,7 @@ if (!_pie) var _pie = {};
 
     //支持打开编辑的文件类型
     _cfg.editFileTypes = ['html', 'js', 'css', 'txt', 'json'];
-    _cfg.viewImageTypes = ['jpg', 'png', 'gif','jpeg'];
+    _cfg.viewImageTypes = ['jpg', 'png', 'gif', 'jpeg'];
 
     //全部mimetype
     _cfg.mimeTypes = {
@@ -93,6 +97,7 @@ if (!_pie) var _pie = {};
                 'index.html': 'http://www.jieminuoketang.com/pie/templates/angular/index.html',
                 'index.css': 'http://www.jieminuoketang.com/pie/templates/angular/index.css',
                 'index.js': 'http://www.jieminuoketang.com/pie/templates/angular/index.js',
+                'info.json': 'http://www.jieminuoketang.com/pie/templates/angular/info.json',
             },
         },
         min: {
@@ -432,11 +437,13 @@ if (!_pie) var _pie = {};
     */
     _cfg.xhrs = {};
 
+
+
     /**
      * 上传一个或多个文件，指定目录版本
      * @param   {str} path      存储的路径，后无斜杠，不包含uid，例如 myapp/folder1
      * @param   {jquery对象} btnjo      点击的按钮对象，隐身ipt将跟在这个jo后面
-     * @param   {function} beforefn 在发起上传之前执行的函数,fn(f,xhr)
+     * @param   {function} beforefn 在发起上传之前执行的函数,fn(f,xhr),可以在这里通过f.rename指定上传后的名称
      * @param   {function} progressfn 上传过程中的函数，fn(f,evt),上传百分比进度evt.percent
      * @param   {function} successfn  上传成功后执行的函数，fn(f,res)，上传的文件地址res.url
      * @param   {function} abortfn    取消上传后执行的函数
@@ -444,9 +451,10 @@ if (!_pie) var _pie = {};
      * @param   {function} completefn 上传完成执行的函数,fn(f,xhr,status),标准xhr参数
      * @param   {string} domain     上传到指定的bucket，默认http://pubfiles.10knet.com/
      * @param   {boolean} multi     同时上传多个文件
+     * @param   {string} acceptstr     限定默认可以选择的文件类型
      * @returns {int} uploadId整数，指向一个数组包含所有文件的xhr，数组存放在_cfg.xhrs[uploadId]
      */
-    _fns.uploadFile = function (path, btnjo, beforefn, progressfn, successfn, abortfn, errorfn, completefn, domain, multi) {
+    _fns.uploadFile = function (path, btnjo, beforefn, progressfn, successfn, abortfn, errorfn, completefn, domain, multi, acceptstr) {
         if (!btnjo) {
             __errhdlr(new Error('_fns.uploadFile:button undefined.'));
             return;
@@ -462,11 +470,13 @@ if (!_pie) var _pie = {};
         filejo.remove();
         filejo = $('<input id="uploadFileInput" type="file" style="display:none"></input>').appendTo(btnjo);
         if (multi) filejo.attr('multiple', "multiple");
+        if (acceptstr) filejo.attr('accept', acceptstr);
         btnjo.after(filejo);
 
         //给file input添加监听
         filejo.bind('change', function () {
             var fileobjs = filejo.get(0).files;
+            console.log('>start uploading', filejo.get(0).files[0].name);
             if (!domain) domain = _cfg.qn.BucketDomain;
 
             for (var i = 0; i < fileobjs.length; i++) {
@@ -480,14 +490,15 @@ if (!_pie) var _pie = {};
                 xhr.id = xhr.file.id = f.id = xhrid;
                 xhr.id = xhr.file.uploadId = f.uploadId = uploadId;
 
-
                 _cfg.xhrs[uploadId][xhrid] = xhr;
-                if (beforefn) beforefn(f, xhr);
 
+                //可以利用beforfn修改文件名
                 var fname = f.name;
+                if (beforefn) beforefn(f, xhr);
+                var f_name = f.rename ? f.rename : f.name;
 
                 //开始上传
-                xhr = _fns.uploadFileQn(path + '/' + fname, xhr.file,
+                xhr = _fns.uploadFileQn(path + '/' + f_name, xhr.file,
                     function (evt) {
                         //添加evt.percent,为了避免abort之后progress会多运行一次，所以使用f.abort做判断
                         if (progressfn && !f.abort) {
@@ -848,6 +859,29 @@ _fns.buildShareurl = function (shareto, title, url, pic) {
 };
 
 
+
+//获取app的icon函数：尝试链接是否404,自动设置到fileinfo.icon
+_fns.getAppIcon = function (scope, appinfo, uselg) {
+    //尝试读取图标文件
+    var iconurlbase = _cfg.qn.BucketDomain + appinfo.uid + '/' + appinfo.name + '/icon.png-avatar128?_=';
+    if (uselg) iconurlbase = _cfg.qn.BucketDomain + appinfo.uid + '/' + appinfo.name + '/icon.png-avatar512?_=';
+
+    var xhr = $.get(iconurlbase + (new Date()).getTime(), function () {
+        _fns.applyScope(scope, function () {
+            appinfo.icon = iconurlbase + (new Date()).getTime();
+        });
+    }).error(function () {
+        if (xhr.status == '404') {
+            _fns.applyScope(scope, function () {
+                if (uselg) {
+                    appinfo.icon = _cfg.defaultIconSm;
+                } else {
+                    appinfo.icon = _cfg.defaultIconLg;
+                }
+            });
+        }
+    });
+};
 
 
 

@@ -56,7 +56,6 @@
             return $mdMedia('gt-' + str);
         }
 
-
         //自动隐藏list和preview
         $scope.layoutInit = function () {
             if (!$mdMedia('gt-xs')) {
@@ -124,10 +123,7 @@
             $.post(api, dat, function (res) {
                 console.log('POST', api, dat, res);
                 if (res.code == 1) {
-                    _fns.applyScope($scope, function () {
-                        $scope.curApp = res.data;
-                        _fns.getAppIcon($scope, $scope.curApp);
-                    });
+                    $scope.curApp = res.data;
                 } else {
                     //提示错误
                     $mdToast.show(
@@ -140,9 +136,6 @@
             });
         };
         $scope.getAppInfo();
-
-
-
 
 
 
@@ -489,7 +482,7 @@
                 $scope.selFolderPath = $scope.appPath + 'src/';
                 $scope.appFolders = {};
                 $scope.appFolders[$scope.selFolderPath] = {};
-            } else if (!$scope.selFolderPath || $scope.selFolderPath == $scope.curApp.name) {
+            } else if (!$scope.selFolderPath) {
                 //如果之前没指定过selFolderPath,那么指向第一个文件夹
                 $scope.selFolderPath = Object.keys($scope.appFolders)[0];
             };
@@ -506,25 +499,6 @@
             $mdDialog.hide();
         };
 
-        //上传图标文件
-        $scope.uploadIcon = function () {
-            var acceptstr = 'image/x-png | image/jpeg | image/jpg';
-
-            $scope.selFolderPath = $scope.curApp.name;
-            $scope.doUploadFile(null, 'icon.png', function (f, res) {
-                //更新图标链接
-                var iconurl = f.url + '-avatar128?_=' + (new Date()).getTime();
-                _fns.applyScope($scope, function () {
-                    $scope.curApp.icon = iconurl;
-                });
-
-                $('#appIconImg').attr('src', "");
-                setTimeout(function () {
-                    $('#appIconImg').attr('src', iconurl);
-                }, 2000);
-            }, acceptstr);
-        };
-
         //直接向指定folder传文件
         $scope.upload2Folder = function (fdpath) {
             $scope.selFolderPath = fdpath;
@@ -533,7 +507,7 @@
 
         //模拟input弹窗选择文件并开始上传
         $scope.upFiles = {};
-        $scope.doUploadFile = function (evt, fname, okfn, acceptstr) {
+        $scope.doUploadFile = function (evt) {
             var appName = $scope.getAppArg();
             var uid = $rootScope.myInfo.id;
 
@@ -541,7 +515,6 @@
             var btnjo;
             if (!evt) {
                 btnjo = $('<div style="display:none"></div>');
-                $('body').append(btnjo);
             } else {
                 btnjo = $(evt.target);
                 if (btnjo.attr('id') != 'uploadBtn') btnjo = btnjo.parent();
@@ -552,9 +525,8 @@
             path = path.replace(/\/$/, '');
 
             $scope.uploadId = _fns.uploadFile(path, btnjo,
-                function (f, xhr) {
-                    //before
-                    if (fname) f.rename = fname;
+                function (f, res) {
+                    //before,
                     $scope.cancelDialog();
                 },
                 function (f, proevt) {
@@ -577,8 +549,6 @@
                         .position('top right')
                         .hideDelay(3000)
                     );
-
-                    if (okfn) okfn(f, res);
                 },
                 function (f) {
                     //abort,从upFiles里面移除这个f
@@ -600,7 +570,7 @@
                         .position('top right')
                         .hideDelay(3000)
                     );
-                }, null, null, null, acceptstr);
+                });
         };
 
 
@@ -622,7 +592,8 @@
         $scope.cmModes = {
             'html': 'xml',
             'css': 'css',
-            'js': 'javascript'
+            'js': 'javascript',
+            'json':'javascript',
         };
 
 
