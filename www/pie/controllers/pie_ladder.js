@@ -78,6 +78,10 @@
                 if (res.code == 1) {
                     _fns.applyScope($scope, function () {
                         $scope.showApps = res.data;
+                        //为每个app添加icon字段
+                        for (var i = 0; i < $scope.showApps.length; i++) {
+                            _fns.getAppIcon($scope, $scope.showApps[i]);
+                        };
                     });
                 } else {
                     $mdToast.show(
@@ -109,6 +113,11 @@
                         $scope.topApps.sort(function (a, b) {
                             return b.weight - a.weight;
                         });
+
+                        //为每个app添加icon字段
+                        for (var i = 0; i < $scope.topApps.length; i++) {
+                            _fns.getAppIcon($scope, $scope.topApps[i]);
+                        };
                     });
                 } else {
                     $mdToast.show(

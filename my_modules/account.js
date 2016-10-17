@@ -366,6 +366,7 @@ _rotr.apis.acc_getPhoneRegCode = function () {
 
         //发送验证码并记录到redis设定过期时间
         var res = yield _account.acc_sendPhoneCodeCo(phone, capKey, capVal);
+
         var code = res.code;
         _rds.cli.setex(codeKey, _cfg.dur.phoneCode, code);
 
@@ -410,8 +411,10 @@ _rotr.apis.acc_getPhoneRstCode = function () {
 
         //发送验证码并记录到redis设定过期时间
         var res = yield _account.acc_sendPhoneCodeCo(phone, capKey, capVal);
+
         var code = res.code;
         _rds.cli.setex(codeKey, _cfg.dur.phoneCode, code);
+
 
         //返回数据
         ctx.body = __newMsg(1, 'ok', res.res);
@@ -508,6 +511,14 @@ _account.acc_sendPhoneCodeCo = function (phone, capKey, capVal) {
         };
 
         var res = yield _fns.httpReqPrms(opt);
+
+        //如果失败，抛出错误
+        var msg = JSON.safeParse(res.body);
+        if (!msg || msg.returnstatus != 'Success') {
+            console.log('>acc_sendPhoneCodeCo:', res.body);
+            throw Error('发送失败，请稍后再试.');
+        };
+
         return {
             code: code,
             res: res

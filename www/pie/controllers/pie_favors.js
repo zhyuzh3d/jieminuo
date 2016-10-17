@@ -145,6 +145,10 @@
                     _fns.applyScope($scope, function () {
                         //重新排序
                         $scope.favorApps = res.data;
+                        //为每个app添加icon字段
+                        for (var i = 0; i < $scope.favorApps.length; i++) {
+                            _fns.getAppIcon($scope, $scope.favorApps[i]);
+                        };
                     });
                 } else {
                     //提示错误

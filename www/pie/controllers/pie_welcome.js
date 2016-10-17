@@ -54,6 +54,13 @@
 
                         $scope.myApps = res.data;
                         $scope.myApps.apps = _fns.arr2obj(arr, false);
+
+                        //为每个app添加icon字段
+                        for (var attr in $scope.myApps.apps) {
+                            _fns.getAppIcon($scope, $scope.myApps.apps[attr].info);
+                        };
+
+
                     });
                 } else {
                     //提示错误
@@ -425,7 +432,7 @@
                         }
                     };
                 });
-            },"text");
+            }, "text");
         };
 
 
