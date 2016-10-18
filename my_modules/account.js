@@ -411,7 +411,6 @@ _rotr.apis.acc_getPhoneRstCode = function () {
 
         //发送验证码并记录到redis设定过期时间
         var res = yield _account.acc_sendPhoneCodeCo(phone, capKey, capVal);
-
         var code = res.code;
         _rds.cli.setex(codeKey, _cfg.dur.phoneCode, code);
 
@@ -479,7 +478,7 @@ _rotr.apis.acc_rstPwByPhone = function () {
  * @returns {string} 六位验证码
  */
 
-_account.acc_sendPhoneCodeCo = function (phone, capKey, capVal) {
+_account.acc_sendPhoneCodeCo2 = function (phone, capKey, capVal) {
     var co = $co(function* () {
         //校验图像验证码
         var capcheck = yield _captcha.checkCo(capKey, capVal, true);
@@ -525,7 +524,9 @@ _account.acc_sendPhoneCodeCo = function (phone, capKey, capVal) {
         };
     });
     return co;
-}
+};
+
+
 
 
 
@@ -535,7 +536,7 @@ _account.acc_sendPhoneCodeCo = function (phone, capKey, capVal) {
  * @returns {string} 六位验证码
  */
 
-_account.acc_sendPhoneCodeCo2 = function (phone, capKey, capVal) {
+_account.acc_sendPhoneCodeCo = function (phone, capKey, capVal) {
     var co = $co(function* () {
         //校验图像验证码
         var capcheck = yield _captcha.checkCo(capKey, capVal, true);
@@ -550,41 +551,41 @@ _account.acc_sendPhoneCodeCo2 = function (phone, capKey, capVal) {
             }
         };
 
+
         //发送验证码
         var minit = _cfg.dur.phoneCode / 60;
-        var path = '/sms_net/smsapi/smsapi?mobile=' + phone;
-        path += '&content=【杰米诺课堂】您的验证码是' + code + '，有效时间' + minit + '分钟，请不要告诉他人，如非本人操作请忽略此短信。';
-        path += '&tag=2'; //json格式返回
+        var path = '/asmx/smsservice.aspx?name=' + _xcfg.sms.name + '&pwd=' + _xcfg.sms.pwd;
+        path += '&content=【人人都能学编程】您的杰米诺验证码是' + code + '，有效时间' + minit + '分钟，请不要告诉他人，如非本人操作请忽略此短信。欢迎访问www.jieminuoketang.com开启您的编程世界。&mobile=' + phone + '&stime=&sign=杰米诺课堂&type=pt&extno=1';
 
         path = encodeURI(path);
         var opt = {
-            hostname: 'apis.baidu.com',
+            hostname: 'web.duanxinwang.cc',
             port: 80,
             path: path,
-            method: 'GET',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'apikey': _xcfg.baidu.apikey,
             },
         };
 
+
         var res = yield _fns.httpReqPrms(opt);
 
         //如果失败，抛出错误
-        var msg = JSON.safeParse(res.body);
-        console.log('>acc_sendPhoneCodeCo2 info:', phone, code, path, msg, res);
-        if (!msg || msg.returnstatus != 'Success') throw Error('发送失败，请稍后再试.');
+        var msg = res.body;
+        if (!msg || msg[0] == '1') {
+            console.log('>acc_sendPhoneCodeCo:', res);
+            throw Error('发送失败，请稍后再试.');
+        };
 
         return {
             code: code,
-            res: res
+            res: 1
         };
     });
     return co;
 }
-
-
-
 
 
 

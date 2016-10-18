@@ -17,7 +17,7 @@
     <link href="./css/common.css" rel="stylesheet">
 
     <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
-    <script src="../global/global_pre2.js"></script>
+    <script src="../global/global_pre.js"></script>
 
     <script>
         //百度统计
@@ -34,7 +34,7 @@
 
 <body>
     <div id='appBox' layout layout-align='start start' class='container-fluid' md-swipe-right="$root.tagLeftMenu()" md-swipe-left="$root.tagLeftMenu()" style="width:100%">
-        <div id='sideNav' flex='initial' ng-include='$root.sideNavUrl' ng-style='{height:scrHei+"px"}'></div>
+        <div id='sideNav' flex='initial' ng-include='"http://www.jieminuoketang.com/pie/controllers/pie_temp.html"' ng-style='{height:scrHei+"px"}'></div>
         <div id='curPage' flex='grow' ng-include='$root.curPageUrl' style='overflow-y:auto' ng-style='{height:scrHei+"px"}' style="background:#00F"></div>
     </div>
 
@@ -65,11 +65,13 @@
     <script src="//cdn.bootcss.com/codemirror/5.17.0/addon/hint/html-hint.min.js"></script>
     <script src="//cdn.bootcss.com/codemirror/5.17.0/addon/hint/css-hint.min.js"></script>
     <script src="//cdn.bootcss.com/codemirror/5.17.0/addon/hint/xml-hint.min.js"></script>
+    <script src="//cdn.bootcss.com/codemirror/5.17.0/addon/lint/json-lint.min.js"></script>
 
 
     <script src="./lib/cmlint/csslint.js"></script>
     <script src="./lib/cmlint/jshint.js"></script>
-    <script src="http://htmlhint.com/js/htmlhint.js"></script>
+    <script src="./lib/cmlint/htmlhint.js"></script>
+    <script src="./lib/cmlint/jsonlint.js"></script>
 
     <script src="http://codemirror.net/mode/htmlmixed/htmlmixed.js"></script>
     <script src="http://codemirror.net/addon/selection/active-line.js"></script>
@@ -110,7 +112,7 @@
 
 
 
-    <script src="./js/common.js"></script>
+    <script src="./js/common2.js"></script>
     <script src="./js/app2.js"></script>
     <script src="../global/global_after.js"></script>
 </body>

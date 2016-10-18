@@ -29,7 +29,8 @@ var _app = {}; //最高全局变量，angular
         $compileProvider,
         $filterProvider,
         $provide,
-        $mdThemingProvider
+        $mdThemingProvider,
+        $sceDelegateProvider
     ) {
         //指向_app
         _app.controller = $controllerProvider.register;
@@ -37,6 +38,13 @@ var _app = {}; //最高全局变量，angular
         _app.factory = $provide.factory;
         _app.directive = $compileProvider.directive;
         _app.filter = $filterProvider.register;
+
+        $sceDelegateProvider.resourceUrlWhitelist([
+            'self',
+            'http://rtfiles.jieminuoketang.com/**',
+            'http://files.jieminuoketang.com/**'
+        ]);
+
 
         //material design theme主题颜色定制
         $mdThemingProvider.theme('default')

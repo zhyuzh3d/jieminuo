@@ -136,11 +136,13 @@ if (!_pie) var _pie = {};
     //设置获取ctrlr路径方法
     _fns.getCtrlrUrl = function (ctrlrname, ext) {
         if (!ext) ext = '.html';
-        if (/^http:/.test(ctrlrname)) {
-            return ctrlrname;
-        } else {
-            return _cfg.home + 'controllers/' + ctrlrname + ext;
+
+        var url = ctrlrname;
+        if (/^http:/.test(ctrlrname) == false) {
+            url = _cfg.home + 'controllers/' + ctrlrname + ext;
         }
+        console.log('>>>>changetourl', url);
+        return url;
     };
 
     //设置获取dialog路径方法

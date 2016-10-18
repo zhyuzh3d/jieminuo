@@ -38,6 +38,7 @@ var _app = {}; //最高全局变量，angular
         _app.directive = $compileProvider.directive;
         _app.filter = $filterProvider.register;
 
+
         //material design theme主题颜色定制
         $mdThemingProvider.theme('default')
             .primaryPalette('teal', {
@@ -50,6 +51,7 @@ var _app = {}; //最高全局变量，angular
                 'default': '600'
             });
     };
+
 
 
     //初始化各种功能

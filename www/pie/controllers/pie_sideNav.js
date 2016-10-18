@@ -50,6 +50,8 @@
             ctrlr: 'pie_about',
         }];
 
+
+        //管理员专用
         $scope.adminMenus = [{
             name: '用户管理',
             icon: 'fa fa-user',
