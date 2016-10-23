@@ -266,7 +266,8 @@ _fns.addDialogJs('appReset');
 
             //格式检查
             var errstr;
-            if (!dat.wildDogAppSecret || !_cfg.regx.wildDogAppSecret.test(dat.wildDogAppSecret)) {
+            console.log('>>>xx', _cfg.regx.wildDogAppSecret, dat.wildDogAppSecret, _cfg.regx.wildDogAppSecret.test(dat.wildDogAppSecret))
+            if (dat.wildDogAppSecret && !_cfg.regx.wildDogAppSecret.test(dat.wildDogAppSecret)) {
                 errstr = '野狗APP超级密钥格式错误';
             };
             if (errstr) {

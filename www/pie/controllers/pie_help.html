@@ -1,0 +1,154 @@
+<script>
+    _fns.addCtrlrJs('pie_help');
+
+</script>
+
+<!--控制器界面部分-->
+<div layout layout-align='stretch stretch' id='pie_help' ng-controller='pie_help' class='pie_help' style='width: 100%; height: 100%; overflow:visible;background:#FFF'>
+    <style>
+        /*内部样式，以控制器名为class开头*/
+
+        .pie_help .unit {
+            margin-bottom: 48px;
+            border-left: 4px solid #CCC;
+            padding-left: 12px;
+        }
+
+        .pie_help li {
+            line-height: 30px;
+        }
+
+    </style>
+    <!--控制器界面部分-->
+    <div layout-padding style="width:100%">
+        <!--        顶部-->
+        <div>
+            <md-button hide-gt-sm class="md-icon-button" ng-click="$root.tagLeftMenu()" style='margin-left:0' aria-label='tagleft'>
+                <span class="fa fa-bars fa-lg"></span>
+            </md-button>
+            <md-button id='leftnavbtn' class="md-icon-button hidden-sm hidden-xs" ng-click="$root.tagLeftMenu()" style='margin-left:0;color:#AAA' aria-label='tagleft' data-toggle="tooltip" data-placement="bottom" title="显示／隐藏左侧菜单栏">
+                <span class="fa fa-chevron-left fa-lg" ng-show='$root.leftMenuOpen'></span>
+                <span class="fa fa-bars fa-lg" ng-hide='$root.leftMenuOpen'></span>
+            </md-button>
+
+
+            <div class="dropdown pull-right" ng-show='hasLogin' style="margin-top:8px">
+                <button class="dropdown-toggle" id="ddmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="background:none;border:none">
+                    <span>
+                        <img class='avatar-md' ng-src='{{myUsrInfo.avatar?myUsrInfo.avatar+"-avatar32":""}}' />
+                    </span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="ddmenu1">
+                    <li class="btn" ng-click='gotoProfile()' style="width:100%">资料设置</li>
+                    <md-divider></md-divider>
+                    <li class="btn" ng-click='logout()' style="width:100%">退出</li>
+                </ul>
+            </div>
+        </div>
+
+
+        <!--        帮助文件-->
+        <div style="padding:28px">
+            <md-tabs md-dynamic-height md-border-bottom>
+                <md-tab label="使用手册">
+                    <md-list class="md-dense" flex>
+                        <div class='unit' ng-repeat='item in docs'>
+                            <h3 ng-bind='item.title'></h3>
+                            <ol>
+                                <li ng-repeat='tip in item.tips'>
+                                    <div ng-bind-html='tip.text | toTrustHtml' ng-show='tip.text'></div>
+                                    <pre ng-bind='tip.code' ng-show='tip.code'></pre>
+                                </li>
+                            </ol>
+                            <div ng-show='item.links'>
+                                <div ng-repeat='link in item.links'>
+                                    <a ng-href={{link.url}} ng-bind='link.title'></a>
+                                </div>
+                            </div>
+                        </div>
+                    </md-list>
+                </md-tab>
+
+                <md-tab label={{apislabel}}>
+                    <pre ng-bind='apidesc' style="margin-top:12px;background:#666;color:#FFF"></pre>
+                    <md-list class="md-dense" flex>
+                        <div class='unit' ng-repeat="item in apis">
+                            <h4 style="font-weight:bold" ng-bind='item.name'></h4>
+                            <div ng-show='item.desc'>
+                                <span>接口说明:</span>
+                                <pre ng-bind='item.desc'></pre>
+                            </div>
+                            <div ng-show='item.path'>
+                                <span>提交路径:</span>
+                                <pre ng-bind='item.path'></pre>
+                            </div>
+                            <div ng-show='item.method'>
+                                <span>提交方法:</span>
+                                <pre ng-bind='item.method'></pre>
+                            </div>
+                            <div ng-show='item.reqdata'>
+                                <span>提交数据:</span>
+                                <pre ng-bind='item.reqdata | json' />
+                            </div>
+                            <div ng-show='item.reqdesc'>
+                                <span>提交说明:</span>
+                                <pre ng-bind='item.reqdesc'></pre>
+                            </div>
+                            <div ng-show='item.resdata'>
+                                <span>返回数据:</span>
+                                <pre ng-bind='item.resdata | json'></pre>
+                            </div>
+                            <div ng-show='item.resdesc'>
+                                <span>返回说明:</span>
+                                <pre ng-bind='item.resdesc'></pre>
+                            </div>
+                            <div ng-show='item.tip'>
+                                <span>使用提示:</span>
+                                <pre ng-bind='item.tip'></pre>
+                            </div>
+                            <div ng-show='item.links'>
+                                <div ng-repeat='link in item.links'>
+                                    <a ng-href={{link.url}} ng-bind='link.title'></a>
+                                </div>
+                            </div>
+                        </div>
+                    </md-list>
+                </md-tab>
+
+                <md-tab label={{extslable}}>
+                    <md-list class="md-dense" flex>
+                        <div class='unit' ng-repeat='item in exts'>
+                            <h3 ng-bind='item.title'></h3>
+                            <div ng-repeat='tip in item.tips'>
+                                <div ng-bind-html='tip.text | toTrustHtml'> ng-show='tip.text'></div>
+                                <pre ng-bind='tip.code' ng-show='tip.code'></pre>
+                            </div>
+                            <div ng-show='item.links'>
+                                <div ng-repeat='link in item.links'>
+                                    <a ng-href={{link.url}} ng-bind='link.title'></a>
+                                </div>
+                            </div>
+                        </div>
+                    </md-list>
+                </md-tab>
+            </md-tabs>
+        </div>
+
+
+        <div style="height:300px"></div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<!---->

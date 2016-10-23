@@ -20,6 +20,7 @@ var $uuid = global.$uuid = require('node-uuid');
 var $sktio = global.$sktio = require('socket.io');
 var $scaptcha = global.$scaptcha = require('svg-captcha');
 var $qiniu = global.$qiniu = require('qiniu');
+var $jwt = global.$jwt = require('jwt-simple');
 //var $cors = global.$cors = require('koa-cors');
 
 //自定义库引入
@@ -38,6 +39,7 @@ global._qn = require('./my_modules/qn.js');
 //功能模块引入
 global._account = require('./my_modules/account.js');
 global._pie = require('./my_modules/pie.js');
+global._ext = require('./my_modules/ext.js');
 
 //服务器对象
 var koaSvr = _app.koaSvr = $koa();

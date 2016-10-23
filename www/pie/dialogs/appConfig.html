@@ -52,7 +52,7 @@
             <div layout='column' style='padding:24px 12px 24px 12px'>
                 <md-input-container class="md-block" flex-gt-sm style='margin-top:36px'>
                     <label style="text-align:left;">绑定野狗APP超级密钥</label>
-                    <input name='alias' ng-model="app.wildDogAppSecret" ng-pattern="/^[a-zA-Z\u0391-\uFFE5]+[0-9a-zA-Z\u0391-\uFFE5]{2,17}$/" style='font-size:2rem;font-family:simhei' />
+                    <input name='alias' ng-model="app.wildDogAppSecret" ng-pattern="/^[a-zA-Z0-9]{8,64}$/" style='font-size:2rem;font-family:simhei' />
                     <div style='color:#AAA;text-align:left;font-size:12px'>进入管理／身份认证／登录方式页面底部获取</div>
                 </md-input-container>
 
