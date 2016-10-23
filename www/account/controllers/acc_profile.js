@@ -23,6 +23,7 @@
         _global.promiseRun(function (tm) {
             _fns.applyScope($scope, function () {
                 $scope.user = _global.myUsrInfo;
+                if (!$scope.user.color) $scope.user.color = $scope.defaultColors[0];
                 $scope.user.avatarCss = 'url(' + $scope.user.avatar + '-avatar128)';
             })
         }, function () {
@@ -44,6 +45,10 @@
             }
         };
 
+
+
+        //颜色预选
+        $scope.defaultColors = ['#00BFA5', '#C51162', '#0D47A1', '#33691E', '#B71C1C', '#FF6D00', '#4E342E', '#37474F']
 
 
         //模拟input弹窗选择文件并开始上传

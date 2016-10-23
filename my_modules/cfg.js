@@ -28,7 +28,10 @@ _cfg.regx = {
     fileName: /^[0-9a-zA-Z\u0391-\uFFE5]+\.(js|css|html|json|txt)$/, //文件名，中英文数字加点加2~4位字母数字
     appName: /^[a-zA-Z]+[0-9a-zA-Z]{2,31}$/, //app名称格式，非数字开头3~31位
     appAlias: /^[a-zA-Z\u0391-\uFFE5]+[0-9a-zA-Z\u0391-\uFFE5]{2,17}$/, //app别名，非数字开头3~18位
+    appDesc: /^[\s\S]{0,60}$/, //app描述，任意字符，0～60
     avatar: /^http:\/\/[\s\S]{0,1024}$/, //用户头像，标准http格式才行
+    url: /^http:\/\/[\s\S]{0,1024}$/, //链接，标准http格式才行
+    hash:/^[0-9a-zA-Z]{4,64}]$/, //hash键格式，宽泛限制
 };
 
 

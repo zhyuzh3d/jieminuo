@@ -40,6 +40,7 @@ var _app = {}; //最高全局变量，angular
 
 
         //material design theme主题颜色定制
+        $mdThemingProvider.alwaysWatchTheme(true);
         $mdThemingProvider.theme('default')
             .primaryPalette('teal', {
                 'default': 'A700'
@@ -63,6 +64,10 @@ var _app = {}; //最高全局变量，angular
 
     //执行rootscope控制器代码，可被其他控制器调用
     _app.run(function angularRun($rootScope, $timeout, $mdSidenav, $log, $mdMedia) {
+
+        $rootScope._fns = _fns;
+        $rootScope._cfg = _cfg;
+
         //把rootscope记录到xdat
         $rootScope.xargs = {
             id: 'root',

@@ -26,12 +26,13 @@ _qn.start = function () {
 
 
 
-/*http接口：获取上传token的接口
+/*http接口：获取上传token的接口,允许jsonp跨域
 随机文件名，不锁定路径
 req:{fpath:'...'}
 */
 _rotr.apis.qn_getUploadToken2 = function () {
     var ctx = this;
+    ctx.enableJsonp = true;
 
     var co = $co(function* () {
 

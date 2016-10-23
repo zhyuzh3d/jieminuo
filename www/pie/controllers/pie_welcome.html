@@ -1,6 +1,7 @@
 <script>
     _fns.addCtrlrJs('pie_welcome');
     _fns.addDialogJs('share');
+    _fns.addDialogJs('appConfig');
 
 </script>
 
@@ -95,19 +96,19 @@
             </div>
             <div class='col-xs-12 col-sm-6 col-md-4 col-lg-2' ng-repeat='item in myApps.apps' style='padding:0.5rem'>
                 <md-card md-theme="default" md-theme-watch style='margin:0;'>
-                    <md-card-title class="elips" style='padding:0;overflow:hidden;position:relative'>
-                        <div style="position:absolute;width:100%;height:100%;background-size:cover;opacity:0.4;border-radius: 4px 4px 0 0" ng-style='genCardBg2(item.val)'></div>
-                        <div style="position:absolute;width:100%;height:100%;background-size:cover;opacity:0.4;border-radius: 4px 4px 0 0" ng-style='genCardBg(item.val)'></div>
+                    <md-card-title class="elips" style='padding:0;overflow:hidden;position:relative;border-bottom: 1px solid #EEE;'>
+                        <div style="position:absolute;width:100%;height:100%;background-size:cover;opacity:0.4;border-radius: 4px 4px 0 0;display:none" ng-style='genCardBg2(item.val)'></div>
+                        <div style="position:absolute;width:100%;height:100%;background-size:cover;opacity:0.4;border-radius: 4px 4px 0 0;display:none" ng-style='genCardBg(item.val)'></div>
                         <md-card-title-text class="elips" style='margin:16px;z-index:6'>
-                            <div style="width:40px;height:40px;overflow:hidden;border-radius:6px;border:1px solid  rgba(255, 255, 255, 0.25);cursor:pointer;" ng-click='openApp(item.key)'>
-                                <img src={{item.info.icon}} width='40px' height='40px' />
+                            <div style="width:40px;height:40px;overflow:hidden;border-radius:6px;cursor:pointer;" ng-click='openApp(item.key)' data-toggle="tooltip" data-placement="bottom" title="点击运行">
+                                <img ng-src={{(item.info.icon)?item.info.icon:$root._cfg.defaultIconSm}} width='40px' height='40px' />
                             </div>
-                            <div class="md-headline elips" ng-click='openApp(item.key)' style="cursor:pointer;">
+                            <div class="md-headline elips" ng-click='openApp(item.key)' style="cursor:pointer;" data-toggle="tooltip" data-placement="bottom" title="点击运行">
                                 <span class="md-headline elips" ng-bind='item.info.alias' style='color:#000;font-size:16px'></span>
                             </div>
-                            <div class="md-subhead elips" ng-click='editApp(item.key)' style="cursor:pointer;color:#000;opacity:0.5;font-size:10px">
-                                <span>ID:</span>
-                                <span ng-bind='item.info.name | uppercase'></span>
+                            <div class="md-subhead elips" ng-click='editApp(item.key)' style="cursor:pointer;color:#AAA;font-size:10px;" data-toggle="tooltip" data-placement="bottom" title="点击进入编辑">
+                                <span>创建于</span>
+                                <span ng-bind='item.info.time | date:"yyyy-MM-dd"'></span>
                             </div>
                         </md-card-title-text>
                     </md-card-title>
@@ -116,55 +117,22 @@
 
                     <!--   下拉菜单-->
                     <md-card-actions layout-wrap layout="row" layout-align="end center" style='color:#AAA'>
-                        <md-button flex='none' class="md-icon-button itbtn" ng-click='openShare(item.info)' aria-label='a' style='color:#00bfa5;margin:0;padding:4px;width:36px;height:36px' data-toggle="tooltip" data-placement="bottom" title="分享到QQ微信微博">
+                        <div flex='none' class="md-button md-icon-button itbtn" ng-click='openShare(item.info)' aria-label='a' style='color:#00bfa5;margin:0;padding:4px;width:36px;height:36px' data-toggle="tooltip" data-placement="bottom" title="分享到QQ微信微博">
                             <span class='fa fa-share-alt'></span>
-                        </md-button>
+                        </div>
 
-                        <md-button flex='none' class="md-icon-button itbtn" ng-click='openApp(item.key)' aria-label='a' style='color:#00bfa5;margin:0;padding:4px;width:36px;height:36px' data-toggle="tooltip" data-placement="bottom" title="运行App主页">
+                        <div flex='none' class=" md-button md-icon-button itbtn" ng-click='openApp(item.key)' aria-label='a' style='color:#00bfa5;margin:0;padding:4px;width:36px;height:36px' data-toggle="tooltip" data-placement="bottom" title="运行App主页">
                             <span class='fa fa-rocket'></span>
-                        </md-button>
+                        </div>
 
-                        <md-button flex='none' class="md-icon-button itbtn" ng-click='editApp(item.key)' aria-label='a' style='color:#00bfa5;margin:0;padding:4px;width:36px;height:36px' data-toggle="tooltip" data-placement="bottom" title="编辑App代码">
+                        <div flex='none' class="md-button md-icon-button itbtn" ng-click='editApp(item.key)' aria-label='a' style='color:#00bfa5;margin:0;padding:4px;width:36px;height:36px' data-toggle="tooltip" data-placement="bottom" title="编辑App代码">
                             <span class='fa fa-pencil'></span>
-                        </md-button>
+                        </div>
 
-                        <md-menu style='padding:0'>
-                            <md-button flex="initial" class="md-icon-button itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style='width:36px;margin:0;' data-toggle="tooltip" data-placement="bottom" title="更多菜单功能">
-                                <p style="color:#00bfa5">
-                                    <span class="fa fa-bars"></span>
-                                </p>
-                            </md-button>
-                            <md-menu-content style='max-height:400px'>
-                                <md-button flex='none' class="md-default" ng-click='openShare(item.info)' aria-label='a' style='color:#888;padding:6px 40px;margin:0'>
-                                    <span class='fa fa-share-alt'></span>
-                                    <span>分享</span>
-                                </md-button>
-                                <md-button flex='none' class="md-default" ng-click='openApp(item.key)' aria-label='a' style='color:#888;padding:6px 40px;margin:0'>
-                                    <span class='fa fa-rocket'></span>
-                                    <span>运行</span>
-                                </md-button>
-                                <md-button flex='none' class="md-default" ng-click='editApp(item.key)' aria-label='a' style='color:#888;padding:6px 40px;margin:0'>
-                                    <span class='fa fa-pencil'></span>
-                                    <span>编辑</span>
-                                </md-button>
-                                <md-button flex='none' class="md-default" ng-click='joinLadder(item)' aria-label='a' style='color:#888;padding:6px 40px;margin:0'>
-                                    <span class='fa fa-trophy'></span>
-                                    <span>打榜</span>
-                                </md-button>
-                                <md-button flex='none' class="md-default" ng-click='renameApp(item.val)' aria-label='a' style='color:#888;padding:6px 40px;margin:0'>
-                                    <span class='fa fa-tag'></span>
-                                    <span>改名</span>
-                                </md-button>
-                                <md-button flex='none' class="md-default" ng-click='openReInitDialog(item.info)' aria-label='a' style='color:#888;padding:6px 40px;margin:0'>
-                                    <span class='fa fa-refresh'></span>
-                                    <span>重置</span>
-                                </md-button>
-                                <md-button flex='none' class="md-default" ng-click='doRemoveApp(item.key)' aria-label='a' style='color:#888;padding:6px 40px;margin:0'>
-                                    <span class='fa fa-remove'></span>
-                                    <span>移除</span>
-                                </md-button>
-                            </md-menu-content>
-                        </md-menu>
+                        <div flex='none' class="md-button md-icon-button itbtn" ng-click='openConfigDialog(item.info)' aria-label='a' style='color:#00bfa5;margin:0;padding:4px;width:36px;height:36px' data-toggle="tooltip" data-placement="bottom" title="打开设置窗口">
+                            <span class='fa fa-bars'></span>
+                        </div>
+
                     </md-card-actions>
                 </md-card>
             </div>

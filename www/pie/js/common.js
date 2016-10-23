@@ -43,6 +43,8 @@ if (!_pie) var _pie = {};
         ukey: /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/, //user.ukey的格式
         appName: /^[a-zA-Z]+[0-9a-zA-Z]{2,31}$/, //app名称格式，非数字开头3~32位
         appAlias: /^[a-zA-Z\u0391-\uFFE5]+[0-9a-zA-Z\u0391-\uFFE5]{2,17}$/, //app别名，非数字开头3~18位
+        appDesc: /^[\s\S]{0,60}$/, //app描述，任意字符，0～60
+        wildDogAppSecret: /^[0-9a-zA-Z]{8,64}]$/, //野狗APP密匙，宽泛限制
         fileName: /^[0-9a-zA-Z\u0391-\uFFE5]+\.(js|css|html|json|txt)$/, //文件名，中英文数字加点加2~4位字母数字
         folderName: /^[0-9a-zA-Z\u0391-\uFFE5]{1,32}$/, //文件名，中英文数字1~32位字母数字
     };
@@ -559,9 +561,10 @@ if (!_pie) var _pie = {};
      * @param   {function} completefn 上传完成执行的函数,fn(f,xhr,status),标准xhr参数
      * @param   {string} domain     上传到指定的bucket，默认http://pubfiles.10knet.com/
      * @param   {boolean} multi     同时上传多个文件
+     * @param   {string} acceptstr     限定默认可以选择的文件类型
      * @returns {int} uploadId整数，指向一个数组包含所有文件的xhr，数组存放在_cfg.xhrs[uploadId]
      */
-    _fns.uploadFile2 = function (btnjo, beforefn, progressfn, successfn, abortfn, errorfn, completefn, domain, multi) {
+    _fns.uploadFile2 = function (btnjo, beforefn, progressfn, successfn, abortfn, errorfn, completefn, domain, multi, acceptstr) {
         if (!btnjo) {
             __errhdlr(new Error('_fns.uploadFile:button undefined.'));
             return;
@@ -577,6 +580,7 @@ if (!_pie) var _pie = {};
         filejo.remove();
         filejo = $('<input id="uploadFileInput" type="file" style="display:none"></input>').appendTo(btnjo);
         if (multi) filejo.attr('multiple', "multiple");
+        if (acceptstr) filejo.attr('accept', acceptstr);
         btnjo.after(filejo);
 
 
@@ -863,6 +867,13 @@ _fns.buildShareurl = function (shareto, title, url, pic) {
 };
 
 
+//监测文件是否存在
+_fns.checkFileExist = function (url) {
+    var http = new XMLHttpRequest();
+    http.open('HEAD', url, false);
+    http.send();
+    return http.status != 404;
+};
 
 //获取app的icon函数：尝试链接是否404,自动设置到fileinfo.icon
 _fns.getAppIcon = function (scope, appinfo, uselg) {
@@ -870,22 +881,19 @@ _fns.getAppIcon = function (scope, appinfo, uselg) {
     var iconurlbase = _cfg.qn.BucketDomain + appinfo.uid + '/' + appinfo.name + '/icon.png-avatar128?_=';
     if (uselg) iconurlbase = _cfg.qn.BucketDomain + appinfo.uid + '/' + appinfo.name + '/icon.png-avatar512?_=';
 
-    var xhr = $.get(iconurlbase + (new Date()).getTime(), function () {
-        _fns.applyScope(scope, function () {
-            appinfo.icon = iconurlbase + (new Date()).getTime();
-        });
-    }).error(function () {
-        if (xhr.status == '404') {
-            _fns.applyScope(scope, function () {
-                if (uselg) {
-                    appinfo.icon = _cfg.defaultIconSm;
-                } else {
-                    appinfo.icon = _cfg.defaultIconLg;
-                }
-            });
+    var exist = _fns.checkFileExist(iconurlbase);
+    if (exist) {
+        appinfo.icon = iconurlbase + (new Date()).getTime();
+    } else {
+        if (uselg) {
+            appinfo.icon = _cfg.defaultIconSm;
+        } else {
+            appinfo.icon = _cfg.defaultIconLg;
         }
-    });
+    }
 };
+
+
 
 
 

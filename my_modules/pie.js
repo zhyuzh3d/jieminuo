@@ -715,6 +715,62 @@ _rotr.apis.pie_setAppUpdate = function () {
 };
 
 
+/**
+ * 更新自己的app的信息字段
+ * @param {appId} app的id
+ * @param {icon} app的icon
+ * @param {alias} app的alias
+ * @param {desc} app的desc
+ * @param {wildDogAppSecret} app的绑定的野狗超级密钥wildDogAppSecret
+ * @returns {}
+ */
+
+_rotr.apis.pie_updateAppInfo = function () {
+    var ctx = this;
+
+    var co = $co(function* () {
+
+        var uid = yield _fns.getUidByCtx(ctx);
+
+        var appId = ctx.query.appId || ctx.request.body.appId;
+        if (appId === undefined) throw Error('appID不能都为空.');
+
+        var appKey = _rds.k.app(appId);
+
+        //检查是否拥有此app
+        var rdsUid = yield _ctnu([_rds.cli, 'hget'], appKey, 'uid');
+        if (rdsUid != uid) throw Error('权限验证失败.');
+
+        var mu = _rds.cli.multi();
+        var appkey = _rds.k.app(appId);
+
+        //提取各个字段
+        var icon = ctx.query.icon || ctx.request.body.icon;
+        if (icon && !_cfg.regx.url.test(icon)) throw Error('图标链接格式错误');
+        if (icon) mu.hset(appkey, 'icon', icon);
+
+        var alias = ctx.query.alias || ctx.request.body.alias;
+        if (alias && !_cfg.regx.appAlias.test(alias)) throw Error('名称格式错误');
+        if (alias) mu.hset(appkey, 'alias', alias);
+
+        var desc = ctx.query.desc || ctx.request.body.desc;
+        if (desc && !_cfg.regx.appDesc.test(desc)) throw Error('描述信息格式错误');
+        if (desc) mu.hset(appkey, 'desc', desc);
+
+        var wildDogAppSecret = ctx.query.wildDogAppSecret || ctx.request.body.wildDogAppSecret;
+        if (wildDogAppSecret && !_cfg.regx.hash.test(wildDogAppSecret)) throw Error('野狗APP超级密匙格式错误');
+        if (wildDogAppSecret) mu.hset(appkey, 'wildDogAppSecret', wildDogAppSecret);
+
+        var res = yield _ctnu([mu, 'exec']);
+
+        //返回数据
+        ctx.body = __newMsg(1, 'ok', res);
+        return ctx;
+    });
+    return co;
+};
+
+
 
 
 

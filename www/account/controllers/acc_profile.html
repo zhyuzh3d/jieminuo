@@ -1,3 +1,9 @@
+<!--加载外部控制器js文件-->
+<script>
+    _fns.addCtrlrJs('acc_profile');
+
+</script>
+
 <!--控制器界面部分-->
 <div id='acc_profile' ng-controller='acc_profile' class='container-fluid acc_profile'>
     <style>
@@ -85,7 +91,23 @@
                         <div ng-if="userForm.nick.$error.pattern">中文,数字,字母都可以,3~18位非数字开头</div>
                     </div>
                 </md-input-container>
-                <md-input-container class="md-block" flex-gt-sm style='margin-top:2rem'>
+                <md-input-container class="md-block" flex-gt-sm style='margin-top:3rem;display:none'>
+                    <md-icon ng-style='{"color":user.color}'>
+                        <i class="fa fa-paint-brush fa-lg"></i>
+                    </md-icon>
+                    <label style="text-align:left;font-size:2rem">个性颜色值</label>
+                    <md-select ng-model="user.color" style="text-align:left" ng-style='{"color":user.color}'>
+                        <md-option ng-repeat="clr in defaultColors" value="{{clr}}" style="text-align:left" ng-style='{"color":clr}'>
+                            <span class='fa fa-heart fa-lg'></span>
+                            <span ng-bind='clr'></span>
+                        </md-option>
+                    </md-select>
+                    <div class="hint">请从下拉菜单选择</div>
+                </md-input-container>
+
+
+
+                <md-input-container class="md-block" flex-gt-sm style='margin-top:2rem' ng-hide='true'>
                     <md-icon ng-style='{"color":user.color}'>
                         <i class="fa fa-paint-brush fa-lg"></i>
                     </md-icon>
@@ -93,15 +115,6 @@
                     <input name="color" ng-model="user.color" ng-pattern="/^#[a-fA-F0-9]{6}$/" />
                     <div class="hint">十六进制，如#FF0000</div>
                 </md-input-container>
-
-                <!--md-input-container class="md-block" flex-gt-sm style='margin-top:3rem'>
-                    <md-icon ng-style='{"color":user.color}'>
-                        <i ng-class="{true: 'fa '+user.icon+' fa-lg', false: 'fa fa-ban fa-lg'}[user.icon!=undefined]" class=""></i>
-                    </md-icon>
-                    <label>图标</label>
-                    <input name="icon" ng-model="user.icon" ng-pattern="/^fa-[\w-]{1,32}$/" />
-                    <div class="hint">fontawesome图标,如fa-leaf,其他将不显示</div>
-                </md-input-container-->
 
                 <md-button md-no-ink class="md-primary" ng-click='gotoChangePw()'>修改密码</md-button>
 
@@ -113,12 +126,6 @@
         </form>
     </div>
 </div>
-
-<!--加载外部控制器js文件-->
-<script>
-    _fns.addCtrlrJs('acc_profile');
-
-</script>
 
 
 

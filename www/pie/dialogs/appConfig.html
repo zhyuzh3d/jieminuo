@@ -1,0 +1,67 @@
+<script>
+    _fns.addDialogJs('share');
+    _fns.addDialogJs('appReset');
+
+</script>
+
+<md-dialog id='pie_dialog_appConfig' aria-label="a" style='padding:24px;min-width:360px;max-width:600px;min-height:400px'>
+    <md-tabs md-dynamic-height md-border-bottom>
+        <md-tab label="菜单" md-active='activeTab=="menu"'>
+            <div style='padding:12px 12px 24px 12px'>
+                <div flex='none' class="md-button md-default" ng-repeat='menu in menus' ng-click='menurun(menu.fn)' aria-label='a' style='color:#888;padding:6px 40px;margin:0;display:block;width:100%'>
+                    <span ng-class='menu.icon'></span>
+                    <span ng-bind='menu.title'></span>
+                </div>
+            </div>
+        </md-tab>
+
+        <md-tab label="设置" md-active='activeTab=="set"'>
+            <div layout='column' style='padding:24px 12px 24px 12px'>
+
+                <div style="width:100%">
+                    <div layout>
+                        <div id='appiconbtn' flex='none' ng-click='changeIcon()' style="width:56px;height:56px;overflow:hidden;border-radius:6px;border:1px solid  rgba(255, 255, 255, 0.25);cursor:pointer;display:inline-block;vertical-align:top">
+                            <img ng-src={{app.icon?app.icon:$root._cfg.defaultIconSm}} width='56px' height='56px' ng-hide='iconUploading' />
+                            <div style="width:100%;height:100%;text-align:center">
+                                <i class="fa fa-spinner fa-pulse fa-fw" ng-show='iconUploading' style="font-size:24px;margin:13px"></i>
+                            </div>
+                        </div>
+                        <div flex='grow' style="color:#AAA;padding:12px;font-size:12px">点击图标进行更换,建议256*256以上分辨率的png或jpg图片</div>
+                    </div>
+                </div>
+
+                <md-input-container class="md-block" flex-gt-sm style='margin-top:36px;margin-bottom:0'>
+                    <label style="text-align:left;">APP名称</label>
+                    <input name='alias' ng-model="app.alias" ng-pattern="/^[a-zA-Z\u0391-\uFFE5]+[0-9a-zA-Z\u0391-\uFFE5]{2,17}$/" style='font-size:2rem;font-family:simhei' />
+                    <div style='color:#AAA;text-align:left;font-size:12px'>中文,数字,字母都可以,3~18位非数字开头</div>
+                </md-input-container>
+
+                <md-input-container class="md-block" flex-gt-sm style='margin-top:30px'>
+                    <label>APP描述</label>
+                    <textarea ng-model='app.desc' md-maxlength='60' rows='2'></textarea>
+                </md-input-container>
+
+                <div flex='none' class="md-button md-raised md-accent" ng-click='updateAppBase()' aria-label='a' style='padding:6px 40px;margin:0;margin-top:24px'>
+                    <span>保存</span>
+                </div>
+            </div>
+        </md-tab>
+
+
+        <md-tab label="扩展" md-active='activeTab=="ext"'>
+            <div layout='column' style='padding:24px 12px 24px 12px'>
+                <md-input-container class="md-block" flex-gt-sm style='margin-top:36px'>
+                    <label style="text-align:left;">绑定野狗APP超级密钥</label>
+                    <input name='alias' ng-model="app.wildDogAppSecret" ng-pattern="/^[a-zA-Z\u0391-\uFFE5]+[0-9a-zA-Z\u0391-\uFFE5]{2,17}$/" style='font-size:2rem;font-family:simhei' />
+                    <div style='color:#AAA;text-align:left;font-size:12px'>进入管理／身份认证／登录方式页面底部获取</div>
+                </md-input-container>
+
+                <div flex='none' class="md-button md-raised md-accent" ng-click='updateAppExt()' aria-label='a' style='padding:6px 40px;margin:0;margin-top:24px'>
+                    <span>保存</span>
+                </div>
+            </div>
+
+        </md-tab>
+    </md-tabs>
+
+</md-dialog>

@@ -1,0 +1,17 @@
+<md-dialog id='pie_dialog_appReset' aria-label="a" style='padding:24px;min-width:300px;max-width:600px;'>
+    <form name="userForm" style="margin-top:12px;width:400px;">
+        <md-content class="md-no-momentum" style='background:inherit'>
+            <md-input-container class="md-block" flex-gt-sm style='margin-top:48px'>
+                <label style="text-align:left;">使用模版</label>
+                <md-select ng-model="selTemplate" style="text-align:left">
+                    <md-option ng-repeat="(key,tmp) in templates" value="{{key}}" ng-bind='key' style="text-align:left"></md-option>
+                </md-select>
+                <div style='color:#AAA;text-align:left;font-size:12px' ng-bind="templates[selTemplate].desc"></div>
+            </md-input-container>
+        </md-content>
+    </form>
+    <div style="margin-top:1rem">
+        <md-button class="md-raised md-primary btn-lg" ng-click='doReInitApp()' style='width:180px;color:#FFF'>重新初始化</md-button>
+        <md-button class="md-raised md-default btn-lg" ng-click='cancelDialog()'>取消</md-button>
+    </div>
+</md-dialog>

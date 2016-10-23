@@ -17,7 +17,6 @@
         console.log(thisName + '.js is loading...');
         _fns.initCtrlr($scope, $element, thisName, false);
 
-
         //锚点
         $scope.goto = function (key) {
             $location.hash(key);
@@ -54,13 +53,6 @@
 
                         $scope.myApps = res.data;
                         $scope.myApps.apps = _fns.arr2obj(arr, false);
-
-                        //为每个app添加icon字段
-                        for (var attr in $scope.myApps.apps) {
-                            _fns.getAppIcon($scope, $scope.myApps.apps[attr].info);
-                        };
-
-
                     });
                 } else {
                     //提示错误
@@ -144,6 +136,7 @@
 
             $scope.createApp($scope.newApp.name, $scope.newApp.alias);
         };
+
 
 
         //弹出重新初始化app的功能
@@ -479,6 +472,25 @@
                 clickOutsideToClose: true
             })
         };
+
+
+
+
+        //弹出提示窗口重新初始化app
+        $scope.openConfigDialog = function (appinfo) {
+            $rootScope.tempDialogData = {};
+            $rootScope.tempDialogData.app = appinfo;
+            $rootScope.tempDialogData.fnAfterChange = function () {
+                $scope.getMyAppList();
+            };
+            $mdDialog.show({
+                controller: 'pie_dialog_appConfig',
+                templateUrl: _fns.getDialogUrl('appConfig'),
+                parent: angular.element(document.body),
+                clickOutsideToClose: true
+            })
+        };
+
 
 
 
