@@ -48,22 +48,16 @@
             <div layout layout-wrap class='container-fluid'>
                 <div class='col-xs-12 col-sm-6 col-md-4 col-lg-2' ng-repeat='item in showApps' style='padding:0.5rem'>
                     <md-card md-theme="default" md-theme-watch style='margin:0;'>
-                        <md-card-title class="elips" style='padding:0;overflow:hidden;position:relative;border-bottom:1px solid #EEE'>
-                            <md-card-title-text class="elips" style='margin:16px;z-index:6;'>
+                        <md-card-title class="elips" style='padding:0;overflow:hidden;position:relative'>
+                            <div style="position:absolute;width:100%;height:100%;background-size:cover;opacity:0.4;border-radius: 4px 4px 0 0" ng-style='genCardBg2(item.val)'></div>
+                            <div style="position:absolute;width:100%;height:100%;background-size:cover;opacity:0.4;border-radius: 4px 4px 0 0" ng-style='genCardBg(item.id)'></div>
+                            <md-card-title-text class="elips" style='margin:16px;z-index:6'>
                                 <div style="width:40px;height:40px;overflow:hidden;border-radius:6px;border:1px solid  rgba(255, 255, 255, 0.25);cursor:pointer;" ng-click='openApp(item)'>
-                                    <img ng-src={{item.icon?item.icon:$root._cfg.defaultIconSm}} width='40px' height='40px' />
+                                    <img src={{item.icon}} width='40px' height='40px' />
                                 </div>
                                 <div class="md-headline elips" ng-click='openApp(item)' style="cursor:pointer;">
                                     <span class="md-headline elips" ng-bind='item.alias' style='color:#000;font-size:16px'></span>
                                 </div>
-
-                                <div class="md-subhead elips" style="font-size:10px;padding:0;margin-top:4px;line-height:16px">
-                                    <div style="width:16px;height:16px;overflow:hidden;border-radius:16px;display:inline-block;vertical-align:middle">
-                                        <img ng-src={{item.author.avatar?item.author.avatar:$root._cfg.defaultIconSm}} style='width:100%' />
-                                    </div>
-                                    <span ng-bind='item.author.nick' style="vertical-align:middle"></span>
-                                </div>
-
                                 <div class="md-subhead elips" style="color:#000;opacity:0.5;font-size:10px">
                                     <span class='fa fa-thumbs-up'></span>
                                     <span ng-bind='item.hit || 0'></span>
@@ -108,22 +102,17 @@
             <div layout layout-wrap class='container-fluid'>
                 <div class='col-xs-12 col-sm-6 col-md-4 col-lg-2' ng-repeat='item in topApps' style='padding:0.5rem'>
                     <md-card md-theme="default" md-theme-watch style='margin:0;'>
-                        <md-card-title class="elips" style='padding:0;overflow:hidden;position:relative;border-bottom:1px solid #EEE'>
+                        <md-card-title class="elips" style='padding:0;overflow:hidden;position:relative'>
+                            <div style="position:absolute;width:100%;height:100%;background-size:cover;opacity:0.4;border-radius: 4px 4px 0 0" ng-style='genCardBg2(item.val)'></div>
+                            <div style="position:absolute;width:100%;height:100%;background-size:cover;opacity:0.4;border-radius: 4px 4px 0 0" ng-style='genCardBg(item.id)'></div>
                             <md-card-title-text class="elips" style='margin:16px;z-index:6'>
-                                <div style="width:40px;height:40px;overflow:hidden;border-radius:6px;border:1px solid  rgba(255, 255, 255, 0.25);cursor:pointer;" ng-click='openApp(item)'>
-                                    <img ng-src={{item.icon?item.icon:$root._cfg.defaultIconSm}} width='40px' height='40px' />
+                                <div style="width:40px;height:40px;overflow:hidden;border-radius:6px;border:1px solid  rgba(255, 255, 255, 0.25);cursor:pointer;" ng-click='openApp(item)' >
+                                    <img src={{item.icon}} width='40px' height='40px' />
                                 </div>
+
                                 <div class="md-headline elips" ng-click='openApp(item)' style="cursor:pointer;">
                                     <span class="md-headline elips" ng-bind='item.alias' style='color:#000;font-size:16px'></span>
                                 </div>
-
-                                <div class="md-subhead elips" style="font-size:10px;padding:0;margin-top:4px;line-height:16px">
-                                    <div style="width:16px;height:16px;overflow:hidden;border-radius:16px;display:inline-block;vertical-align:middle">
-                                        <img ng-src={{item.author.avatar?item.author.avatar:$root._cfg.defaultIconSm}} style='width:100%' />
-                                    </div>
-                                    <span ng-bind='item.author.nick' style="vertical-align:middle"></span>
-                                </div>
-
                                 <div class="md-subhead elips" style="color:#000;opacity:0.5;font-size:10px">
                                     <span>No.</span>
                                     <span ng-bind='$index+1'></span>

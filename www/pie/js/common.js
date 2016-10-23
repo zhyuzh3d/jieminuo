@@ -16,6 +16,8 @@ if (!_pie) var _pie = {};
 
     _cfg.defaultIconSm = 'http://files.jieminuoketang.com/1/aaw6vsns2i5k/src/defaultIcon128.png';
     _cfg.defaultIconLg = 'http://rtfiles.jieminuoketang.com/1/aaw6vsns2i5k/src/defaultIcon512.png';
+    _cfg.defaultAvatarSm = 'http://files.jieminuoketang.com/1/aaw6vsns2i5k/src/defaultIcon128.png';
+    _cfg.defaultAvatarLg = 'http://rtfiles.jieminuoketang.com/1/aaw6vsns2i5k/src/defaultIcon512.png';
 
 
     //七牛文件上传接口设定

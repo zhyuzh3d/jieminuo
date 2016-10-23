@@ -1,6 +1,6 @@
 <script>
     _fns.addCtrlrJs('pie_editor');
-    _fns.addDialogJs('appConfig');
+
     _fns.addDialogJs('share');
 
 </script>
@@ -218,16 +218,16 @@
                         <md-menu style='padding:0'>
                             <div class="itbtn" md-no-ink ng-click="$mdOpenMenu($event)" aria-label='tagleft' style="margin:0;padding:0">
                                 <span class="fa fa-caret-down" style='font-size:12px;vertical-align:middle'></span>
-                                <img id='appIconImg' ng-src={{(curApp.icon)?curApp.icon:$root._cfg.defaultIconSm}} style="width:30px;height:30px;border-radius:6px;border:1px solid #EEE">
+                                    <img id='appIconImg' src='{{curApp.icon || iconDefault}}' width="30px" height="30px" style="border-radius:6px;border:1px solid #DDD" ng-show='curApp.icon'>
                             </div>
                             <md-menu-content width="3" style='overflow-x: hidden;'>
                                 <div flex='none' class="md-button md-default leftmenu" ng-click='openShare(curApp)' aria-label='a' style='color:#888;'>
-                                    <span class='fa fa-share-alt'></span>
+                                    <span class='fa fa-share'></span>
                                     <span>&nbsp;分享给朋友</span>
                                 </div>
-                                <div flex='none' class="md-button md-default leftmenu" ng-click='openConfigDialog()' aria-label='a' style='color:#888;'>
-                                    <span class='fa fa-gear'></span>
-                                    <span>&nbsp;APP设置</span>
+                                <div flex='none' class="md-button md-default leftmenu" ng-click='uploadIcon()' aria-label='a' style='color:#888;'>
+                                    <span class='fa fa-file-image-o'></span>
+                                    <span>&nbsp;更换图标</span>
                                 </div>
                             </md-menu-content>
                         </md-menu>

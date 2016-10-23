@@ -126,6 +126,7 @@
                 if (res.code == 1) {
                     _fns.applyScope($scope, function () {
                         $scope.curApp = res.data;
+                        _fns.getAppIcon($scope, $scope.curApp);
                     });
                 } else {
                     //提示错误
@@ -505,6 +506,24 @@
             $mdDialog.hide();
         };
 
+        //上传图标文件
+        $scope.uploadIcon = function () {
+            var acceptstr = 'image/x-png | image/jpeg | image/jpg';
+
+            $scope.selFolderPath = $scope.curApp.name;
+            $scope.doUploadFile(null, 'icon.png', function (f, res) {
+                //更新图标链接
+                var iconurl = f.url + '-avatar128?_=' + (new Date()).getTime();
+                _fns.applyScope($scope, function () {
+                    $scope.curApp.icon = iconurl;
+                });
+
+                $('#appIconImg').attr('src', "");
+                setTimeout(function () {
+                    $('#appIconImg').attr('src', iconurl);
+                }, 2000);
+            }, acceptstr);
+        };
 
         //直接向指定folder传文件
         $scope.upload2Folder = function (fdpath) {
@@ -1236,25 +1255,11 @@
         //显示文件的信息弹窗,显示文件的链接
         $scope.showFileInfoDialog = function (item) {
             $scope.fileinfoDialogFile = item;
-            $rootScope.tempDialogData.activeTab = 'set';
             $mdDialog.show({
                 contentElement: '#fileInfoDialog',
                 parent: angular.element(document.body),
                 clickOutsideToClose: true
             });
-        };
-
-        //显示文件的信息弹窗,显示文件的链接
-        $scope.openConfigDialog = function () {
-            $rootScope.tempDialogData = {};
-            $rootScope.tempDialogData.app = $scope.curApp;
-            $rootScope.tempDialogData.activeTab = 'set';
-            $mdDialog.show({
-                controller: 'pie_dialog_appConfig',
-                templateUrl: _fns.getDialogUrl('appConfig'),
-                parent: angular.element(document.body),
-                clickOutsideToClose: true
-            })
         };
 
 

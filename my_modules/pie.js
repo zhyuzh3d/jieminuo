@@ -112,6 +112,8 @@ _rotr.apis.pie_getAppInfo = function () {
             time: dat.time,
             uid: dat.uid,
             url: dat.url,
+            icon: dat.icon,
+            desc: dat.desc,
             update: dat.update,
         };
 
@@ -606,7 +608,7 @@ _rotr.apis.pie_favorGetApps = function () {
 
         //循环为每个app的作者提取信息,必须每个都提取，即使为空也要补足,确保一一对应
         for (var n = 0; n < resapps.length; n++) {
-            var authorid = resapps[n] ? resapps[n].id : undefined;
+            var authorid = resapps[n] ? resapps[n].uid : undefined;
             muauthor.hgetall(_rds.k.usr(authorid));
         };
         var resauthors = yield _ctnu([muauthor, 'exec']);
@@ -631,6 +633,8 @@ _rotr.apis.pie_favorGetApps = function () {
                     color: author.color,
                     avatar: author.avatar,
                 },
+                icon: item.icon,
+                desc: item.desc,
                 update: item.update,
             })
         };

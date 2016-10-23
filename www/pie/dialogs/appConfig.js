@@ -1,6 +1,5 @@
 /*
 设置app各种参数的弹窗控制器，注意不能引入$element
-必须先包含两个对话框，appreset和share
 $rootScope.tempDialogData.app
 $rootScope.tempDialogData.activeTab 默认激活哪个菜单，'menu','set','ext'
 $rootScope.tempDialogData.fnAfterChange 如果发生改变后执行的函数，比如刷新列表
