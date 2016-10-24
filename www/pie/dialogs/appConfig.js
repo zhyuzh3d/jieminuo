@@ -31,9 +31,23 @@ _fns.addDialogJs('appReset');
 
         $scope.app = $rootScope.tempDialogData.app;
 
-        //切换激活tab页
-        $scope.activeTab = $rootScope.tempDialogData.activeTab;
-        if (!$scope.activeTab) $scope.activeTab = 'menu';
+        //切换激活tab页,监听tab页面切换到ext时候自动加载ext
+        (function autoSetMenu() {
+            $scope.$watch('selectedIndex', function (cur, old) {
+                if (cur == 2) {
+                    $scope.getAppInfoExt();
+                };
+            });
+
+            var tabs = ['menu', 'set', 'ext'];
+            console.log(tabs.indexOf($rootScope.tempDialogData.activeTab));
+            if (!$scope.activeTab) {
+                $scope.selectedIndex = 0;
+            } else {
+                $scope.selectedIndex = tabs.indexOf($rootScope.tempDialogData.activeTab);
+            }
+        })();
+
 
         //菜单页列表数据
         $scope.menus = [{
@@ -243,7 +257,6 @@ _fns.addDialogJs('appReset');
             var errstr;
             if (!dat.alias || !_cfg.regx.appAlias.test(dat.alias)) errstr = 'APP名称格式错误';
             if (dat.desc && !_cfg.regx.appDesc.test(dat.desc)) errstr = 'APP描述格式错误';
-            console.log('>>>desc', /^[\s\S]{0,60}$/.test(dat.desc), dat.desc);
             if (errstr) {
                 $mdToast.show(
                     $mdToast.simple()
@@ -266,7 +279,6 @@ _fns.addDialogJs('appReset');
 
             //格式检查
             var errstr;
-            console.log('>>>xx', _cfg.regx.wildDogAppSecret, dat.wildDogAppSecret, _cfg.regx.wildDogAppSecret.test(dat.wildDogAppSecret))
             if (dat.wildDogAppSecret && !_cfg.regx.wildDogAppSecret.test(dat.wildDogAppSecret)) {
                 errstr = '野狗APP超级密钥格式错误';
             };
@@ -280,7 +292,27 @@ _fns.addDialogJs('appReset');
                 return;
             };
 
-            $scope.updateAppInfo(dat);
+            //添加自定义字段
+            if ($scope.customsArr) {
+                var arr = [];
+
+                //先去除空属性；（空值不去除，表示删除这个属性）
+                $scope.customsArr.forEach(function (item, n) {
+                    if (item.key != '') {
+                        arr.push(item);
+                    };
+                });
+
+                //再添加
+                if (arr.length > 0) {
+                    dat.customs = {};
+                    arr.forEach(function (item, n) {
+                        dat.customs[item.key] = item.val;
+                    })
+                };
+            };
+
+            $scope.updateAppInfoExt(dat);
         };
 
         //更新APP信息。base和ext都使用这个函数进行更新
@@ -304,6 +336,82 @@ _fns.addDialogJs('appReset');
                 );
             });
         };
+
+        //更新APP信息。base和ext都使用这个函数进行更新
+        $scope.updateAppInfoExt = function (dat) {
+            //发送请求
+            var api = _global.api('pie_updateAppInfoExt');
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
+                var tip = '';
+                if (res.code == 1) {
+                    tip = '保存成功！'
+                    $mdDialog.hide();
+                } else {
+                    tip = '保存失败:' + res.text;
+                };
+                $mdToast.show(
+                    $mdToast.simple()
+                    .textContent(tip)
+                    .position('top right')
+                    .hideDelay(3000)
+                );
+            });
+        };
+
+
+        //载入appext信息
+        $scope.refreshAppInfoExt = function () {
+            //发送请求
+            var api = _global.api('pie_getMyAppInfoExt');
+            var dat = {
+                appId: $scope.app.id,
+            };
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
+                if (res.code == 1) {
+                    _fns.applyScope($scope, function () {
+                        $scope.appExt = res.data;
+
+                        //把customs拆解成数组[{key:attr,val:value},...]，不包含野狗密钥
+                        var exarr = ['wildDogAppSecret'];
+                        $scope.customsArr = [];
+                        for (var attr in $scope.appExt) {
+                            if (exarr.indexOf(attr) == -1) {
+                                $scope.customsArr.push({
+                                    key: attr,
+                                    val: $scope.appExt[attr],
+                                })
+                            }
+                        };
+                    });
+                } else {
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent('获取App扩展信息失败:' + res.text)
+                        .position('top right')
+                        .hideDelay(3000)
+                    );
+                };
+            });
+        };
+
+        //获取
+        $scope.getAppInfoExt = function () {
+            if (!$scope.appExt) $scope.refreshAppInfoExt();
+        };
+
+        //自定义属性组
+        $scope.customsArr = [];
+
+        //添加一个空字符串属性
+        $scope.addCustoms = function () {
+            $scope.customsArr.push({
+                key: '',
+                val: '',
+            })
+        };
+
 
 
         //end

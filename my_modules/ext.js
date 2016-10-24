@@ -31,7 +31,7 @@ _rotr.apis.ext_getWildDogCustomToken = function () {
         if (!appId) throw Error('APP标识与作者不匹配');
 
         //获取野狗密钥,不能为空
-        var secret = yield _ctnu([_rds.cli, 'hget'], _rds.k.app(appId), 'wildDogAppSecret');
+        var secret = yield _ctnu([_rds.cli, 'hget'], _rds.k.appExt(appId), 'wildDogAppSecret');
         if (!secret && secret != '') throw Error('此APP尚未绑定野狗密钥');
 
         //生成token

@@ -725,7 +725,6 @@ _rotr.apis.pie_setAppUpdate = function () {
  * @param {icon} app的icon
  * @param {alias} app的alias
  * @param {desc} app的desc
- * @param {wildDogAppSecret} app的绑定的野狗超级密钥wildDogAppSecret
  * @returns {}
  */
 
@@ -761,9 +760,57 @@ _rotr.apis.pie_updateAppInfo = function () {
         if (desc && !_cfg.regx.appDesc.test(desc)) throw Error('描述信息格式错误');
         if (desc) mu.hset(appkey, 'desc', desc);
 
+        var res = yield _ctnu([mu, 'exec']);
+
+        //返回数据
+        ctx.body = __newMsg(1, 'ok', res);
+        return ctx;
+    });
+    return co;
+};
+
+
+/**
+ * 更新自己的app的扩展信息字段
+ * @param {string} wildDogAppSecret app的绑定的野狗超级密钥wildDogAppSecret
+ * @param {string} customs 自定义变量对象，地址栏传参数需要以对象格式
+ * @returns {}
+ */
+
+_rotr.apis.pie_updateAppInfoExt = function () {
+    var ctx = this;
+
+    var co = $co(function* () {
+
+        var uid = yield _fns.getUidByCtx(ctx);
+
+        var appId = ctx.query.appId || ctx.request.body.appId;
+        if (appId === undefined) throw Error('appID不能都为空.');
+
+        var appKey = _rds.k.app(appId);
+
+        //检查是否拥有此app
+        var rdsUid = yield _ctnu([_rds.cli, 'hget'], appKey, 'uid');
+        if (rdsUid != uid) throw Error('权限验证失败.');
+
+        var mu = _rds.cli.multi();
+        var appextkey = _rds.k.appExt(appId);
+
+        //提取野狗密匙
         var wildDogAppSecret = ctx.query.wildDogAppSecret || ctx.request.body.wildDogAppSecret;
         if (wildDogAppSecret && !_cfg.regx.hash.test(wildDogAppSecret)) throw Error('野狗APP超级密匙格式错误');
-        if (wildDogAppSecret) mu.hset(appkey, 'wildDogAppSecret', wildDogAppSecret);
+        if (wildDogAppSecret) mu.hset(appextkey, 'wildDogAppSecret', wildDogAppSecret);
+
+        //提取各个自定义字段,如果为空则删除这个字段
+        var customs = JSON.safeParse(ctx.query.customs) || ctx.request.body.customs;
+        for (var attr in customs) {
+            var val = customs[attr];
+            if (!val || val == '') {
+                mu.hdel(appextkey, attr);
+            } else {
+                mu.hset(appextkey, attr, customs[attr]);
+            }
+        };
 
         var res = yield _ctnu([mu, 'exec']);
 
@@ -773,6 +820,42 @@ _rotr.apis.pie_updateAppInfo = function () {
     });
     return co;
 };
+
+
+/**
+ * 接口：获取我的App的扩展信息
+ * @req {appId} 创建的app的作者id
+ * @returns {} 返回appext全部字段
+ */
+_rotr.apis.pie_getMyAppInfoExt = function () {
+    var ctx = this;
+
+    var co = $co(function* () {
+
+        var uid = yield _fns.getUidByCtx(ctx);
+
+        var appId = ctx.query.appId || ctx.request.body.appId;
+        if (appId === undefined) throw Error('appID不能都为空.');
+
+        var appKey = _rds.k.app(appId);
+
+        //检查是否拥有此app
+        var rdsUid = yield _ctnu([_rds.cli, 'hget'], appKey, 'uid');
+        if (rdsUid != uid) throw Error('权限验证失败.');
+
+        var mu = _rds.cli.multi();
+        var appextkey = _rds.k.appExt(appId);
+
+        var res = yield _ctnu([_rds.cli, 'hgetall'], appextkey);
+
+        //返回数据
+        ctx.body = __newMsg(1, 'ok', res);
+        return ctx;
+    });
+    return co;
+};
+
+
 
 
 

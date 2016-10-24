@@ -15,6 +15,10 @@ _rds.k = {
         return 'app-' + id;
     },
 
+    appExt: function (id) { //应用键扩展数据,hash
+        return 'appExt-' + id;
+    },
+
     usrApps: function (uid) { //用户的app列表,zsort,{appName:appid}
         return 'uApps-' + uid;
     },
