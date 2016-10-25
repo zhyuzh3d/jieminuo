@@ -133,6 +133,7 @@ function __newMsg(code, text, data) {
 //重要函数------------------------------------
 /*服务端向其他地址发起http请求的promise
 成功执行resolvefn({headers:{...},body:'...'})
+注意header的Content-Type可能导致不能post数据data，限定只能用地址栏参数
 options应包含所有必需参数如hostname，port,method等等,例如
 {
     hostname: 'rsf.qbox.me',
@@ -147,9 +148,18 @@ options应包含所有必需参数如hostname，port,method等等,例如
  */
 _fns.httpReqPrms = httpReqPrms;
 
-function httpReqPrms(options, bodydata) {
+function httpReqPrms(options, bodydata, type) {
     var prms = new Promise(function (resolvefn, rejectfn) {
-        var req = $http.request(options, (res) => {
+
+        //自动判断https或http
+        var httpobj;
+        if (type == 'https') {
+            httpobj = $https;
+        } else {
+            httpobj = $http;
+        };
+
+        var req = httpobj.request(options, (res) => {
             if (res.statusCode != 200) {
                 rejectfn(new Error('Target server return err:' + res.statusCode));
             } else {
@@ -172,7 +182,8 @@ function httpReqPrms(options, bodydata) {
         });
 
         if (bodydata) {
-            req.write(JSON.stringify(bodydata));
+            var str = JSON.stringify(bodydata)
+            req.write(str);
         };
 
         req.end();
