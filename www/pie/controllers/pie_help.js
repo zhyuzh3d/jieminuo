@@ -147,7 +147,7 @@
 
 
         //公共接口
-        $scope.apidesc = '提示：所有接口的返回格式都是{code:1,text:\'ok\',data:{}},\n这里如果服务端处理失败，那么code将不等于1，具体失败原因将在text内文字描述；\n如果处理成功，那么code等于1，text等于\'ok\'，服务端返回的真实数据就是data';
+        $scope.apidesc = '提示：所有接口都应使用jsonp方式请求，如有reqdata那么提交也应该使用地址url参数拼接的方式\nobj应转为json字符串并进行uri编码，直接使用body发送讲无法接收。所有接口的返回格式都是{code:1,text:\'ok\',data:{}},\n这里如果服务端处理失败，那么code将不等于1，具体失败原因将在text内文字描述；\n如果处理成功，那么code等于1，text等于\'ok\'，服务端返回的真实数据就是data';
 
 
         $scope.apis = [{
@@ -187,6 +187,38 @@
                 title: '野狗官方自定义用户认证说明',
                 url: 'https://docs.wilddog.com/guide/auth/web/custom.html'
                 }],
+        }, {
+            name: 'ext_httpProxy',
+            desc: '代理转发各种第三方API接口功能',
+            path: 'http://www.jieminuoketang.com/api/ext_httpProxy',
+            method: 'POST,GET',
+            reqdata: {
+                type: 'http',
+                opt: {
+                    hostname: 'www.tuling123.com',
+                    path: '/openapi/api',
+                    method: 'POST'
+                },
+                body: {
+                    key: '{{tulingkey}}',
+                    info: '你好！'
+                },
+            },
+            reqdesc: '整个reqdata应该以json字符串形式且经过uri编码，然后拼接在ext接口路径之后作为data参数传递\n比如\"..api/ext_httpProxy?data\"+(JSON.stringify(reqdata));/\ntype发送请求类型，目前仅支持http,后续会支持https\nopt请求选项，至少要包含hostname和path字段（请参照第三方API官方接口规范拼接）\nbody如果是post方式那么可以直接把数据放在这里，请参照第三方API官方接口规范',
+            resdata: {
+                code: 1,
+                text: 'ok',
+                data: 'API返回的结果'
+            },
+            resdesc: 'data就是第三方API返回的结果，具体格式参照第三方API官方说明',
+            tip: 'APP作者必须先在APP设置弹窗的【扩展】一栏中绑定野狗APP的超级密钥才能在js中使用这个接口；customToken有效期1个月',
+            links: [{
+                title: '图灵机器人官方网站（需要登录注册，创建自己的机器人然后得到ApiKey）',
+                url: 'http://www.tuling123.com/'
+                }, {
+                title: '范例：基于图灵接口开发的聊天机器人（可以直接修改地址为/index.js查看js文件)',
+                url: 'http://rtfiles.jieminuoketang.com/1/au22ntesx127/index.html'
+                }],
         }];
 
         $scope.apislabel = '公共接口(' + $scope.apis.length + ')';
@@ -206,6 +238,23 @@
             links: [{
                 title: '野狗官方自定义用户认证说明',
                 url: 'https://docs.wilddog.com/guide/auth/web/custom.html'
+                }],
+        }, {
+            title: '通用第三方http接口API接口功能的使用',
+            tips: [{
+                text: '首先，您需要了解第三方API的接口规范，并获得相应的AppKey密钥',
+            }, {
+                text: '然后，您需要把这个密钥设定为杰米诺APP的扩展的自定义属性，如tulingkey,EXds9sd...',
+            }, {
+                text: '这样您就可以在js编码的时候调用www.jieminuoketang.com/api/ext_httpProxy接口，根据官方规范格式调用，密钥字段使用{{tulingke}}替换，这里tulingkey代表您的保密关键字，必须与上一步设定的APP自定义属性一致',
+                code: '\nvar api = \'http://www.jieminuoketang.com/api/ext_httpProxy\';\nvar data = {\n\topt: {\n\t\thostname: \'www.tuling123.com\',\n\t\tpath: \'/openapi/api\',\n\t\tmethod: \'POST\'\n\t},\n\t body: {\n\t\tkey: \'{{tulingkey}}\',\n\t\tinfo: $scope.ask\n\t}\n};\napi += \'?data=\' +(JSON.stringify(data));\n$.get(api, function (res) {},\'jsonp\')',
+            }],
+            links: [{
+                title: '图灵机器人官方网站（需要登录注册，创建自己的机器人然后得到ApiKey）',
+                url: 'http://www.tuling123.com/'
+                }, {
+                title: '范例：基于图灵接口开发的聊天机器人（可以直接修改地址为/index.js查看js文件)',
+                url: 'http://rtfiles.jieminuoketang.com/1/au22ntesx127/index.html'
                 }],
         }];
         $scope.extslable = '第三方扩展(' + $scope.exts.length + ')';

@@ -417,6 +417,7 @@ _pie.ladderProcAppsShowCo = function (apps, uid, asKey) {
                 time: appinfo.time,
                 uid: appinfo.uid,
                 url: appinfo.url,
+                icon:appinfo.icon,
                 author: {
                     id: resadd[0].id,
                     nick: resadd[0].nick,
