@@ -102,7 +102,6 @@ if (!_pie) var _pie = {};
                 'index.html': 'http://www.jieminuoketang.com/pie/templates/angular/index.html',
                 'index.css': 'http://www.jieminuoketang.com/pie/templates/angular/index.css',
                 'index.js': 'http://www.jieminuoketang.com/pie/templates/angular/index.js',
-                'info.json': 'http://www.jieminuoketang.com/pie/templates/angular/info.json',
             },
         },
         min: {

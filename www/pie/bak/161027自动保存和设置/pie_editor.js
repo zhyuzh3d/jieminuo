@@ -36,7 +36,6 @@
                 $scope.hasLogin = _global.hasLogin;
             });
 
-            //拉取文件列表
             $scope.getFileList();
 
             //打开index.html，载入index.css
@@ -647,34 +646,31 @@
 
 
         //换行开关
-        $scope.setWrap = function (res, unsave) {
+        $scope.setWrap = function (res) {
             if (res === undefined) res = $scope.cmOpt.lineWrapping ? false : true;
             $scope.cmOpt.lineWrapping = res;
             $scope.cmEditor.setOption('lineWrapping', res);
             if ($scope.cmEditor) $scope.cmEditor.refresh();
-            if (unsave !== true) $scope.saveConfig('lineWrapping', $scope.cmOpt.lineWrapping);
         };
 
         //错误提示开关
-        $scope.setLint = function (res, unsave) {
+        $scope.setLint = function (res) {
             if (res === undefined) res = $scope.cmOpt.lint ? false : true;
             $scope.cmOpt.lint = res;
-
             if (!$scope.cmEditor) return;
+
             var arr = ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"];
             if (!res) arr = ["CodeMirror-linenumbers", "CodeMirror-foldgutter"];
             $scope.cmEditor.setOption('gutters', arr);
             $scope.cmEditor.setOption('lint', res);
 
             if ($scope.cmEditor) $scope.cmEditor.refresh();
-            if (unsave !== true) $scope.saveConfig('showLint', $scope.cmOpt.lint);
-
         };
 
 
         //切换字体大小
         $scope.useBigFont = false;
-        $scope.setFontSize = function (big, unsave) {
+        $scope.setFontSize = function (big) {
             if (big === undefined) big = $scope.useBigFont = !$scope.useBigFont;
             $scope.useBigFont = big ? true : false;
             var fsize = big ? 18 : 14;
@@ -683,21 +679,6 @@
             $scope.cmEditor.getWrapperElement().style["font-size"] = fsize + "px";
             $scope.cmEditor.getWrapperElement().style["line-height"] = hei + 'px';
             if ($scope.cmEditor) $scope.cmEditor.refresh();
-            if (unsave !== true) $scope.saveConfig('fontSize', fsize);
-        };
-
-        //字体尺寸px格式
-        $scope.setFontSizePx = function (fsize, unsave) {
-            if (!fsize) fsize = 14;
-            fsize = Number(fsize);
-            $scope.useBigFont = (fsize > 15);
-
-            var hei = fsize + 6;
-            if (!$scope.cmEditor) return;
-            $scope.cmEditor.getWrapperElement().style["font-size"] = fsize + "px";
-            $scope.cmEditor.getWrapperElement().style["line-height"] = hei + 'px';
-            if ($scope.cmEditor) $scope.cmEditor.refresh();
-            if (unsave !== true) $scope.saveConfig('fontSize', fsize);
         };
 
 
@@ -821,11 +802,11 @@
                 $scope.showCharBox = false;
             } else {
                 $scope.showCharBox = true;
+
             };
             if ($scope.cmEditor) {
                 $scope.cmEditor.focus();
             };
-            $('#charsbox').css('width', $('#charsbox').parent().width() + 'px')
         };
 
 
@@ -891,16 +872,6 @@
             });
         };
 
-        //是否显示保存弹窗
-        $scope.showSaveConfirm = true;
-        $scope.setSaveConfirm = function (show, unsave) {
-            $scope.showSaveConfirm = !$scope.showSaveConfirm;
-            _fns.applyScope($scope, function () {
-                if (show !== undefined) $scope.showSaveConfirm = show;
-            });
-            console.log('>>>curapp', $scope.curApp);
-            if (unsave !== true) $scope.saveConfig('showSaveConfirm', $scope.showSaveConfirm);
-        };
 
 
         //编辑器内的文件
@@ -912,33 +883,18 @@
         //实时预览窗内的css文件
         $scope.previewRtCssFile = {};
 
+
         //打开文件,这里先检查当前文件是否已被更改，如果已经被更改则提示保存
         $scope.openFile = function (url, fkey, ineditor) {
             if (ineditor === undefined) ineditor = true;
             if (ineditor && $scope.editorChanged) {
-
-                if ($scope.showSaveConfirm) {
-                    $mdDialog.show($mdDialog.confirm()
-                        .title('当前的编辑文件已经更改，是否要保存？')
-                        .textContent('舍弃将丢失所有未保存的更改;您可以在右下角【更多】菜单关闭这个提示')
-                        .ariaLabel('App name')
-                        .ok('保存')
-                        .cancel('舍弃')).then(function () {
-                        //保存文件
-                        $scope.doSaveFile(function () {
-                            //然后读取
-                            $scope.realOpenFile(url, fkey, ineditor);
-                            $mdToast.show(
-                                $mdToast.simple()
-                                .textContent('正在为您读取文件.')
-                                .position('top right')
-                                .hideDelay(3000)
-                            );
-                        });
-                    }, function () {
-                        $scope.realOpenFile(url, fkey, ineditor);
-                    });
-                } else {
+                $mdDialog.show($mdDialog.confirm()
+                    .title('当前的编辑文件已经更改，是否要保存？')
+                    .textContent('舍弃将丢失所有未保存的更改')
+                    .ariaLabel('App name')
+                    .ok('保存')
+                    .cancel('舍弃')).then(function () {
+                    //保存文件
                     $scope.doSaveFile(function () {
                         //然后读取
                         $scope.realOpenFile(url, fkey, ineditor);
@@ -949,13 +905,14 @@
                             .hideDelay(3000)
                         );
                     });
-                }
+                }, function () {
+                    $scope.realOpenFile(url, fkey, ineditor);
+                });
             } else {
                 //直接读取
                 $scope.realOpenFile(url, fkey, ineditor);
             }
         };
-
 
 
 
@@ -1485,18 +1442,14 @@
 
         //改变编辑器的主题
         $scope.cmTheme = 'mbo';
-        $scope.changeCmEditorTheme = function (name, unsave) {
-            if (!name) {
-                if ($scope.cmTheme == 'default') {
-                    $scope.cmTheme = 'mbo';
-                } else {
-                    $scope.cmTheme = 'default';
-                };
+        $scope.changeCmEditorTheme = function () {
+
+            if ($scope.cmTheme == 'default') {
+                $scope.cmTheme = 'mbo';
             } else {
-                $scope.cmTheme = name;
+                $scope.cmTheme = 'default';
             };
             $scope.cmEditor.setOption('theme', $scope.cmTheme);
-            if (unsave !== true) $scope.saveConfig('themeName', $scope.cmTheme);
         };
 
 
@@ -1586,66 +1539,13 @@
         };
 
 
-        //保存编辑器设定
-        $scope.saveConfig = function (key, val) {
-            var api = _global.api('pie_saveConfig');
-            var dat = {};
-            dat[key] = val;
 
-            $.post(api, dat, function (res) {
-                console.log('POST', api, dat, res);
-                if (res.code == 1) {
-                    console.log('保存设置成功.');
-                } else {
-                    console.log('保存设置失败:' + res.text);
-                };
-            });
-        };
-
-        //拉取编辑器设定
-        $scope.getConfig = function () {
-            var api = _global.api('pie_getMyConfig');
-            var dat = {};
-            $.post(api, dat, function (res) {
-                console.log('POST', api, dat, res);
-                if (res.code == 1) {
-                    _fns.applyScope($scope, function () {
-                        var conf = $scope.pieConfig = res.data;
-
-                        //更新各种设置
-                        if (conf.showSaveConfirm !== undefined) {
-                            $scope.setSaveConfirm(conf.showSaveConfirm == 'true', true);
-                        };
-                        if (conf.themeName !== undefined) {
-                            $scope.changeCmEditorTheme(conf.themeName, true);
-                        };
-                        if (conf.fontSize !== undefined) {
-                            $scope.setFontSizePx(conf.fontSize, true);
-                        };
-                        if (conf.lineWrapping !== undefined) {
-                            $scope.setWrap(conf.lineWrapping == 'true', true);
-                        };
-                        if (conf.showLint !== undefined) {
-                            $scope.setLint(conf.showLint == 'true', true);
-                        };
-                    });
-                } else {
-                    console.log('读取设置失败:' + res.text);
-                };
-            });
-        };
-
-        $scope.getConfig();
-
-
-        setTimeout(function () {
-            console.log('>>$scope.cmOpt.lint', $scope.cmOpt.lint);
-        }, 3000);
 
 
         //ctrlr end
     }
 })();
+
 
 
 

@@ -417,7 +417,7 @@ _pie.ladderProcAppsShowCo = function (apps, uid, asKey) {
                 time: appinfo.time,
                 uid: appinfo.uid,
                 url: appinfo.url,
-                icon:appinfo.icon,
+                icon: appinfo.icon,
                 author: {
                     id: resadd[0].id,
                     nick: resadd[0].nick,
@@ -857,8 +857,65 @@ _rotr.apis.pie_getMyAppInfoExt = function () {
 };
 
 
+/**
+ * 保存用户自己的编辑器设定
+ * @returns {null}
+ */
+_rotr.apis.pie_saveConfig = function () {
+    var ctx = this;
+
+    var co = $co(function* () {
+        var uid = yield _fns.getUidByCtx(ctx);
+
+        var mu = _rds.cli.multi();
+        var uPieConfKey = _rds.k.uPieConf(uid);
+
+        //仅保存限定的信息
+        var showSaveConfirm = ctx.query.showSaveConfirm || ctx.request.body.showSaveConfirm;
+        if (showSaveConfirm !== undefined) mu.hset(uPieConfKey, 'showSaveConfirm', showSaveConfirm);
+
+        var themeName = ctx.query.themeName || ctx.request.body.themeName;
+        if (themeName) mu.hset(uPieConfKey, 'themeName', themeName);
+
+        var fontSize = ctx.query.fontSize || ctx.request.body.fontSize;
+        if (fontSize) mu.hset(uPieConfKey, 'fontSize', fontSize);
+
+        var lineWrapping = ctx.query.lineWrapping || ctx.request.body.lineWrapping;
+        if (lineWrapping !== undefined) mu.hset(uPieConfKey, 'lineWrapping', lineWrapping);
+
+        var showLint = ctx.query.showLint || ctx.request.body.showLint;
+        if (showLint !== undefined) mu.hset(uPieConfKey, 'showLint', showLint);
+
+        var res = yield _ctnu([mu, 'exec']);
+
+        //返回数据
+        ctx.body = __newMsg(1, 'ok');
+        return ctx;
+    });
+    return co;
+};
 
 
+/**
+ * 获取用户自己的编辑器设定
+ * @returns {null}
+ */
+_rotr.apis.pie_getMyConfig = function () {
+    var ctx = this;
+
+    var co = $co(function* () {
+        var uid = yield _fns.getUidByCtx(ctx);
+
+        var uPieConfKey = _rds.k.uPieConf(uid);
+
+        var res = yield _ctnu([_rds.cli, 'hgetall'], uPieConfKey);
+
+        //返回数据
+        ctx.body = __newMsg(1, 'ok', res);
+        return ctx;
+    });
+    return co;
+};
 
 
 

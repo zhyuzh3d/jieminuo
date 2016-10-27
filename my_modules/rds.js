@@ -33,6 +33,10 @@ _rds.k = {
         return 'usr-' + id;
     },
 
+    uPieConf: function (id) { //用户pie设置键,hash
+        return 'uPieConf-' + id;
+    },
+
     tmp_phoneRegCode: function (phone) { //向用户发送的手机注册验证码,string
         return '_tmp:phoneRegCode-' + phone;
     },

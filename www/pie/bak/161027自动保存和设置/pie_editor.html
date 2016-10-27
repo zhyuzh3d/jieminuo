@@ -5,7 +5,7 @@
 
 
 <script>
-    _fns.addCtrlrJs('pie_temp');
+    _fns.addCtrlrJs('pie_editor');
     _fns.addDialogJs('appConfig');
     _fns.addDialogJs('share');
 
@@ -74,20 +74,6 @@
             height: 48px;
             line-height: 46px;
             color: #AAA;
-        }
-
-        .pie_editor .bot-btn {
-            vertical-align: top;
-            color: #000;
-            padding: 0;
-            margin: 6px 2px;
-            min-width: 60px;
-        }
-
-        .pie_editor .charkeys {
-            min-width: 20px;
-            width: 90%;
-            margin: 2px 2%;
         }
 
         .pie_editor .file-text {
@@ -423,8 +409,8 @@
                 <div layout='column' flex='none' layout-align='space-between center' id='editorMenuSec' style="height:48px;padding:0 1rem;border-top: 1px solid #DDD;position:relative">
                     <!--            编辑器底部字符盒子-->
                     <div ng-show='showCharBox' id='charsbox' style="position: absolute;bottom: 48px;left: 0px;padding: 12px 0px;border-top: 1px solid rgb(221, 221, 221);text-align: center;opacity: 1;background: rgba(255, 255, 255, 0.75);z-index: 100;">
-                        <div ng-repeat='char in specialChars' ng-click='editorInsertChar(char)' style="width:10%;margin:0;padding:0;display:inline-block;text-align:center">
-                            <div class="md-button md-raised charkeys" ng-bind='char'></div>
+                        <div>
+                            <div class="md-button md-raised" ng-repeat='char in specialChars' ng-bind='char' ng-click='editorInsertChar(char)' style="width:30px;min-width:10%;margin:2px 6px"></div>
                         </div>
                     </div>
 
@@ -436,34 +422,20 @@
                             </md-button>
                         </div>
                         <div flex='none'>
-
-                            <md-button ng-click="beautify()" aria-label='a' class='bot-btn'>
-                                <span class="fa fa-indent"></span>
-                                <span>&nbsp;美化</span>
-                            </md-button>
-
-                            <md-button ng-click="openCharBox()" ng-hide='showCharBox' aria-label='a' class='bot-btn'>
+                            <md-button ng-click="openCharBox()" ng-hide='showCharBox' aria-label='a' style='vertical-align:top;color:#000'>
                                 <span class="fa fa-bolt"></span>
                                 <span>&nbsp;符号</span>
                             </md-button>
-                            <md-button ng-click="openCharBox()" ng-show='showCharBox' aria-label='a' class='bot-btn'>
+                            <md-button ng-click="openCharBox()" ng-show='showCharBox' aria-label='a' style='vertical-align:top;color:#00bfa5'>
                                 <span class="fa fa-bolt"></span>
                                 <span>&nbsp;符号</span>
                             </md-button>
-
                             <md-menu style='padding:0' width='6'>
                                 <div class="md-button" ng-click="$mdOpenMenu($event)" aria-label='a'>
                                     <span class="fa fa-paint-brush"></span>
                                     <span>&nbsp;更多</span>
                                 </div>
                                 <md-menu-content>
-                                    <md-menu-item>
-                                        <md-button ng-click="setSaveConfirm()" aria-label='a' ng-style='showSaveConfirm?{"color":"#000"}:{"color":"#AAA"}'>
-                                            <span class="fa fa-window-maximize"></span>
-                                            <span>&nbsp;显示保存弹窗</span>
-                                        </md-button>
-                                    </md-menu-item>
-
                                     <md-menu-item>
                                         <md-button ng-click="changeCmEditorTheme()" aria-label='a'>
                                             <span class="fa fa-circle" ng-hide='cmTheme=="default"'></span>
@@ -481,18 +453,27 @@
                                     </md-menu-item>
 
                                     <md-menu-item>
-                                        <md-button ng-click="setWrap()" aria-label='a' ng-style='cmOpt.lineWrapping?{"color":"#000"}:{"color":"#AAA"}'>
+                                        <md-button ng-click="setWrap()" aria-label='a'>
                                             <span class="fa fa-exchange"></span>
-                                            <span>&nbsp;自动换行</span>
+                                            <span>&nbsp;换行开关</span>
                                         </md-button>
                                     </md-menu-item>
 
                                     <md-menu-item>
-                                        <md-button ng-click="setLint()" aria-label='a' ng-style='cmOpt.lint?{"color":"#000"}:{"color":"#AAA"}'>
-                                            <span class="fa fa-exclamation-circle fa-check"></span>
+                                        <md-button ng-click="setLint()" aria-label='a'>
+                                            <span class="fa fa-check" ng-hide='cmOpt.lint'></span>
+                                            <span class="fa fa-times" ng-show='cmOpt.lint'></span>
                                             <span>&nbsp;语法错误提示</span>
                                         </md-button>
                                     </md-menu-item>
+
+                                    <md-menu-item>
+                                        <md-button ng-click="beautify()" aria-label='a'>
+                                            <span class="fa fa-indent"></span>
+                                            <span>&nbsp;美化格式</span>
+                                        </md-button>
+                                    </md-menu-item>
+
 
 
                                     <md-menu-item ng-hide='true'>
