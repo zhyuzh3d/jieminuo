@@ -1,3 +1,9 @@
+<script src="//cdn.bootcss.com/js-beautify/1.6.4/beautify-css.min.js"></script>
+<script src="//cdn.bootcss.com/js-beautify/1.6.4/beautify-html.min.js"></script>
+<script src="//cdn.bootcss.com/js-beautify/1.6.4/beautify.min.js"></script>
+
+
+
 <script>
     _fns.addCtrlrJs('pie_temp');
     _fns.addDialogJs('appConfig');
@@ -379,7 +385,7 @@
                                         <span class='fa fa-cloud-upload'></span>
                                         <span>&nbsp;上传文件</span>
                                     </div>
-                                    <div flex='none' class="md-button md-default leftmenu" aria-label='a' style='color:#888;text-align:left' ng-click="uploadIcon()">
+                                    <div flex='none' class="md-button md-default leftmenu" aria-label='a' style='color:#888;text-align:left;display:none' ng-click="uploadIcon()">
                                         <span class='fa fa-file-image-o'></span>
                                         <span>&nbsp;上传图标</span>
                                     </div>
@@ -458,6 +464,13 @@
                                             <span class="fa fa-check" ng-hide='cmOpt.lint'></span>
                                             <span class="fa fa-times" ng-show='cmOpt.lint'></span>
                                             <span>&nbsp;错误提示</span>
+                                        </md-button>
+                                    </md-menu-item>
+
+                                    <md-menu-item>
+                                        <md-button ng-click="beautify()" aria-label='a'>
+                                            <span class="fa fa-indent"></span>
+                                            <span>&nbsp;代码格式化</span>
                                         </md-button>
                                     </md-menu-item>
 

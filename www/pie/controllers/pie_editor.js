@@ -20,6 +20,9 @@
     ) {
         _fns.initCtrlr($scope, $element, thisName, false);
 
+        //关闭左侧栏
+        $rootScope.enableBlockLeftNav = false;
+
         //锚点
         $scope.goto = function (key) {
             $location.hash(key);
@@ -1506,9 +1509,34 @@
         };
 
 
-        //关闭左侧栏
-        $rootScope.enableBlockLeftNav = false;
 
+        //格式化代码
+        $scope.beautify = function () {
+            //获取当前鼠标的位置和滚动位置
+            var cursorpos = $scope.cmDoc.getCursor();
+            var scrollpos = $scope.cmEditor.getScrollInfo();
+
+            //代码格式化
+            switch ($scope.editorFile.ext) {
+                case 'js':
+                    $scope.editorFile.data = js_beautify($scope.editorFile.data);
+                    break;
+                case 'html':
+                    $scope.editorFile.data = html_beautify($scope.editorFile.data);
+                    break;
+                case 'css':
+                    $scope.editorFile.data = css_beautify($scope.editorFile.data);
+                    break;
+                default:
+                    break;
+            };
+
+            //重新定位鼠标的位置
+            setTimeout(function () {
+                $scope.cmDoc.setCursor(cursorpos);
+                $scope.cmEditor.scrollTo(scrollpos.left, scrollpos.top);
+            }, 200);
+        };
 
 
 

@@ -1,3 +1,9 @@
+<script src="//cdn.bootcss.com/js-beautify/1.6.4/beautify-css.min.js"></script>
+<script src="//cdn.bootcss.com/js-beautify/1.6.4/beautify-html.min.js"></script>
+<script src="//cdn.bootcss.com/js-beautify/1.6.4/beautify.min.js"></script>
+
+
+
 <script>
     _fns.addCtrlrJs('pie_editor');
     _fns.addDialogJs('appConfig');
@@ -457,7 +463,14 @@
                                         <md-button ng-click="setLint()" aria-label='a'>
                                             <span class="fa fa-check" ng-hide='cmOpt.lint'></span>
                                             <span class="fa fa-times" ng-show='cmOpt.lint'></span>
-                                            <span>&nbsp;错误提示</span>
+                                            <span>&nbsp;语法错误提示</span>
+                                        </md-button>
+                                    </md-menu-item>
+
+                                    <md-menu-item>
+                                        <md-button ng-click="beautify()" aria-label='a'>
+                                            <span class="fa fa-indent"></span>
+                                            <span>&nbsp;美化格式</span>
                                         </md-button>
                                     </md-menu-item>
 
