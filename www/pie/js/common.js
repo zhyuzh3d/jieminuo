@@ -116,6 +116,42 @@ if (!_pie) var _pie = {};
 
 
 
+    //mongo数据库图式设置
+    (function forMongoose() {
+        //用户行为历史类型
+        _cfg.mgHisType = {
+            unkown: 0,
+            login: 1,
+            logout: 2,
+            createApp: 3,
+            deleteApp: 4,
+            updateApp: 5,
+            renameApp: 6,
+            setApp: 7,
+            setExt: 8,
+            shareApp: 9,
+            createFile: 10,
+            uploadFile: 11,
+            createFolder: 12
+        };
+
+        //行为目标类型
+        _cfg.mgTarType = {
+            unkown: 0,
+            user: 1,
+            app: 2,
+        };
+
+        //用户信息状态类型
+        _cfg.mgMsgState = {
+            unknow: 0,
+            accept: 1,
+            reject: 2,
+        };
+    })();
+
+
+
 
 
 

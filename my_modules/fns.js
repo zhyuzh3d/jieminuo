@@ -53,7 +53,7 @@ console.xwarn = function () {
 global.__errhdlr = __errhdlr;
 
 function __errhdlr(err) {
-    console.xerr(err.stack);
+    err.stack ? console.xerr(err.stack) : console.xerr(err);
 };
 
 /*专用空函数，只输出不做额外处理,适合co().then()使用*/
@@ -64,15 +64,15 @@ function __nullhdlr(res) {};
 /*专用空函数，只输出不做额外处理,适合co().then()使用*/
 global.__infohdlr = __infohdlr;
 
-function __infohdlr(res) {
-    console.xinfo(res);
+function __infohdlr() {
+    console.xinfo.apply(this, arguments);
 };
 
 /*专用空函数，只纪录日志不做额外处理,适合co().then()使用*/
 global.__loghdlr = __loghdlr;
 
-function __loghdlr(res) {
-    console.xlog(res);
+function __loghdlr() {
+    console.xlog.apply(this, arguments);
 };
 
 /*生成不重复的key*/

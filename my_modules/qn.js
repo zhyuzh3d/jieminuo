@@ -1,28 +1,41 @@
 /*提供七牛云端文件存储服务接口*/
 var _qn = {};
 
-/*相关设置,关键密匙在外部xcfg.json*/
-var cfg = {
-    Port: 19110,
-    Uptoken_Url: "/uptoken",
-    Domain: "http://qiniu-plupload.qiniudn.com/",
-    BucketName: _xcfg.qiniu.BucketName,
-    BucketDomain: _xcfg.qiniu.BucketDomain,
-};
 
-_qn.cfg = cfg;
+_qn.startPrms = function () {
+    var prms = new Promise(function (resolvefn, rejectfn) {
+        /*相关设置,关键密匙在外部xcfg.json*/
+        var cfg = {
+            Port: 19110,
+            Uptoken_Url: "/uptoken",
+            Domain: "http://qiniu-plupload.qiniudn.com/",
+            BucketName: _xcfg.qiniu.BucketName,
+            BucketDomain: _xcfg.qiniu.BucketDomain,
+        };
+
+        _qn.cfg = cfg;
 
 
-/*初始化七牛的访问密匙设置*/
-$qiniu.conf.ACCESS_KEY = _xcfg.qiniu.ACCESS_KEY;
-$qiniu.conf.SECRET_KEY = _xcfg.qiniu.SECRET_KEY;
+        /*初始化七牛的访问密匙设置*/
+        $qiniu.conf.ACCESS_KEY = _xcfg.qiniu.ACCESS_KEY;
+        $qiniu.conf.SECRET_KEY = _xcfg.qiniu.SECRET_KEY;
 
-/*初始化设置,依赖xcfg*/
-_qn.start = function () {
-    _app.httpSvr.listen(_qn.cfg.Port, function (err, dat) {
-        __infohdlr("Qiniu:listening on port:" + _qn.cfg.Port);
+        /*初始化设置,依赖xcfg*/
+        _app.httpSvr.listen(_qn.cfg.Port, function (err, dat) {
+            if (err) {
+                __errhdlr("_qn:startPrms:failed:" + err.message);
+                rejectfn(err);
+            } else {
+                __infohdlr("_qn:startPrms:is ready on port:" + _qn.cfg.Port);
+                resolvefn(_qn);
+            };
+        });
     });
+    return prms;
 };
+
+
+
 
 
 

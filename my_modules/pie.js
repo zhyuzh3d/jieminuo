@@ -689,7 +689,9 @@ _rotr.apis.pie_admGetLadderList = function () {
 
 /**
  * 更新自己的app的update时间字段,时间由服务器决定
- * @param {appId} app的id
+ * @param {Number} appId app的id
+ * @param {Number} type 行为类型，_cfg.mgHisType:updatefile,createfile...
+ * @param {object} param 附属参数，对象格式存入mongo
  * @returns {}
  */
 
@@ -712,12 +714,70 @@ _rotr.apis.pie_setAppUpdate = function () {
         //异步执行修改
         _rds.cli.hset(appKey, 'update', (new Date()).getTime());
 
+        //记入mongo数据库
+        var type = ctx.query.type || ctx.request.body.type;
+        var param = ctx.query.param || ctx.request.body.param;
+        _mngs.fns.addHis({
+            uid: Number(uid),
+            type: Number(type),
+            tarId: Number(appId),
+            tarType: _cfg.mgTarType.app,
+            param: param,
+        });
+
         //返回数据
         ctx.body = __newMsg(1, 'ok');
         return ctx;
     });
     return co;
 };
+
+
+
+
+/**
+ * 获取APP的操作历史，仅限本人
+ * @param {Number} appId app的id
+ * @param {Date} start 从多少条开始读取
+ * @param {Date} count 最多读取多少条
+ * @returns {Array} 历史记录对象数组
+ */
+_rotr.apis.pie_getAppHis = function () {
+    var ctx = this;
+
+    var co = $co(function* () {
+
+        var uid = yield _fns.getUidByCtx(ctx);
+
+        var appId = ctx.query.appId || ctx.request.body.appId;
+        if (appId === undefined) throw Error('appID不能都为空.');
+
+        var appKey = _rds.k.app(appId);
+
+        //检查是否拥有此app
+        var rdsUid = yield _ctnu([_rds.cli, 'hget'], appKey, 'uid');
+        if (rdsUid != uid) throw Error('权限验证失败.');
+
+        var start = ctx.query.start || ctx.request.body.start;
+        if (start === undefined) start = 0;
+
+        var count = ctx.query.count || ctx.request.body.count;
+        if (!count) count = 10;
+
+        //从mongo读取记录
+        var res = yield _mngs.models.his.find({
+            tarType: _cfg.mgTarType.app,
+            tarId: Number(appId),
+        }).sort('created_at').skip(Number(start)).limit(Number(count)).exec();
+
+        //返回数据
+        ctx.body = __newMsg(1, 'ok', res);
+        return ctx;
+    });
+    return co;
+};
+
+
 
 
 /**

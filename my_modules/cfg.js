@@ -31,7 +31,7 @@ _cfg.regx = {
     appDesc: /^[\s\S]{0,60}$/, //app描述，任意字符，0～60
     avatar: /^http:\/\/[\s\S]{0,1024}$/, //用户头像，标准http格式才行
     url: /^http:\/\/[\s\S]{0,1024}$/, //链接，标准http格式才行
-    hash:/^[0-9a-zA-Z]{4,64}$/, //hash键格式，宽泛限制
+    hash: /^[0-9a-zA-Z]{4,64}$/, //hash键格式，宽泛限制
 };
 
 
@@ -42,6 +42,40 @@ _cfg.dur = {
     browserUkey: 365 * 24 * 60 * 60 * 1000, //浏览器端m_ukey存放1年
     month: 1000 * 3600 * 24 * 30, //月，30天
 };
+
+
+(function forMongoose() {
+    //用户行为历史类型
+    _cfg.mgHisType = {
+        unkown: 0,
+        login: 1,
+        logout: 2,
+        createApp: 3,
+        deleteApp: 4,
+        updateApp: 5,
+        renameApp: 6,
+        setApp: 7,
+        setExt: 8,
+        shareApp: 9,
+        createFile: 10,
+        uploadFile: 11,
+        createFolder: 12
+    };
+
+    //行为目标类型
+    _cfg.mgTarType = {
+        unkown: 0,
+        user: 1,
+        app: 2,
+    };
+
+    //用户信息状态类型
+    _cfg.mgMsgState = {
+        unknow: 0,
+        accept: 1,
+        reject: 2,
+    };
+})();
 
 
 

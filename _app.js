@@ -16,6 +16,7 @@ var $cookie = global.$cookie = require('cookie');
 var $crypto = global.$crypto = require('crypto');
 var $mailer = global.$mailer = require('nodemailer');
 var $redis = global.$redis = require('redis');
+var $mongoose = global.$mongoose = require('mongoose');
 var $uuid = global.$uuid = require('node-uuid');
 var $sktio = global.$sktio = require('socket.io');
 var $scaptcha = global.$scaptcha = require('svg-captcha');
@@ -33,6 +34,7 @@ global._mdwr = require('./my_modules/mdwr.js');
 global._ndwr = require('./my_modules/ndwr.js');
 global._rotr = require('./my_modules/rotr.js');
 global._rds = require('./my_modules/rds.js');
+global._mngs = require('./my_modules/mngs.js');
 global._captcha = require('./my_modules/captcha.js');
 global._qn = require('./my_modules/qn.js');
 
@@ -55,11 +57,18 @@ var httpsSvr = _app.httpsSvr = $https.createServer(httpsOpt, koaSvr.callback());
 
 /*读取外部xcfg文件写入_xfg全局参数
  */
-(function () {
+
+$co(function* () {
     _app.httpSvr.listen(_app.hostPort);
-    _qn.start();
-    __infohdlr('Server is running on:' + _app.hostPort + '!');
-})();
+    yield _qn.startPrms();
+    _rds.start();
+    yield _mngs.startPrms();
+    __infohdlr('Http server is running on:' + _app.hostPort);
+    __infohdlr('------', new Date(), '------');
+});
+
+
+
 
 /*使用body解析器
  */
