@@ -64,6 +64,14 @@ _rotr.apis.pie_createApp = function () {
 
         var res = yield _ctnu([mu, 'exec']);
 
+        //增加一个his到mongo
+        _mngs.fns.addHis({
+            uid: Number(uid),
+            type: _cfg.mgHisType.createApp,
+            tarId: Number(appId),
+            tarType: _cfg.mgTarType.app,
+        });
+
         //返回数据
         ctx.body = __newMsg(1, 'ok', dat);
         return ctx;
@@ -167,9 +175,15 @@ _rotr.apis.pie_getMyApps = function () {
 };
 
 
+
+
+
+
+
+
 /**
  * 移除自己的一个APP，只是从列表里面移除，并没有删除app键，也不删除响应的七牛文件，所以是可以恢复的
- * @param {appName} app名称
+ * @param {appId} app的id
  * @returns {null}
  */
 
@@ -180,12 +194,24 @@ _rotr.apis.pie_removeApp = function () {
 
         var uid = yield _fns.getUidByCtx(ctx);
 
-        var appName = ctx.query.appName || ctx.request.body.appName;
-        if (!appName || !_cfg.regx.appName.test(appName)) throw Error('App名称格式错误.');
+        var appId = ctx.query.appId || ctx.request.body.appId;
+        if (!appId) throw Error('App名称格式错误.');
+
+        //获取appName
+        var appKey = _rds.k.app(appId);
+        var appName = yield _ctnu([_rds.cli, 'hget'], appKey, 'name');
 
         //从appid列表中移除
         var uAppsKey = _rds.k.usrApps(uid);
         var res = yield _ctnu([_rds.cli, 'zrem'], uAppsKey, appName);
+
+        //保存到mongo历史
+        _mngs.fns.addHis({
+            uid: Number(uid),
+            type: _cfg.mgHisType.removeApp,
+            tarId: Number(appId),
+            tarType: _cfg.mgTarType.app,
+        });
 
         //返回数据
         ctx.body = __newMsg(1, 'ok');
@@ -229,6 +255,15 @@ _rotr.apis.pie_renameApps = function () {
 
         //修改alias
         var res = yield _ctnu([_rds.cli, 'hset'], appKey, 'alias', appAlias);
+
+        _rds.cli.hset(appKey, 'update', (new Date()).getTime());
+        //保存到mongo历史
+        _mngs.fns.addHis({
+            uid: Number(uid),
+            type: _cfg.mgHisType.renameApp,
+            tarId: Number(appId),
+            tarType: _cfg.mgTarType.app,
+        });
 
         //返回数据
         ctx.body = __newMsg(1, 'ok');
@@ -280,6 +315,14 @@ _rotr.apis.pie_ladderJoin = function () {
         mu.hset(_rds.k.app(appId), 'inladder', 1);
 
         var res = yield _ctnu([mu, 'exec']);
+
+        //保存到mongo历史
+        _mngs.fns.addHis({
+            uid: Number(uid),
+            type: _cfg.mgHisType.addAppToLadder,
+            tarId: Number(appId),
+            tarType: _cfg.mgTarType.app,
+        });
 
         //返回数据
         ctx.body = __newMsg(1, 'ok');
@@ -478,6 +521,14 @@ _rotr.apis.pie_ladderLikeApp = function () {
         //返回数据
         ctx.body = __newMsg(1, 'ok', res);
 
+        //保存到mongo历史
+        _mngs.fns.addHis({
+            uid: Number(uid),
+            type: _cfg.mgHisType.likeApp,
+            tarId: Number(appId),
+            tarType: _cfg.mgTarType.app,
+        });
+
         return ctx;
     });
     return co;
@@ -541,6 +592,14 @@ _rotr.apis.pie_favorAdd = function () {
         //将appid添加到uFavorApps-uid中
         var res = yield _ctnu([_rds.cli, 'sadd'], _rds.k.usrFavorApps(uid), appId);
 
+        //增加一个his到mongo
+        _mngs.fns.addHis({
+            uid: Number(uid),
+            type: _cfg.mgHisType.favorApp,
+            tarId: Number(appId),
+            tarType: _cfg.mgTarType.app,
+        });
+
         //返回数据
         ctx.body = __newMsg(1, 'ok', res);
         return ctx;
@@ -568,6 +627,14 @@ _rotr.apis.pie_favorRem = function () {
 
         //将appid添加到uFavorApps-uid中
         var res = yield _ctnu([_rds.cli, 'srem'], _rds.k.usrFavorApps(uid), appId);
+
+        //保存到mongo历史
+        _mngs.fns.addHis({
+            uid: Number(uid),
+            type: _cfg.mgHisType.unFavorApp,
+            tarId: Number(appId),
+            tarType: _cfg.mgTarType.app,
+        });
 
         //返回数据
         ctx.body = __newMsg(1, 'ok', res);
@@ -733,10 +800,8 @@ _rotr.apis.pie_setAppUpdate = function () {
 };
 
 
-
-
 /**
- * 获取APP的操作历史，仅限本人
+ * 获取APP的自己的操作历史（不包含收藏，点赞历史），仅限本人
  * @param {Number} appId app的id
  * @param {Date} start 从多少条开始读取
  * @param {Date} count 最多读取多少条
@@ -766,9 +831,10 @@ _rotr.apis.pie_getAppHis = function () {
 
         //从mongo读取记录
         var res = yield _mngs.models.his.find({
-            tarType: _cfg.mgTarType.app,
+            uid: Number(uid),
             tarId: Number(appId),
-        }).sort('created_at').skip(Number(start)).limit(Number(count)).exec();
+            tarType: _cfg.mgTarType.app,
+        }).sort('-created_at').skip(Number(start)).limit(Number(count)).exec();
 
         //返回数据
         ctx.body = __newMsg(1, 'ok', res);
@@ -807,21 +873,41 @@ _rotr.apis.pie_updateAppInfo = function () {
 
         var mu = _rds.cli.multi();
         var appkey = _rds.k.app(appId);
+        var param = {};
 
         //提取各个字段
         var icon = ctx.query.icon || ctx.request.body.icon;
         if (icon && !_cfg.regx.url.test(icon)) throw Error('图标链接格式错误');
-        if (icon) mu.hset(appkey, 'icon', icon);
+        if (icon) {
+            mu.hset(appkey, 'icon', icon);
+            param.icon = icon;
+        };
 
         var alias = ctx.query.alias || ctx.request.body.alias;
         if (alias && !_cfg.regx.appAlias.test(alias)) throw Error('名称格式错误');
-        if (alias) mu.hset(appkey, 'alias', alias);
+        if (alias) {
+            mu.hset(appkey, 'alias', alias);
+            param.appkey = appkey;
+        };
 
         var desc = ctx.query.desc || ctx.request.body.desc;
         if (desc && !_cfg.regx.appDesc.test(desc)) throw Error('描述信息格式错误');
-        if (desc) mu.hset(appkey, 'desc', desc);
+        if (desc) {
+            mu.hset(appkey, 'desc', desc);
+            param.desc = desc;
+        };
 
         var res = yield _ctnu([mu, 'exec']);
+
+        _rds.cli.hset(appKey, 'update', (new Date()).getTime());
+        //保存到mongo历史
+        _mngs.fns.addHis({
+            uid: Number(uid),
+            type: _cfg.mgHisType.setApp,
+            tarId: Number(appId),
+            tarType: _cfg.mgTarType.app,
+            param: param,
+        });
 
         //返回数据
         ctx.body = __newMsg(1, 'ok', res);
@@ -856,16 +942,22 @@ _rotr.apis.pie_updateAppInfoExt = function () {
 
         var mu = _rds.cli.multi();
         var appextkey = _rds.k.appExt(appId);
+        var param = {};
 
         //提取野狗密匙
         var wildDogAppSecret = ctx.query.wildDogAppSecret || ctx.request.body.wildDogAppSecret;
         if (wildDogAppSecret && !_cfg.regx.hash.test(wildDogAppSecret)) throw Error('野狗APP超级密匙格式错误');
-        if (wildDogAppSecret) mu.hset(appextkey, 'wildDogAppSecret', wildDogAppSecret);
+        if (wildDogAppSecret) {
+            mu.hset(appextkey, 'wildDogAppSecret', wildDogAppSecret);
+            param.wildDogAppSecret = wildDogAppSecret;
+        };
 
         //提取各个自定义字段,如果为空则删除这个字段
         var customs = JSON.safeParse(ctx.query.customs) || ctx.request.body.customs;
         for (var attr in customs) {
             var val = customs[attr];
+            param[attr] = val;
+
             if (!val || val == '') {
                 mu.hdel(appextkey, attr);
             } else {
@@ -874,6 +966,16 @@ _rotr.apis.pie_updateAppInfoExt = function () {
         };
 
         var res = yield _ctnu([mu, 'exec']);
+
+        _rds.cli.hset(appKey, 'update', (new Date()).getTime());
+        //保存到mongo历史
+        _mngs.fns.addHis({
+            uid: Number(uid),
+            type: _cfg.mgHisType.setAppExt,
+            tarId: Number(appId),
+            tarType: _cfg.mgTarType.app,
+            param: param,
+        });
 
         //返回数据
         ctx.body = __newMsg(1, 'ok', res);
@@ -929,24 +1031,47 @@ _rotr.apis.pie_saveConfig = function () {
 
         var mu = _rds.cli.multi();
         var uPieConfKey = _rds.k.uPieConf(uid);
+        var param = {};
 
         //仅保存限定的信息
         var showSaveConfirm = ctx.query.showSaveConfirm || ctx.request.body.showSaveConfirm;
-        if (showSaveConfirm !== undefined) mu.hset(uPieConfKey, 'showSaveConfirm', showSaveConfirm);
+        if (showSaveConfirm !== undefined) {
+            mu.hset(uPieConfKey, 'showSaveConfirm', showSaveConfirm);
+            param.showSaveConfirm = showSaveConfirm;
+        };
 
         var themeName = ctx.query.themeName || ctx.request.body.themeName;
-        if (themeName) mu.hset(uPieConfKey, 'themeName', themeName);
+        if (themeName) {
+            mu.hset(uPieConfKey, 'themeName', themeName);
+            param.themeName = themeName
+        }
 
         var fontSize = ctx.query.fontSize || ctx.request.body.fontSize;
-        if (fontSize) mu.hset(uPieConfKey, 'fontSize', fontSize);
+        if (fontSize) {
+            mu.hset(uPieConfKey, 'fontSize', fontSize);
+            param.fontSize = fontSize;
+        }
 
         var lineWrapping = ctx.query.lineWrapping || ctx.request.body.lineWrapping;
-        if (lineWrapping !== undefined) mu.hset(uPieConfKey, 'lineWrapping', lineWrapping);
+        if (lineWrapping !== undefined) {
+            mu.hset(uPieConfKey, 'lineWrapping', lineWrapping);
+            param.lineWrapping = lineWrapping;
+        }
 
         var showLint = ctx.query.showLint || ctx.request.body.showLint;
-        if (showLint !== undefined) mu.hset(uPieConfKey, 'showLint', showLint);
+        if (showLint !== undefined) {
+            mu.hset(uPieConfKey, 'showLint', showLint);
+            param.showLint = showLint;
+        };
 
         var res = yield _ctnu([mu, 'exec']);
+
+        //保存到mongo历史
+        _mngs.fns.addHis({
+            uid: Number(uid),
+            type: _cfg.mgHisType.saveMyCfg,
+            param: param,
+        });
 
         //返回数据
         ctx.body = __newMsg(1, 'ok');

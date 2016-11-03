@@ -58,7 +58,7 @@
                 </md-input-container>
 
                 <div flex='grow' layout ng-repeat='item in customsArr'>
-                    <md-input-container flex='40' class="md-block" flex-gt-sm  style='margin:24px 0 0 0'>
+                    <md-input-container flex='40' class="md-block" flex-gt-sm style='margin:24px 0 0 0'>
                         <label style="text-align:left;">属性名</label>
                         <input name='alias' ng-model="item.key" ng-pattern="/^[a-zA-Z0-9_]{1,64}$/" style='font-size:2rem;font-family:simhei' />
                     </md-input-container>
@@ -77,8 +77,22 @@
                     <span>保存</span>
                 </div>
             </div>
-
         </md-tab>
+
+        <md-tab label="历史">
+            <ul style="margin:12px;padding:4px">
+                <li ng-repeat='item in hisArr' style="line-height:20px;font-size:14px;margin:4px 0" class="elips">
+                    <span>•</span>
+                    <small ng-bind='item.created_at | date:"yy/MM/dd hh:mm"' style="color:#AAA"></small>
+                    <span ng-bind='hisType[item.type]'></span>
+                    <small ng-bind='item.param | json' title='{{item.param | json}}'></small>
+                </li>
+            </ul>
+        </md-tab>
+
+
+
+
     </md-tabs>
 
 </md-dialog>

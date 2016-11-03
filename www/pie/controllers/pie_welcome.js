@@ -151,7 +151,7 @@
             var confirm = $mdDialog.confirm()
                 .title('您确定要重新初始化[' + $scope.RIappAlias + '(' + $scope.RIappName + ')]应用?')
                 .textContent('警告！文件内容将被删除，丢失后无法找回！')
-                .ariaLabel('remove app')
+                .ariaLabel('reinit app')
                 .ok('重新初始化')
                 .cancel('取消');
             $mdDialog.show(confirm).then(function () {

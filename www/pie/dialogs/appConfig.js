@@ -29,6 +29,8 @@ _fns.addDialogJs('appReset');
 
         $rootScope[thisName] = $scope;
 
+        $scope.hisType = _cfg.mgHisTypeName;
+
         $scope.app = $rootScope.tempDialogData.app;
 
         //切换激活tab页,监听tab页面切换到ext时候自动加载ext
@@ -36,6 +38,8 @@ _fns.addDialogJs('appReset');
             $scope.$watch('selectedIndex', function (cur, old) {
                 if (cur == 2) {
                     $scope.getAppInfoExt();
+                } else if (cur == 3) {
+                    $scope.getAppHis();
                 };
             });
 
@@ -145,7 +149,7 @@ _fns.addDialogJs('appReset');
             var confirm = $mdDialog.confirm()
                 .title('您确定要重新初始化[' + $scope.app.alias + '(' + $scope.app.name + ')]应用?')
                 .textContent('警告！文件内容将被删除，丢失后无法找回！')
-                .ariaLabel('remove app')
+                .ariaLabel('reset app')
                 .ok('重新初始化')
                 .cancel('取消');
             $mdDialog.show(confirm).then(function () {
@@ -173,7 +177,7 @@ _fns.addDialogJs('appReset');
             $mdDialog.show(confirm).then(function () {
                 var api = _global.api('pie_removeApp');
                 var dat = {
-                    appName: $scope.app.name,
+                    appId: $scope.app.id,
                 }
                 $.post(api, dat, function (res) {
                     console.log('POST', api, dat, res);
@@ -396,10 +400,49 @@ _fns.addDialogJs('appReset');
             });
         };
 
-        //获取
+        //获取附加设置
         $scope.getAppInfoExt = function () {
             if (!$scope.appExt) $scope.refreshAppInfoExt();
         };
+
+
+
+
+        //载入appext信息
+        $scope.refreshAppHisArr = function () {
+            //发送请求
+            var api = _global.api('pie_getAppHis');
+            var dat = {
+                appId: $scope.app.id,
+                start: 0,
+                count: 12,
+            };
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
+                if (res.code == 1) {
+                    _fns.applyScope($scope, function () {
+                        $scope.hisArr = res.data;
+                    });
+                } else {
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent('获取App扩展信息失败:' + res.text)
+                        .position('top right')
+                        .hideDelay(3000)
+                    );
+                };
+            });
+        };
+
+        //获取历史
+        $scope.getAppHis = function () {
+            if (!$scope.hisArr) $scope.refreshAppHisArr();
+        };
+
+
+
+
+
 
         //自定义属性组
         $scope.customsArr = [];

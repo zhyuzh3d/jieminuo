@@ -7,6 +7,40 @@ if (!_fns) var _fns = {}; //最高全局变量，公用函数
 if (!_xdat) var _xdat = {}; //共享变量
 if (!_pie) var _pie = {};
 
+//设置时候需要使用的biMap双向属性函数
+(function () {
+    /**
+     * 生成双向绑定的map对象，kv属性正反都有,如果k和v有重复那么将导致不希望的返回对象
+     * 仅适用于单层的简单数据keyval对
+     * @param   {Object} obj       原对象
+     * @param   {String} container 容器属性名，为了避免kv重复可以把反转的vk放到这个属性里面
+     * @returns {Object} 包含双向属性的对象
+     */
+    _fns.biMap = function (obj, container) {
+        var res = {};
+        if (container && String(container)) {
+            res[container] = {};
+        };
+
+        for (var key in obj) {
+            var val = obj[key];
+
+            res[key] = val;
+            var sval = String(val);
+            if (val && sval && sval != '') {
+                if (res[container]) {
+                    res[container][sval] = key;
+                } else {
+                    res[sval] = key;
+                }
+            };
+        };
+        return res;
+    };
+})();
+
+
+
 (function () {
     'use strict';
 
@@ -16,6 +50,8 @@ if (!_pie) var _pie = {};
 
     _cfg.defaultIconSm = 'http://files.jieminuoketang.com/1/aaw6vsns2i5k/src/defaultIcon128.png';
     _cfg.defaultIconLg = 'http://rtfiles.jieminuoketang.com/1/aaw6vsns2i5k/src/defaultIcon512.png';
+    _cfg.defaultAvatarSm = 'http://files.jieminuoketang.com/1/aaw6vsns2i5k/src/defaultIcon128.png';
+    _cfg.defaultAvatarLg = 'http://rtfiles.jieminuoketang.com/1/aaw6vsns2i5k/src/defaultIcon512.png';
 
 
     //七牛文件上传接口设定
@@ -43,6 +79,9 @@ if (!_pie) var _pie = {};
         ukey: /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/, //user.ukey的格式
         appName: /^[a-zA-Z]+[0-9a-zA-Z]{2,31}$/, //app名称格式，非数字开头3~32位
         appAlias: /^[a-zA-Z\u0391-\uFFE5]+[0-9a-zA-Z\u0391-\uFFE5]{2,17}$/, //app别名，非数字开头3~18位
+        appDesc: /^[\s\S]{0,60}$/, //app描述，任意字符，0～60
+        wildDogAppSecret: /^[0-9a-zA-Z]{8,64}$/, //野狗APP密匙，宽泛限制
+        hash: /^[0-9a-zA-Z]{8,64}$/, //哈希字符，宽泛限制
         fileName: /^[0-9a-zA-Z\u0391-\uFFE5]+\.(js|css|html|json|txt)$/, //文件名，中英文数字加点加2~4位字母数字
         folderName: /^[0-9a-zA-Z\u0391-\uFFE5]{1,32}$/, //文件名，中英文数字1~32位字母数字
     };
@@ -97,7 +136,6 @@ if (!_pie) var _pie = {};
                 'index.html': 'http://www.jieminuoketang.com/pie/templates/angular/index.html',
                 'index.css': 'http://www.jieminuoketang.com/pie/templates/angular/index.css',
                 'index.js': 'http://www.jieminuoketang.com/pie/templates/angular/index.js',
-                'info.json': 'http://www.jieminuoketang.com/pie/templates/angular/info.json',
             },
         },
         min: {
@@ -109,6 +147,48 @@ if (!_pie) var _pie = {};
             },
         },
     };
+
+
+
+    //mongo数据库图式设置
+    (function forMongoose() {
+        //用户行为历史类型
+        _cfg.mgHisType = _fns.biMap({
+            unkown: 0,
+            login: 1,
+            logout: 2,
+            createApp: 3,
+            deleteApp: 4,
+            updateApp: 5,
+            renameApp: 6,
+            setApp: 7,
+            setExt: 8,
+            shareApp: 9,
+            createFile: 10,
+            uploadFile: 11,
+            createFolder: 12
+        });
+
+
+        //行为目标类型
+        _cfg.mgTarType = _fns.biMap({
+            unkown: 0,
+            user: 1,
+            app: 2,
+        });
+
+
+
+        //用户信息状态类型
+        _cfg.mgMsgState = _fns.biMap({
+            unknow: 0,
+            accept: 1,
+            reject: 2,
+        });
+
+
+
+    })();
 
 
 
@@ -136,13 +216,11 @@ if (!_pie) var _pie = {};
     //设置获取ctrlr路径方法
     _fns.getCtrlrUrl = function (ctrlrname, ext) {
         if (!ext) ext = '.html';
-
-        var url = ctrlrname;
-        if (/^http:/.test(ctrlrname) == false) {
-            url = _cfg.home + 'controllers/' + ctrlrname + ext;
+        if (/^http:/.test(ctrlrname)) {
+            return ctrlrname;
+        } else {
+            return _cfg.home + 'controllers/' + ctrlrname + ext;
         }
-        console.log('>>>>changetourl', url);
-        return url;
     };
 
     //设置获取dialog路径方法
@@ -320,6 +398,10 @@ if (!_pie) var _pie = {};
         };
         return res;
     };
+
+
+
+
 
     /*重新应用scope
      */
@@ -561,9 +643,10 @@ if (!_pie) var _pie = {};
      * @param   {function} completefn 上传完成执行的函数,fn(f,xhr,status),标准xhr参数
      * @param   {string} domain     上传到指定的bucket，默认http://pubfiles.10knet.com/
      * @param   {boolean} multi     同时上传多个文件
+     * @param   {string} acceptstr     限定默认可以选择的文件类型
      * @returns {int} uploadId整数，指向一个数组包含所有文件的xhr，数组存放在_cfg.xhrs[uploadId]
      */
-    _fns.uploadFile2 = function (btnjo, beforefn, progressfn, successfn, abortfn, errorfn, completefn, domain, multi) {
+    _fns.uploadFile2 = function (btnjo, beforefn, progressfn, successfn, abortfn, errorfn, completefn, domain, multi, acceptstr) {
         if (!btnjo) {
             __errhdlr(new Error('_fns.uploadFile:button undefined.'));
             return;
@@ -579,6 +662,7 @@ if (!_pie) var _pie = {};
         filejo.remove();
         filejo = $('<input id="uploadFileInput" type="file" style="display:none"></input>').appendTo(btnjo);
         if (multi) filejo.attr('multiple', "multiple");
+        if (acceptstr) filejo.attr('accept', acceptstr);
         btnjo.after(filejo);
 
 
@@ -777,117 +861,168 @@ if (!_pie) var _pie = {};
     };
 
 
+
+    /*把一个对象转化为数组{key1:val1,key2:val2,...} =>[val1,val2,...]
+     * 使用usekv保留原有属性转为[{key:xx,val:xx},...],默认为假
+     */
+    _fns.obj2arr = function (obj, usekv) {
+        var arr = [];
+        for (var attr in obj) {
+            if (!usekv) {
+                arr.push(obj[attr]);
+            } else {
+                arr.push({
+                    key: attr,
+                    val: obj[attr]
+                });
+            }
+        };
+        return arr;
+    };
+
+
+
+    /**
+     * 将一个数组转化为对象
+     * @param   {array}   arr    需要转换的数组
+     * @param   {boolean} keyval 是否是[key,val,key,val]模式,默认为真,keyobj转换为'key':{'key':key,'val':val}
+     * @returns {Object}   转换结果，可能是空对象
+     */
+
+    _fns.arr2obj = function (arr, keyval, keyobj) {
+        if (keyval === undefined) keyval = true;
+        var res = {};
+        if (!arr || !Array.isArray(arr)) return res;
+        if (!keyval) {
+            for (var i = 0; i < arr.length; i++) {
+                res[String(i)] = arr[i];
+            };
+        } else {
+            for (var i = 0; i < arr.length; i += 2) {
+                if ((i + 1) < arr.length) {
+                    if (keyobj) {
+                        res[String(arr[i])] = {
+                            key: String(arr[i]),
+                            val: arr[i + 1]
+                        };
+                    } else {
+                        res[String(arr[i])] = arr[i + 1];
+                    }
+                };
+            };
+        };
+        return res;
+    }
+
+
+
+    /**
+     * 通过属性值获取对象的属性名
+     * @param   {Object} obj 对象
+     * @param   {Object} val 值value
+     * @returns {String} 属性名
+     */
+    _fns.getKeyByVal = function (obj, val) {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+                if (obj[prop] === val)
+                    return prop;
+            };
+        };
+    };
+
+
+    /**
+     * 反转kvmap成vkmap
+     * @param   {object} obj 原对象
+     * @returns {object} 反转后的对象
+     */
+    _fns.reverseMap = function (obj) {
+        var res = {};
+        for (var key in obj) {
+            var val = obj[key];
+            var sval = String(val);
+            if (val && sval && sval != '') {
+                res[sval] = key;
+            };
+        };
+
+        return res;
+    };
+
+
+
+
+    //拼合分享链接
+    _fns.buildShareurl = function (shareto, title, url, pic) {
+        if (!title) title = "我在杰米诺课堂学习编程啦，你也来吧！";
+        if (!url == undefined) url = "http://www.jieminuoketang.com";
+
+        var strp = "title=" + title + "&url=" + url + "&pic=" + pic;
+        var res;
+        switch (shareto) {
+            case 'qq':
+                res = "http://connect.qq.com/widget/shareqq/index.html?" + strp;
+                break;
+            case 'qzone':
+                res = "http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?" + strp + "&summary=我在杰米诺课堂学习编程啦，你也来吧！";
+                break;
+            case 'weibo':
+                res = "http://service.weibo.com/share/share.php?" + strp;
+                break;
+        };
+
+        return str;
+    };
+
+
+    //监测文件是否存在
+    _fns.checkFileExist = function (url) {
+        var http = new XMLHttpRequest();
+        http.open('HEAD', url, false);
+        http.send();
+        return http.status != 404;
+    };
+
+    //获取app的icon函数：尝试链接是否404,自动设置到fileinfo.icon
+    _fns.getAppIcon = function (scope, appinfo, uselg) {
+        //尝试读取图标文件
+        var iconurlbase = _cfg.qn.BucketDomain + appinfo.uid + '/' + appinfo.name + '/icon.png-avatar128?_=';
+        if (uselg) iconurlbase = _cfg.qn.BucketDomain + appinfo.uid + '/' + appinfo.name + '/icon.png-avatar512?_=';
+
+        var exist = _fns.checkFileExist(iconurlbase);
+        if (exist) {
+            appinfo.icon = iconurlbase + (new Date()).getTime();
+        } else {
+            if (uselg) {
+                appinfo.icon = _cfg.defaultIconSm;
+            } else {
+                appinfo.icon = _cfg.defaultIconLg;
+            }
+        }
+    };
+
+
+
+
+
+
     /*自动运行的函数*/
     _fns.autoStartPage();
+
+
+
+
+
+
 
     //end
 })();
 
 
-/*把一个对象转化为数组{key1:val1,key2:val2,...} =>[val1,val2,...]
- * 使用usekv保留原有属性转为[{key:xx,val:xx},...],默认为假
- */
-_fns.obj2arr = function (obj, usekv) {
-    var arr = [];
-    for (var attr in obj) {
-        if (!usekv) {
-            arr.push(obj[attr]);
-        } else {
-            arr.push({
-                key: attr,
-                val: obj[attr]
-            });
-        }
-    };
-    return arr;
-};
-
-
-
-/**
- * 将一个数组转化为对象
- * @param   {array}   arr    需要转换的数组
- * @param   {boolean} keyval 是否是[key,val,key,val]模式,默认为真,keyobj转换为'key':{'key':key,'val':val}
- * @returns {Object}   转换结果，可能是空对象
- */
-
-_fns.arr2obj = function (arr, keyval, keyobj) {
-    if (keyval === undefined) keyval = true;
-    var res = {};
-    if (!arr || !Array.isArray(arr)) return res;
-    if (!keyval) {
-        for (var i = 0; i < arr.length; i++) {
-            res[String(i)] = arr[i];
-        };
-    } else {
-        for (var i = 0; i < arr.length; i += 2) {
-            if ((i + 1) < arr.length) {
-                if (keyobj) {
-                    res[String(arr[i])] = {
-                        key: String(arr[i]),
-                        val: arr[i + 1]
-                    };
-                } else {
-                    res[String(arr[i])] = arr[i + 1];
-                }
-            };
-        };
-    };
-    return res;
-}
-
-
-
-
-
-
-
-//拼合分享链接
-_fns.buildShareurl = function (shareto, title, url, pic) {
-    if (!title) title = "我在杰米诺课堂学习编程啦，你也来吧！";
-    if (!url == undefined) url = "http://www.jieminuoketang.com";
-
-    var strp = "title=" + title + "&url=" + url + "&pic=" + pic;
-    var res;
-    switch (shareto) {
-        case 'qq':
-            res = "http://connect.qq.com/widget/shareqq/index.html?" + strp;
-            break;
-        case 'qzone':
-            res = "http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?" + strp + "&summary=我在杰米诺课堂学习编程啦，你也来吧！";
-            break;
-        case 'weibo':
-            res = "http://service.weibo.com/share/share.php?" + strp;
-            break;
-    };
-
-    return str;
-};
-
-
-
-//获取app的icon函数：尝试链接是否404,自动设置到fileinfo.icon
-_fns.getAppIcon = function (scope, appinfo, uselg) {
-    //尝试读取图标文件
-    var iconurlbase = _cfg.qn.BucketDomain + appinfo.uid + '/' + appinfo.name + '/icon.png-avatar128?_=';
-    if (uselg) iconurlbase = _cfg.qn.BucketDomain + appinfo.uid + '/' + appinfo.name + '/icon.png-avatar512?_=';
-
-    var xhr = $.get(iconurlbase + (new Date()).getTime(), function () {
-        _fns.applyScope(scope, function () {
-            appinfo.icon = iconurlbase + (new Date()).getTime();
-        });
-    }).error(function () {
-        if (xhr.status == '404') {
-            _fns.applyScope(scope, function () {
-                if (uselg) {
-                    appinfo.icon = _cfg.defaultIconSm;
-                } else {
-                    appinfo.icon = _cfg.defaultIconLg;
-                }
-            });
-        }
-    });
-};
+console.log('>>>>_cfg.mgTarType', _cfg.mgTarType);
+var ss = _fns.getKeyByVal(_cfg.mgMsgState, 2);
+console.log('>>>>getKeyByVal=reject', ss);
 
 
 

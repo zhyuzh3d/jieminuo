@@ -51,15 +51,20 @@ _cfg.dur = {
         login: 1,
         logout: 2,
         createApp: 3,
-        deleteApp: 4,
+        removeApp: 4,
         updateApp: 5,
         renameApp: 6,
         setApp: 7,
-        setExt: 8,
+        setAppExt: 8,
         shareApp: 9,
         createFile: 10,
         uploadFile: 11,
-        createFolder: 12
+        createFolder: 12,
+        favorApp: 13,
+        unFavorApp:14,
+        addAppToLadder:15,
+        likeApp:16,
+        saveMyCfg:17,
     };
 
     //行为目标类型

@@ -533,25 +533,26 @@
                 console.log('POST', api, dat, res);
             });
         };
-        $scope.test();
+        //$scope.test();
 
         $scope.test2 = function () {
             var api = _global.api('pie_getAppHis');
             var dat = {
-                appId: 366,
+                appId: 332,
                 start: 0,
-                count: 3,
+                count: 50,
             };
             $.post(api, dat, function (res) {
                 console.log('POST', api, dat, res);
 
+                for (var i = 0; i < res.data.length; i++) {
+                    var his = res.data[i];
+                    var type = _cfg.mgHisType[his.type];
+                    console.log('>>his', his.type, his.created_at, type);
+                };
             });
         };
         $scope.test2();
-
-
-
-
 
 
 

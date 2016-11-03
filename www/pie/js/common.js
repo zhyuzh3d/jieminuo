@@ -7,6 +7,40 @@ if (!_fns) var _fns = {}; //最高全局变量，公用函数
 if (!_xdat) var _xdat = {}; //共享变量
 if (!_pie) var _pie = {};
 
+//设置时候需要使用的biMap双向属性函数
+(function () {
+    /**
+     * 生成双向绑定的map对象，kv属性正反都有,如果k和v有重复那么将导致不希望的返回对象
+     * 仅适用于单层的简单数据keyval对
+     * @param   {Object} obj       原对象
+     * @param   {String} container 容器属性名，为了避免kv重复可以把反转的vk放到这个属性里面
+     * @returns {Object} 包含双向属性的对象
+     */
+    _fns.biMap = function (obj, container) {
+        var res = {};
+        if (container && String(container)) {
+            res[container] = {};
+        };
+
+        for (var key in obj) {
+            var val = obj[key];
+
+            res[key] = val;
+            var sval = String(val);
+            if (val && sval && sval != '') {
+                if (res[container]) {
+                    res[container][sval] = key;
+                } else {
+                    res[sval] = key;
+                }
+            };
+        };
+        return res;
+    };
+})();
+
+
+
 (function () {
     'use strict';
 
@@ -119,35 +153,67 @@ if (!_pie) var _pie = {};
     //mongo数据库图式设置
     (function forMongoose() {
         //用户行为历史类型
-        _cfg.mgHisType = {
+        _cfg.mgHisType = _fns.biMap({
             unkown: 0,
             login: 1,
             logout: 2,
             createApp: 3,
-            deleteApp: 4,
+            removeApp: 4,
             updateApp: 5,
             renameApp: 6,
             setApp: 7,
-            setExt: 8,
+            setAppExt: 8,
             shareApp: 9,
             createFile: 10,
             uploadFile: 11,
-            createFolder: 12
-        };
+            createFolder: 12,
+            favorApp: 13,
+            unFavorApp: 14,
+            addAppToLadder: 15,
+            likeApp: 16,
+            saveMyCfg: 17,
+        });
+
+        _cfg.mgHisTypeName = _fns.biMap({
+            '0':'未知操作',
+            '1':'登录',
+            '2':'退出',
+            '3':'创建APP',
+            '4':'移除APP',
+            '5':'更新APP',
+            '6':'重命名APP',
+            '7':'设置APP',
+            '8':'设置APP扩展信息',
+            '9':'分享APP',
+            '10':'新建文件',
+            '11':'上传文件',
+            '12':'新建文件夹',
+            '13':'收藏APP',
+            '14':'取消APP收藏',
+            '15':'将APP加入排行榜',
+            '16':'点赞APP',
+            '17':'设置编辑器偏好',
+        });
+
 
         //行为目标类型
-        _cfg.mgTarType = {
+        _cfg.mgTarType = _fns.biMap({
             unkown: 0,
             user: 1,
             app: 2,
-        };
+        });
+
+
 
         //用户信息状态类型
-        _cfg.mgMsgState = {
+        _cfg.mgMsgState = _fns.biMap({
             unknow: 0,
             accept: 1,
             reject: 2,
-        };
+        });
+
+
+
     })();
 
 
@@ -358,6 +424,10 @@ if (!_pie) var _pie = {};
         };
         return res;
     };
+
+
+
+
 
     /*重新应用scope
      */
@@ -817,120 +887,163 @@ if (!_pie) var _pie = {};
     };
 
 
-    /*自动运行的函数*/
-    _fns.autoStartPage();
 
-    //end
-})();
-
-
-/*把一个对象转化为数组{key1:val1,key2:val2,...} =>[val1,val2,...]
- * 使用usekv保留原有属性转为[{key:xx,val:xx},...],默认为假
- */
-_fns.obj2arr = function (obj, usekv) {
-    var arr = [];
-    for (var attr in obj) {
-        if (!usekv) {
-            arr.push(obj[attr]);
-        } else {
-            arr.push({
-                key: attr,
-                val: obj[attr]
-            });
-        }
-    };
-    return arr;
-};
-
-
-
-/**
- * 将一个数组转化为对象
- * @param   {array}   arr    需要转换的数组
- * @param   {boolean} keyval 是否是[key,val,key,val]模式,默认为真,keyobj转换为'key':{'key':key,'val':val}
- * @returns {Object}   转换结果，可能是空对象
- */
-
-_fns.arr2obj = function (arr, keyval, keyobj) {
-    if (keyval === undefined) keyval = true;
-    var res = {};
-    if (!arr || !Array.isArray(arr)) return res;
-    if (!keyval) {
-        for (var i = 0; i < arr.length; i++) {
-            res[String(i)] = arr[i];
+    /*把一个对象转化为数组{key1:val1,key2:val2,...} =>[val1,val2,...]
+     * 使用usekv保留原有属性转为[{key:xx,val:xx},...],默认为假
+     */
+    _fns.obj2arr = function (obj, usekv) {
+        var arr = [];
+        for (var attr in obj) {
+            if (!usekv) {
+                arr.push(obj[attr]);
+            } else {
+                arr.push({
+                    key: attr,
+                    val: obj[attr]
+                });
+            }
         };
-    } else {
-        for (var i = 0; i < arr.length; i += 2) {
-            if ((i + 1) < arr.length) {
-                if (keyobj) {
-                    res[String(arr[i])] = {
-                        key: String(arr[i]),
-                        val: arr[i + 1]
-                    };
-                } else {
-                    res[String(arr[i])] = arr[i + 1];
-                }
+        return arr;
+    };
+
+
+
+    /**
+     * 将一个数组转化为对象
+     * @param   {array}   arr    需要转换的数组
+     * @param   {boolean} keyval 是否是[key,val,key,val]模式,默认为真,keyobj转换为'key':{'key':key,'val':val}
+     * @returns {Object}   转换结果，可能是空对象
+     */
+
+    _fns.arr2obj = function (arr, keyval, keyobj) {
+        if (keyval === undefined) keyval = true;
+        var res = {};
+        if (!arr || !Array.isArray(arr)) return res;
+        if (!keyval) {
+            for (var i = 0; i < arr.length; i++) {
+                res[String(i)] = arr[i];
+            };
+        } else {
+            for (var i = 0; i < arr.length; i += 2) {
+                if ((i + 1) < arr.length) {
+                    if (keyobj) {
+                        res[String(arr[i])] = {
+                            key: String(arr[i]),
+                            val: arr[i + 1]
+                        };
+                    } else {
+                        res[String(arr[i])] = arr[i + 1];
+                    }
+                };
+            };
+        };
+        return res;
+    }
+
+
+
+    /**
+     * 通过属性值获取对象的属性名
+     * @param   {Object} obj 对象
+     * @param   {Object} val 值value
+     * @returns {String} 属性名
+     */
+    _fns.getKeyByVal = function (obj, val) {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+                if (obj[prop] === val)
+                    return prop;
             };
         };
     };
-    return res;
-}
 
 
+    /**
+     * 反转kvmap成vkmap
+     * @param   {object} obj 原对象
+     * @returns {object} 反转后的对象
+     */
+    _fns.reverseMap = function (obj) {
+        var res = {};
+        for (var key in obj) {
+            var val = obj[key];
+            var sval = String(val);
+            if (val && sval && sval != '') {
+                res[sval] = key;
+            };
+        };
 
-
-
-
-
-//拼合分享链接
-_fns.buildShareurl = function (shareto, title, url, pic) {
-    if (!title) title = "我在杰米诺课堂学习编程啦，你也来吧！";
-    if (!url == undefined) url = "http://www.jieminuoketang.com";
-
-    var strp = "title=" + title + "&url=" + url + "&pic=" + pic;
-    var res;
-    switch (shareto) {
-        case 'qq':
-            res = "http://connect.qq.com/widget/shareqq/index.html?" + strp;
-            break;
-        case 'qzone':
-            res = "http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?" + strp + "&summary=我在杰米诺课堂学习编程啦，你也来吧！";
-            break;
-        case 'weibo':
-            res = "http://service.weibo.com/share/share.php?" + strp;
-            break;
+        return res;
     };
 
-    return str;
-};
 
 
-//监测文件是否存在
-_fns.checkFileExist = function (url) {
-    var http = new XMLHttpRequest();
-    http.open('HEAD', url, false);
-    http.send();
-    return http.status != 404;
-};
 
-//获取app的icon函数：尝试链接是否404,自动设置到fileinfo.icon
-_fns.getAppIcon = function (scope, appinfo, uselg) {
-    //尝试读取图标文件
-    var iconurlbase = _cfg.qn.BucketDomain + appinfo.uid + '/' + appinfo.name + '/icon.png-avatar128?_=';
-    if (uselg) iconurlbase = _cfg.qn.BucketDomain + appinfo.uid + '/' + appinfo.name + '/icon.png-avatar512?_=';
+    //拼合分享链接
+    _fns.buildShareurl = function (shareto, title, url, pic) {
+        if (!title) title = "我在杰米诺课堂学习编程啦，你也来吧！";
+        if (!url == undefined) url = "http://www.jieminuoketang.com";
 
-    var exist = _fns.checkFileExist(iconurlbase);
-    if (exist) {
-        appinfo.icon = iconurlbase + (new Date()).getTime();
-    } else {
-        if (uselg) {
-            appinfo.icon = _cfg.defaultIconSm;
+        var strp = "title=" + title + "&url=" + url + "&pic=" + pic;
+        var res;
+        switch (shareto) {
+            case 'qq':
+                res = "http://connect.qq.com/widget/shareqq/index.html?" + strp;
+                break;
+            case 'qzone':
+                res = "http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?" + strp + "&summary=我在杰米诺课堂学习编程啦，你也来吧！";
+                break;
+            case 'weibo':
+                res = "http://service.weibo.com/share/share.php?" + strp;
+                break;
+        };
+
+        return str;
+    };
+
+
+    //监测文件是否存在
+    _fns.checkFileExist = function (url) {
+        var http = new XMLHttpRequest();
+        http.open('HEAD', url, false);
+        http.send();
+        return http.status != 404;
+    };
+
+    //获取app的icon函数：尝试链接是否404,自动设置到fileinfo.icon
+    _fns.getAppIcon = function (scope, appinfo, uselg) {
+        //尝试读取图标文件
+        var iconurlbase = _cfg.qn.BucketDomain + appinfo.uid + '/' + appinfo.name + '/icon.png-avatar128?_=';
+        if (uselg) iconurlbase = _cfg.qn.BucketDomain + appinfo.uid + '/' + appinfo.name + '/icon.png-avatar512?_=';
+
+        var exist = _fns.checkFileExist(iconurlbase);
+        if (exist) {
+            appinfo.icon = iconurlbase + (new Date()).getTime();
         } else {
-            appinfo.icon = _cfg.defaultIconLg;
+            if (uselg) {
+                appinfo.icon = _cfg.defaultIconSm;
+            } else {
+                appinfo.icon = _cfg.defaultIconLg;
+            }
         }
-    }
-};
+    };
 
+
+
+
+
+
+    /*自动运行的函数*/
+    _fns.autoStartPage();
+
+
+
+
+
+
+
+    //end
+})();
 
 
 
