@@ -94,6 +94,15 @@ function __md5(str, dig) {
     return $crypto.createHash('md5').update(str).digest(dig)
 };
 
+/**
+ * 检查是否是日期格式数据
+ * @param   {object} o 被检查对象
+ * @returns {boolean}   是否
+ */
+_fns.isDate = function (o) {
+    return {}.toString.call(o) === "[object Date]" && o.toString() !== 'Invalid Date' && !isNaN(o);
+};
+
 
 /*sha1加密
 如果str为空，自动生成一个uuid

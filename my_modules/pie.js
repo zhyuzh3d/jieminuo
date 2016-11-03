@@ -60,6 +60,10 @@ _rotr.apis.pie_createApp = function () {
         for (var attr in dat) {
             mu.hset(appKey, attr, dat[attr]);
         };
+
+        //增加usr-uid.appTotal字段
+        mu.hincrby(_rds.k.usr(uid), 'appCreated', 1);
+
         mu.zadd(usrAppsKey, appId, appName);
 
         var res = yield _ctnu([mu, 'exec']);
@@ -792,6 +796,16 @@ _rotr.apis.pie_setAppUpdate = function () {
             param: param,
         });
 
+        //如果是codeApp动作，提取编码数量length与动作值changes，
+        //增加到rds的usr-uid.codeLength和codeChanges
+        if (type == _cfg.mgHisType.codeApp && param) {
+            if (param.length && param.changes) {
+                var ukey = _rds.k.usr(uid);
+                _rds.cli.hincrby(ukey, 'codeLength', param.length);
+                _rds.cli.hincrby(ukey, 'codeChanges', param.changes);
+            };
+        };
+
         //返回数据
         ctx.body = __newMsg(1, 'ok');
         return ctx;
@@ -835,6 +849,61 @@ _rotr.apis.pie_getAppHis = function () {
             tarId: Number(appId),
             tarType: _cfg.mgTarType.app,
         }).sort('-created_at').skip(Number(start)).limit(Number(count)).exec();
+
+        //返回数据
+        ctx.body = __newMsg(1, 'ok', res);
+        return ctx;
+    });
+    return co;
+};
+
+
+
+/**
+ * 获取我的编码历史统计信息
+ * @param   {date} begin 开始时间,默认七天前
+ * @param   {date} end 开始时间，默认为现在
+ * @param   {number} appid 开始时间，默认为七天之前
+ * @returns {array}    所有code
+ */
+_rotr.apis.pie_getMyCodeHis = function () {
+    var ctx = this;
+
+    var co = $co(function* () {
+
+        var uid = yield _fns.getUidByCtx(ctx);
+
+
+        var begin = ctx.query.begin || ctx.request.body.begin;
+        begin = new Date(begin);
+        if (!_fns.isDate(begin)) {
+            begin = new Date();
+        };
+        begin = new Date(begin - _cfg.dur.day * 7);
+
+        var end = ctx.query.end || ctx.request.body.end;
+        end = new Date(end);
+        if (!_fns.isDate(end)) {
+            end = new Date();
+        };
+
+        //查询条件
+        var query = {
+            uid: Number(uid),
+            type: _cfg.mgHisType.codeApp,
+            created_at: {
+                $gte: begin,
+                $lt: end
+            },
+        };
+        var appId = ctx.query.appId || ctx.request.body.appId;
+        if (appId) query.param = {
+            tarId: appId,
+            tarType: _cfg.mgTarType.app,
+        };
+
+        //从mongo读取记录
+        var res = yield _mngs.models.his.find(query).sort('-created_at').exec();
 
         //返回数据
         ctx.body = __newMsg(1, 'ok', res);

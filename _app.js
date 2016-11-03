@@ -22,6 +22,7 @@ var $sktio = global.$sktio = require('socket.io');
 var $scaptcha = global.$scaptcha = require('svg-captcha');
 var $qiniu = global.$qiniu = require('qiniu');
 var $jwt = global.$jwt = require('jwt-simple');
+//var $moment = global.$moment = require('moment');
 //var $cors = global.$cors = require('koa-cors');
 
 //自定义库引入

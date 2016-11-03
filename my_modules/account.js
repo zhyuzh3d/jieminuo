@@ -292,7 +292,9 @@ _account.acc_getUsrInfoCo = function (uid) {
             nick: dbusr.nick,
             color: dbusr.color,
             icon: dbusr.icon,
-            avatar: dbusr.avatar
+            avatar: dbusr.avatar,
+            codeChanges: dbusr.codeChanges,
+            codeLength: dbusr.codeLength,
         }
 
         return res;

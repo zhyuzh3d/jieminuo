@@ -41,6 +41,7 @@ _cfg.dur = {
     phoneCode: 300, //手机验证号码过期时间5分钟
     browserUkey: 365 * 24 * 60 * 60 * 1000, //浏览器端m_ukey存放1年
     month: 1000 * 3600 * 24 * 30, //月，30天
+    day: 1000 * 3600 * 24, //月，30天
 };
 
 
@@ -61,10 +62,11 @@ _cfg.dur = {
         uploadFile: 11,
         createFolder: 12,
         favorApp: 13,
-        unFavorApp:14,
-        addAppToLadder:15,
-        likeApp:16,
-        saveMyCfg:17,
+        unFavorApp: 14,
+        addAppToLadder: 15,
+        likeApp: 16,
+        saveMyCfg: 17,
+        codeApp: 18,
     };
 
     //行为目标类型

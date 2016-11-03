@@ -646,6 +646,26 @@
 
 
 
+        /**
+         * 保存编辑器设置历史
+         * @param {String} key 保存哪个属性
+         * @param {Object} val 属性值
+         */
+        $scope.addConfigHis = function (key, val) {
+            var api = _global.api('pie_setAppUpdate');
+            var dat = {
+                appId: $scope.curApp.id,
+                type: _cfg.mgHisType.saveMyCfg,
+            };
+
+            if (key && key.constructor == String) dat.param[key] = val;
+
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
+            });
+        };
+
+
         //换行开关
         $scope.setWrap = function (res, unsave) {
             if (res === undefined) res = $scope.cmOpt.lineWrapping ? false : true;
@@ -805,6 +825,7 @@
                     editor.focus(); //focus，避免使用自动提示后移动端键盘折叠
                 }, 500);
                 $scope.editorChanged = true;
+                $scope.editorFile.changes += 1;
             });
 
         };
@@ -837,11 +858,6 @@
                 $scope.cmEditor.focus();
             }
         };
-
-
-
-
-
 
 
 
@@ -898,7 +914,6 @@
             _fns.applyScope($scope, function () {
                 if (show !== undefined) $scope.showSaveConfirm = show;
             });
-            console.log('>>>curapp', $scope.curApp);
             if (unsave !== true) $scope.saveConfig('showSaveConfirm', $scope.showSaveConfirm);
         };
 
@@ -990,7 +1005,11 @@
                         ext: fext,
                         name: fname,
                         data: res,
+                        changes: 0, //更改次数
                     };
+
+                    //记录初始化文件长度
+                    fobj.initSize = fobj.data.length;
 
                     //同步当前编辑器和预览数据,避免打开新文件后实时预览异常
                     if ($scope.editorFile.key == $scope.previewRtHtmlFile.key) {
@@ -1207,7 +1226,32 @@
                 );
                 refreshFile(fkey);
             });
+
+            $scope.addCodeAppHis();
         };
+
+
+        //记录历史，相对于载入时变化的有效代码。（请不要试图作弊，被后台验证失败将导致异常结果）
+        $scope.addCodeAppHis = function () {
+            var api = _global.api('pie_setAppUpdate');
+            var dat = {
+                appId: $scope.curApp.id,
+                type: _cfg.mgHisType.codeApp,
+                param: {
+                    url: $scope.editorFile.url,
+                },
+            };
+            dat.param.length = $scope.editorFile.data.length - $scope.editorFile.initSize;
+            $scope.editorFile.initSize = $scope.editorFile.data.length;
+
+            dat.param.changes = $scope.editorFile.changes;
+            $scope.editorFile.changes = 0;
+
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
+            });
+        };
+
 
         //专为实时文件地址rtfiles
         $scope.toRtfilesUrl = function (url) {
