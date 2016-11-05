@@ -358,7 +358,13 @@
             var blob = new Blob(['Hello pie!'], {
                 type: mime
             });
-            var xhr = _fns.uploadFileQn(fname, blob, function (arg1, arg2, arg3) {
+            var xhr = _fns.uploadFileQn(fname, blob, null, function (arg1, arg2, arg3) {
+
+                $scope.addUpdateAppHis($scope.curApp.id, _cfg.mgHisType.createFile, {
+                    key: arg1.key,
+                    type: arg1.type,
+                });
+
                 //成功提示
                 $mdToast.show(
                     $mdToast.simple()
@@ -459,6 +465,10 @@
             $.post(api, dat, function (res) {
                 console.log('POST', api, dat, res);
                 if (res.code == 1) {
+                    $scope.addUpdateAppHis($scope.curApp.id, _cfg.mgHisType.removeFile, {
+                        key: fpath
+                    });
+
                     $mdToast.show(
                         $mdToast.simple()
                         .textContent('删除成功！')
@@ -664,6 +674,27 @@
                 console.log('POST', api, dat, res);
             });
         };
+
+        /**
+         * 保存编辑器设置历史
+         * @param {Number} appId app的id
+         * @param {Number} type  动作类型
+         * @param {object} param 动作参数
+         */
+        $scope.addUpdateAppHis = function (appId, type, param) {
+            var api = _global.api('pie_setAppUpdate');
+            var dat = {
+                appId: $scope.curApp.id,
+                type: type,
+            };
+            if (param) dat.param = param;
+
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
+            });
+        };
+
+
 
 
         //换行开关
@@ -996,6 +1027,9 @@
 
             $.get(urlp, function (res) {
                 console.log('GET', urlp, null, String(res).substr(0, 25));
+                $scope.addUpdateAppHis($scope.curApp.id, _cfg.mgHisType.openFile, {
+                    url: urlp
+                });
 
                 _fns.applyScope($scope, function () {
 

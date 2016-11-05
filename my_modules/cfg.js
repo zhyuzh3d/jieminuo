@@ -66,7 +66,9 @@ _cfg.dur = {
         addAppToLadder: 15,
         likeApp: 16,
         saveMyCfg: 17,
-        codeApp: 18,
+        codeApp: 18, //保存app
+        openFile: 19,
+        removeFile: 20,
     };
 
     //行为目标类型

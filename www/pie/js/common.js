@@ -172,7 +172,9 @@ if (!_pie) var _pie = {};
             addAppToLadder: 15,
             likeApp: 16,
             saveMyCfg: 17,
-            codeApp: 18,
+            codeApp: 18, //保存app
+            openFile: 19,
+            removeFile: 20,
         });
 
         _cfg.mgHisTypeName = _fns.biMap({
@@ -195,6 +197,8 @@ if (!_pie) var _pie = {};
             '16': '点赞APP',
             '17': '设置编辑器偏好',
             '18': '编辑APP',
+            '19': '打开文件',
+            '20': '删除文件',
         });
 
 
@@ -226,7 +230,7 @@ if (!_pie) var _pie = {};
      * @param   {object} o 被检查对象
      * @returns {boolean}   是否
      */
-     _fns.isDate = function (o) {
+    _fns.isDate = function (o) {
         return {}.toString.call(o) === "[object Date]" && o.toString() !== 'Invalid Date' && !isNaN(o);
     };
 
