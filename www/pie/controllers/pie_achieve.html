@@ -23,6 +23,9 @@
                 <span class="fa fa-bars fa-lg" ng-hide='$root.leftMenuOpen'></span>
             </md-button>
 
+            <md-button class="md-raised md-accent" ng-click='shareAchieve()' aria-label='s' style='width:150px'>成就分享(开发中)</md-button>
+
+
             <div class="dropdown pull-right" ng-show='hasLogin' style="margin-top:8px">
                 <button class="dropdown-toggle" id="ddmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="background:none;border:none">
                     <span>
@@ -39,14 +42,26 @@
         </div>
 
         <!--        个人统计图表-->
-        <div style="padding:16px">
-            <div style="font-size:24px;width:100%;text-align:right">我的编码成就</div>
-            <div style="font-size:12px;width:100%;text-align:right">
-                <span>累计编写代码</span>
-                <span ng-bind='myUsrInfo.codeChanges'></span>
-                <span>字符</span>
+        <div id='resultBox' style="padding:16px">
+            <div style="background:#EEE;padding:12px">
+                <div style="font-size:18px;width:100%;">
+                    <span>累计编写代码</span>
+                    <span ng-bind='myUsrInfo.codeChanges'></span>
+                    <span>字符</span>
+                </div>
+                <div style="font-size:18px;width:100%;">
+                    <span>最近</span>
+                    <span ng-bind='chartTotal.days'></span>
+                    <span>天</span>
+                    <span ng-bind='chartTotal.times'></span>
+                    <span>次编码</span>
+                    <span ng-bind='chartTotal.changes'></span>
+                    <span>字符</span>
+                </div>
             </div>
-            <div id="codeHisChart" style="width:100%;height:480px;"></div>
+            <div id='codeHisChartBox' style="margin-top:24px">
+                <div id="codeHisChart" style="width:100%;height:480px;"></div>
+            </div>
         </div>
 
     </div>

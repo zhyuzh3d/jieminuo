@@ -1,0 +1,124 @@
+<!--杰米诺课堂代码派分享模版-->
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+    <meta charset="utf-8">
+    <title>代码派(内测)</title>
+    <meta name="description" content="入门级的App在线编辑部署工具,zhyuzh贡献">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="icon" type="image/png" href="http://files.jieminuoketang.com/1/aaw6vsns2i5k/src/JMN32B.png">
+
+    <!--    css样式-->
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script>
+        //百度统计
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?1e351cd79245c158ee413eed985ca2d4";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+
+    </script>
+</head>
+
+<body ng-controller='bodyCtrlr'>
+
+    <div class="container-fluid col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3" style="text-align:center">
+        <div style="margin-top:24px;color:#AAA;font-size:14px">
+            <div style='display:inline-block;height:32px;width:32px;border-radius:100px;background:#CCC;overflow:hidden;vertical-align: middle;'>
+                <img ng-show='data.user.avatar' ng-src='{{data.user.avatar?(data.user.avatar+"-avatar32"):""}}' style='height:100%' />
+            </div>
+            <span ng-bind='data.user.nick' style="color:#000" ng-show='data.user.nick'></span>
+            <span>从</span>
+            <a href="http://www.jieminuoketang.com" style="color:#ec407a">杰米诺课堂</a>
+            <span>向您分享了以下内容</span>
+        </div>
+
+        <h1>他向您分享了错误的内容</h1>
+        <h5><a href="http://www.jieminuoketang.com">请点击这里进入杰米诺课堂</a></h5>
+    </div>
+
+
+</body>
+<script src="//cdn.bootcss.com/angular.js/1.5.8/angular.min.js"></script>
+<script>
+    var _app = angular.module('app', []);
+    _app.controller('bodyCtrlr', function($scope) {
+        $scope.data = '##shareData##';
+        var _cfg = {};
+        _cfg.mgShareType = {
+            unknown: 0,
+            achieve: 1,
+            app: 2,
+        };
+
+        $scope.hasLiked = true;
+
+        //添加本地存储记录
+        if (localStorage) {
+            var hasvisited = localStorage['pie_share_url_visited' + location.href];
+            if (!hasvisited) {
+                localStorage['pie_share_url_visited' + location.href] == true;
+                //发送请求增加该地址的访问数
+                var api = 'http://www.jieminuoketang.com/api/pie_shareUrlVisite';
+                var dat = {
+                    uid: $scope.data.user ? $scope.data.user.id : 0,
+                    type: _cfg.mgShareType.achieve,
+                };
+                /*
+                $.post(api, dat, function(res) {
+                    console.log('POST', api, dat, res);
+                }, 'jsonp');
+                */
+            };
+
+            //点赞
+            $scope.like = function() {
+                var hasliked = localStorage['pie_share_url_liked' + location.href];
+                if (!hasliked) {
+                    if (!$scope.data.like) $scope.data.like = 0;
+                    $scope.data.like += 1;
+                    localStorage['pie_share_url_liked' + location.href] == true;
+                    //发送请求增加该地址的访问数
+                    var api = 'http://www.jieminuoketang.com/api/pie_shareUrlLike';
+                    var dat = {
+                        uid: $scope.data.user.id,
+                        type: _cfg.mgShareType.achieve,
+                    };
+                    /*
+                    $.post(api, dat, function(res) {
+                        console.log('POST', api, dat, res);
+                    }, 'jsonp');
+                    */
+                } else {
+                    $scope.hasLiked = true;
+                };
+            };
+        };
+    });
+
+</script>
+
+<script>
+    //百度索引
+    (function() {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+
+</script>
+
+</html>

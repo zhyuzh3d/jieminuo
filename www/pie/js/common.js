@@ -148,6 +148,14 @@ if (!_pie) var _pie = {};
         },
     };
 
+    //分享页面的模版
+    _cfg.shareTemplates = {
+        achieve: {
+            id: 1,
+            url: 'http://www.jieminuoketang.com/pie/templates/share/achieve.html'
+        },
+    };
+
 
 
     //mongo数据库图式设置
@@ -175,6 +183,8 @@ if (!_pie) var _pie = {};
             codeApp: 18, //保存app
             openFile: 19,
             removeFile: 20,
+            shareApp: 21,
+            shareAchieve: 22,
         });
 
         _cfg.mgHisTypeName = _fns.biMap({
@@ -199,6 +209,8 @@ if (!_pie) var _pie = {};
             '18': '编辑APP',
             '19': '打开文件',
             '20': '删除文件',
+            '21': '分享APP',
+            '22': '分享成就'
         });
 
 
@@ -219,8 +231,17 @@ if (!_pie) var _pie = {};
         });
 
 
+        //用户分享页面的类型
+        _cfg.mgShareType = {
+            unknown: 0,
+            achieve: 1,
+            app: 2,
+        };
+
 
     })();
+
+
 
 
 
@@ -990,6 +1011,41 @@ if (!_pie) var _pie = {};
         return res;
     };
 
+
+    /**
+     * 将由canvas获得的datauri转为可以用来直接上传的blob
+     * @param   {string}   dataURI 由toDataURL方法转化得到
+     * @returns {blob} 可以直接用来上传的blob数据
+     */
+    _fns.dataURItoBlob = function (dataURI) {
+        if (typeof dataURI !== 'string') {
+            throw new Error('Invalid argument: dataURI must be a string');
+        }
+        dataURI = dataURI.split(',');
+        var type = dataURI[0].split(':')[1].split(';')[0],
+            byteString = atob(dataURI[1]),
+            byteStringLength = byteString.length,
+            arrayBuffer = new ArrayBuffer(byteStringLength),
+            intArray = new Uint8Array(arrayBuffer);
+        for (var i = 0; i < byteStringLength; i++) {
+            intArray[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([intArray], {
+            type: type
+        });
+    };
+
+    /**
+     * 把canvas转为blob
+     * @param   {jqueryobj} canvasjo canvas对象
+     * @returns {blob} blob对象
+     */
+    _fns.canvasToBlob = function (canvasjo) {
+        if (canvasjo instanceof jQuery && canvasjo[0] && canvasjo[0].toDataURL) {
+            var datauri = canvasjo[0].toDataURL('image/png');
+            return _fns.dataURItoBlob(datauri);
+        };
+    };
 
 
 

@@ -69,6 +69,8 @@ _cfg.dur = {
         codeApp: 18, //保存app
         openFile: 19,
         removeFile: 20,
+        shareApp: 21,
+        shareAchieve: 22,
     };
 
     //行为目标类型
@@ -84,6 +86,14 @@ _cfg.dur = {
         accept: 1,
         reject: 2,
     };
+
+    //用户分享页面的类型
+    _cfg.mgShareType = {
+        unknown: 0,
+        achieve: 1,
+        app: 2,
+    };
+
 })();
 
 

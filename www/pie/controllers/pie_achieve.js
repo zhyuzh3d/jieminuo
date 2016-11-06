@@ -74,7 +74,19 @@
                 console.log('POST', api, dat, res);
                 if (res.code == 1) {
                     //填充到图表数据
-                    $scope.genCodeHisChart(res.data);
+                    _fns.applyScope($scope, function () {
+                        $scope.codeHisChart = $scope.genCodeHisChart(res.data);
+                    });
+
+                    //自动匹配图表大小，避免左侧栏拉出动画，多一个延迟匹配
+                    $(window).resize(function () {
+                        var wid = $('#codeHisChartBox').width() + 'px';
+                        if ($scope.codeHisChart) $scope.codeHisChart.resize(wid, '480px');
+                        setTimeout(function () {
+                            var wid = $('#codeHisChartBox').width() + 'px';
+                            if ($scope.codeHisChart) $scope.codeHisChart.resize(wid, '480px');
+                        }, 1000);
+                    });
                 } else {
                     $mdToast.show(
                         $mdToast.simple()
@@ -88,30 +100,61 @@
         };
 
 
+
         //生成图表
-        var days = [];
         $scope.genCodeHisChart = function (hisarr) {
-            var chartData = {};
-            //把数据按照appid规整
+            //统计总数
+            $scope.chartTotal = {
+                days: 0,
+                changes: 0,
+                length: 0,
+                times: 0,
+                apps: 0,
+            };
+
+            var days = [];
+            var chartData = {}; //chardata基本的散点图格式数据
+            var daysdata = {};
+            var now = new Date();
+
+            //把数据按照appid规整,分别加入图表数据
             for (var i = 0; i < hisarr.length; i++) {
                 var his = hisarr[i];
-
                 var date = new Date(his.created_at);
+                $scope.chartTotal.times += 1;
+
+                //chardata基本的散点图格式数据
                 if (_fns.isDate(date)) {
                     his.date = date;
-                    //his.date = moment(date).format('YY/MM/DD');
-                    his.time = date.getHours() * 60 + date.getMinutes();
+                    his.time = date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
                     if (days.indexOf(his.date) == -1) days.push(his.date);
+
+                    //计算每天编码总数
+                    var ymdstr = moment(date).format('YYYY-MM-DD');
+                    var ymdate = new Date(ymdstr + ' ' + moment(now).format('hh:mm:ss'));
+                    if (!daysdata[ymdstr]) daysdata[ymdstr] = {
+                        date: ymdate,
+                        name: ymdstr,
+                        length: 0,
+                        changes: 0
+                    };
+                    daysdata[ymdstr].changes += Number(his.param.changes);
+                    daysdata[ymdstr].length += Number(his.param.length);
+
+                    //叠加到总计
+                    $scope.chartTotal.changes += Number(his.param.changes);
+                    $scope.chartTotal.length += Number(his.param.length);
+
                 };
                 if (!chartData[his.tarId]) chartData[his.tarId] = [];
-                chartData[his.tarId].push([his.date, his.time, his.param.length, his.param.changes]);
+                chartData[his.tarId].push([his.date, his.time, his.param.changes, his.param.length]);
             };
 
 
-
+            //生成散点数据
             var itemStyle = {
                 normal: {
-                    opacity: 0.2,
+                    opacity: 0.25,
                     shadowBlur: 10,
                     shadowOffsetX: 0,
                     shadowOffsetY: 0,
@@ -124,12 +167,14 @@
                 var arr = chartData[attr];
                 legendData.push(attr);
 
+                $scope.chartTotal.apps += 1;
+
                 var ser = {
                     name: attr,
                     data: arr,
                     type: 'scatter',
-                    symbolSize: function (data) {
-                        var size = data[2] * 0.1;
+                    symbolSize: function (dt) {
+                        var size = dt[2] * 0.1;
                         if (size > 100) size = 100;
                         if (size < 1) size = 1;
                         return size;
@@ -138,16 +183,54 @@
                         emphasis: {
                             show: true,
                             formatter: function (item) {
-                                return item[3];
+                                return '编码' + item.value[2] + '字符';
                             },
                             position: 'top'
                         }
                     },
                     itemStyle: itemStyle,
+                    //stack:'编码数量每日分布'
                 }
 
                 data.push(ser);
             };
+
+            //生成折线数据
+            var linedata = {
+                name: '每日编码总计',
+                type: 'line',
+                smooth: true,
+                symbolSize: 10,
+                label: {
+                    emphasis: {
+                        show: true,
+                        formatter: function (params) {
+                            return params.data[2].substr(4) + '总计' + params.data[1].toFixed(0);
+                        },
+                        position: 'top'
+                    }
+                },
+                lineStyle: {
+                    normal: {
+                        color: '#00bfa5',
+                        width: 1,
+                    },
+                },
+                itemStyle: {
+                    normal: {
+                        color: '#00bfa5',
+                        borderWidth: 1,
+                    }
+                },
+                data: [],
+            };
+            for (var attr in daysdata) {
+                var dt = daysdata[attr];
+                $scope.chartTotal.days += 1;
+                //最多每秒输入一个字符
+                linedata.data.push([dt.date, dt.changes, dt.name, dt.length]);
+            };
+            data.push(linedata);
 
 
 
@@ -158,7 +241,14 @@
                 title: {
                     text: '最近7天编码成就分布图',
                 },
+                legend: {
+                    data: ['每日编码总计'],
+                    align: 'right',
+                    orient: 'vertical',
+                    left: 'right',
+                },
                 xAxis: {
+                    name: '日期',
                     type: 'time',
                     interval: 3600 * 1000 * 24,
                     min: new Date() - 3600 * 1000 * 24 * 7,
@@ -170,23 +260,24 @@
                     },
                     splitLine: {
                         lineStyle: {
-                            color: ['#EEE'],
+                            color: ['#DDD'],
                         }
                     },
                 },
                 yAxis: {
+                    name: '小时/每日累计',
                     type: 'value',
                     min: 0,
-                    max: 60 * 24,
-                    interval: 120,
+                    max: 60 * 60 * 24,
+                    interval: 3600 * 2,
                     axisLabel: {
                         formatter: function (val) {
-                            return Math.floor(val / 60) + ':00';
+                            return Math.floor(val / 3600);
                         }
                     },
                     splitLine: {
                         lineStyle: {
-                            color: '#FAFAFA',
+                            color: '#EEE',
                         }
                     },
                 },
@@ -195,7 +286,108 @@
 
             // 使用刚指定的配置项和数据显示图表。
             myChart.setOption(option);
+            return myChart;
         };
+
+
+        /**
+         * 分享成就图，把成就图截图然后上传随机文件名，然后再生成一个随机文件名html文件，最后弹出分享按钮
+         */
+        $scope.shareAchieve = function () {
+            $mdToast.show(
+                $mdToast.simple()
+                .textContent('正在为您生成分享图片和链接，请稍后！')
+                .position('top right')
+                .hideDelay(3000)
+            );
+
+            //生成图片,放在用户的share/下面
+            var imgdataurl = $('#codeHisChart').find('canvas')[0].toDataURL('image/png');
+
+            $scope.imgdataurl = imgdataurl;
+
+            var blob = _fns.canvasToBlob($('#codeHisChart').find('canvas'));
+
+            var imgurl = '_share/' + _fns.uuid() + '.png';
+
+            _fns.uploadFileQn(imgurl, blob, null, function (arg1, arg2, arg3) {
+                if (arg2 == 'success' && arg1.key) {
+                    //打开分享弹窗
+                    var shareObj = {
+                        user: $scope.myUsrInfo,
+                        title: '我的编码成就',
+                        subTitle: '个人累计编码' + $scope.myUsrInfo.codeChanges + '字符',
+                        content: '最近' + $scope.chartTotal.days + '天' + $scope.chartTotal.times + '次编码' + $scope.chartTotal.changes + '字符',
+                        pics: [{
+                            desc: '最近' + $scope.chartTotal.days + '天编码成就图',
+                            url: _cfg.qn.BucketDomain + arg1.key,
+                    }],
+                    };
+                    _fns.createSharePage('achieve', shareObj, true);
+                }
+            }, function (err) {
+                $mdToast.show(
+                    $mdToast.simple()
+                    .textContent('上传分享成就截图失败，请重试')
+                    .position('top right')
+                    .hideDelay(3000)
+                );
+            });
+        };
+
+        //读取分享页面模版，替换关键字，上传得到分享页面html文件
+        _fns.createSharePage = function (type, shareobj, opendialog) {
+            var tmp = _cfg.shareTemplates[type];
+            if (!tmp) return;
+            var tmpurl = tmp.url;
+
+            $.get(tmpurl, function (res) {
+                console.log('GET', tmpurl, res.substr(0, 25));
+                //替换模版
+                var blob = res.replace("\'##shareData##\'", JSON.stringify(shareobj));
+                //上传成为文件
+                var fileurl = '_share/' + _fns.uuid() + '.html';
+                _fns.uploadFileQn(fileurl, blob, null, function (arg1, arg2, arg3) {
+                    if (arg2 == 'success' && arg1.key) {
+                        if (opendialog === true) {
+                            var shareurl = _cfg.qn.BucketDomain + arg1.key;
+                            $rootScope.tempDialogData = {
+                                title: '我在杰米诺课堂学编程，来看看我的成就吧！',
+                                url: shareurl,
+                            };
+                            $mdDialog.show({
+                                controller: 'pie_dialog_share',
+                                templateUrl: _fns.getDialogUrl('share'),
+                                parent: angular.element(document.body),
+                                clickOutsideToClose: true
+                            });
+                        };
+                    };
+                });
+            });
+        };
+
+
+
+        /**
+         * 保存编辑器设置历史
+         * @param {Number} appId app的id
+         * @param {Number} type  动作类型
+         * @param {object} param 动作参数
+         */
+        $scope.addUpdateAppHis = function (appId, type, param) {
+            var api = _global.api('pie_setAppUpdate');
+            var dat = {
+                appId: $scope.curApp.id,
+                type: type,
+            };
+            if (param) dat.param = param;
+
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
+            });
+        };
+
 
 
 

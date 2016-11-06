@@ -32,6 +32,10 @@
             name: '我的收藏',
             icon: 'fa fa-heart',
             ctrlr: 'pie_favors',
+        },{
+            name: '我的成就',
+            icon: 'fa fa-area-chart',
+            ctrlr: 'pie_achieve',
         }, {
             name: '入门教程',
             icon: 'fa fa-envira',
