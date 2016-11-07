@@ -312,7 +312,7 @@
 
             _fns.uploadFileQn(imgurl, blob, null, function (arg1, arg2, arg3) {
                 if (arg2 == 'success' && arg1.key) {
-                    //打开分享弹窗
+                    //创建分享页面
                     var shareObj = {
                         user: $scope.myUsrInfo,
                         title: '我的编码成就',
@@ -323,7 +323,21 @@
                             url: _cfg.qn.BucketDomain + arg1.key,
                     }],
                     };
-                    _fns.createSharePage('achieve', shareObj, true);
+                    _fns.createSharePage('achieve', shareObj, function (shareurl) {
+                        $rootScope.tempDialogData = {
+                            title: '我在杰米诺课堂学编程，来看看我的成就吧！',
+                            url: shareurl,
+                        };
+                        $mdDialog.show({
+                            controller: 'pie_dialog_share',
+                            templateUrl: _fns.getDialogUrl('share'),
+                            parent: angular.element(document.body),
+                            clickOutsideToClose: true
+                        });
+
+                        //添加历史记录
+                        $scope.addShareAchieveHis(shareurl);
+                    });
                 }
             }, function (err) {
                 $mdToast.show(
@@ -335,37 +349,29 @@
             });
         };
 
-        //读取分享页面模版，替换关键字，上传得到分享页面html文件
-        _fns.createSharePage = function (type, shareobj, opendialog) {
-            var tmp = _cfg.shareTemplates[type];
-            if (!tmp) return;
-            var tmpurl = tmp.url;
 
-            $.get(tmpurl, function (res) {
-                console.log('GET', tmpurl, res.substr(0, 25));
-                //替换模版
-                var blob = res.replace("\'##shareData##\'", JSON.stringify(shareobj));
-                //上传成为文件
-                var fileurl = '_share/' + _fns.uuid() + '.html';
-                _fns.uploadFileQn(fileurl, blob, null, function (arg1, arg2, arg3) {
-                    if (arg2 == 'success' && arg1.key) {
-                        if (opendialog === true) {
-                            var shareurl = _cfg.qn.BucketDomain + arg1.key;
-                            $rootScope.tempDialogData = {
-                                title: '我在杰米诺课堂学编程，来看看我的成就吧！',
-                                url: shareurl,
-                            };
-                            $mdDialog.show({
-                                controller: 'pie_dialog_share',
-                                templateUrl: _fns.getDialogUrl('share'),
-                                parent: angular.element(document.body),
-                                clickOutsideToClose: true
-                            });
-                        };
-                    };
-                });
+
+        /**
+         * 添加分享成就的历史记录
+         * @param {string} shareurl 分享的页面地址
+         */
+        $scope.addShareAchieveHis = function (shareurl) {
+            var api = _global.api('share_addShareHis');
+            var dat = {
+                type: _cfg.mgHisType.shareAchieve,
+                url: shareurl
+            };
+
+            $.post(api, dat, function (res) {
+                console.log('POST', api, dat, res);
             });
         };
+
+
+
+
+
+
 
 
 

@@ -71,6 +71,7 @@ _cfg.dur = {
         removeFile: 20,
         shareApp: 21,
         shareAchieve: 22,
+        likeShareUrl: 23,
     };
 
     //行为目标类型

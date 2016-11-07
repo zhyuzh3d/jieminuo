@@ -43,6 +43,7 @@ global._qn = require('./my_modules/qn.js');
 global._account = require('./my_modules/account.js');
 global._pie = require('./my_modules/pie.js');
 global._ext = require('./my_modules/ext.js');
+global._share = require('./my_modules/share.js');
 
 //服务器对象
 var koaSvr = _app.koaSvr = $koa();

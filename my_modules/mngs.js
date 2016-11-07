@@ -25,6 +25,17 @@ _mngs.startPrms = function () {
 var fns = _mngs.fns = {};
 
 /**
+ * 添加一条分享记录，可以_ctnu调用
+ * @param {object} hisobj   记录对象
+ * @param {function} callback(err) 回调
+ */
+fns.addShare = function (shareobj, callback) {
+    var mod = new models.share(shareobj);
+    mod.save(callback);
+};
+
+
+/**
  * 添加一条历史记录，可以_ctnu调用
  * @param {object} hisobj   记录对象
  * @param {function} callback(err) 回调
@@ -49,6 +60,25 @@ fns.addMsg = function (msgobj, callback) {
 var schemas = _mngs.schemas = {};
 
 (function allSchemas() {
+    //分享页面,不记录由谁分享，页面地址作为唯一识别
+    schemas.share = new $mongoose.Schema({
+        url: String, //分享的地址
+        like: { //点赞数
+            type: Number,
+            default: 0
+        },
+        visited: { //访问数量。使用前端记录避免重复
+            type: Number,
+            default: 0
+        },
+    }, {
+        strict: false,
+        timestamps: {
+            createdAt: 'created_at',
+            updatedAt: 'update_at',
+        },
+    });
+
     //用户操作
     schemas.his = new $mongoose.Schema({
         uid: Number, //操作者id
@@ -84,6 +114,9 @@ var schemas = _mngs.schemas = {};
 var models = _mngs.models = {};
 
 (function allModels() {
+    //用户分享页面对象
+    models.share = $mongoose.model('share', schemas.share);
+
     //用户行为操作历史
     models.his = $mongoose.model('his', schemas.his);
 

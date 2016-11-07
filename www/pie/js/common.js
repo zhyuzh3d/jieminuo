@@ -185,6 +185,7 @@ if (!_pie) var _pie = {};
             removeFile: 20,
             shareApp: 21,
             shareAchieve: 22,
+            likeShareUrl: 23,
         });
 
         _cfg.mgHisTypeName = _fns.biMap({
@@ -210,7 +211,8 @@ if (!_pie) var _pie = {};
             '19': '打开文件',
             '20': '删除文件',
             '21': '分享APP',
-            '22': '分享成就'
+            '22': '分享成就',
+            '23': '为页面点赞',
         });
 
 
@@ -481,6 +483,8 @@ if (!_pie) var _pie = {};
             return undefined;
         };
     };
+
+
 
 
 
@@ -1097,6 +1101,41 @@ if (!_pie) var _pie = {};
             }
         }
     };
+
+
+
+    /**
+     * 读取分享页面模版，替换关键字，上传得到分享页面html文件
+     * @param {string} type       分享的类型,参照_cfg.shareTemplates，'achieve'
+     * @param {object} shareobj   分享的数据对象，参照每个模版不同的格式要求
+     * @param {function} okfn(shareurl) 生成分享页面后的操作
+     */
+    _fns.createSharePage = function (type, shareobj, okfn) {
+        var tmp = _cfg.shareTemplates[type];
+        if (!tmp) return;
+        var tmpurl = tmp.url;
+
+        $.get(tmpurl, function (res) {
+            console.log('GET', tmpurl, res.substr(0, 25));
+            //替换模版
+            var blob = res.replace("\'##shareData##\'", JSON.stringify(shareobj));
+            //上传成为文件
+            var fileurl = '_share/' + _fns.uuid() + '.html';
+            _fns.uploadFileQn(fileurl, blob, null, function (arg1, arg2, arg3) {
+                if (arg2 == 'success' && arg1.key) {
+                    if (okfn && okfn.constructor == Function) {
+                        var shareurl = _cfg.qn.BucketDomain + arg1.key;
+                        try {
+                            okfn(shareurl)
+                        } catch (err) {}
+                    };
+                };
+            });
+        });
+    };
+
+
+
 
 
 

@@ -238,12 +238,18 @@ function sendMail(tarmail, tit, cont) {
  * @param   {ctx} ctx请求的上下文
  * @returns {uid} 用户的id
  */
-_fns.getUidByCtx = function (ctx) {
+_fns.getUidByCtx = function (ctx, unThrowErr) {
     var co = $co(function* () {
 
         //通过cookie从主服务器获取uid
         var ukey = ctx.cookies.get('m_ukey');
-        if (!ukey || !_cfg.regx.ukey.test(ukey)) throw Error('您还没有注册和登陆');
+        if (!ukey || !_cfg.regx.ukey.test(ukey)) {
+            if (unThrowErr) {
+                return undefined;
+            } else {
+                throw Error('您还没有注册和登陆');
+            };
+        };
 
         //登陆情况，读取用户id
         var mpkey = _rds.k.map_ukey2uid;
@@ -256,7 +262,12 @@ _fns.getUidByCtx = function (ctx) {
                 httpOnly: true,
                 expires: new Date((new Date()).getTime() + _cfg.dur.browserUkey),
             });
-            throw Error('错误或无效的登录信息，请您手工登陆或注册.')
+
+            if (unThrowErr) {
+                return undefined;
+            } else {
+                throw Error('错误或无效的登录信息，请您手工登陆或注册.')
+            };
         };
 
         return uid;
