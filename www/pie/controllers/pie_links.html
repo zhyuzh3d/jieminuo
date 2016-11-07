@@ -21,6 +21,15 @@
                 <span class="fa fa-bars fa-lg" ng-hide='$root.leftMenuOpen'></span>
             </md-button>
 
+            <a target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=58ad3b270131f9c54e630dcc74909a01cce567d60cb636d767c15cea9c35505c" class="md-primary md-button" aria-label='a' style='padding:0 12px;vertical-align:middle' ng-hide='!$root.mdMedia("gt-sm")'>
+                <span class="fa fa-qq fa-lg"></span>
+                <span>加交流群</span>
+            </a>
+
+            <div class="pull-right" ng-show='!hasLogin' style="line-height:48px;display:inline-block">
+                <a href="http://www.jieminuoketang.com/account/?page=acc_login" style="margin:0 8px;text-decoration:none;">登录</a>
+                <a href="http://www.jieminuoketang.com/account/?page=acc_register" style="margin:0 8px;text-decoration:none;">注册</a>
+            </div>
 
             <div class="dropdown pull-right" ng-show='hasLogin' style="margin-top:8px">
                 <button class="dropdown-toggle" id="ddmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="background:none;border:none">
@@ -44,7 +53,7 @@
                 <md-tab label="全部">
                     <md-list class="md-dense" flex>
                         <div ng-repeat="item in allitems" style="margin-bottom:24px">
-                            <h4  style="font-weight:bold">
+                            <h4 style="font-weight:bold">
                                 <img ng-src='{{item.icon}}' width="24px" height="24px" ng-show='item.icon' />
                                 <span ng-bind-html='item.title | toTrustHtml'></span>
                             </h4>
@@ -59,7 +68,7 @@
                 <md-tab label="{{list[0]}}" ng-repeat='list in arrs'>
                     <md-list class="md-dense" flex>
                         <div ng-repeat="item in list[1]" style="margin-bottom:24px">
-                            <h4  style="font-weight:bold">
+                            <h4 style="font-weight:bold">
                                 <img ng-src='{{item.icon}}' width="24px" height="24px" ng-show='item.icon' />
                                 <span ng-bind-html='item.title | toTrustHtml'></span>
                             </h4>

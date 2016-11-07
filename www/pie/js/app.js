@@ -126,6 +126,12 @@ var _app = {}; //最高全局变量，angular
             };
         });
 
+        //判断界面尺寸
+        $rootScope.mdMedia = function (str) {
+            var res = $mdMedia(str);
+            return res;
+        };
+
         //侧栏,默认允许固定
         $rootScope.leftMenuOpen = true;
         $rootScope.enableBlockLeftNav = true;
@@ -198,13 +204,19 @@ var _app = {}; //最高全局变量，angular
                 console.log('POST', api, dat, res);
                 if (res.code == 1) {
                     $rootScope.myInfo = res.data;
+                    //如果地址栏中有_anonymous=true匿名登录字段，那么去掉并跳转
+                    var url = location.href;
+                    if (url.indexOf('_anonymous=true')!=-1) {
+                        location.href = url.replace('_anonymous=true', '');
+                    };
+
                 } else {
                     //提示错误
                     $mdToast.show(
                         $mdToast.simple()
                         .textContent('您还没有登陆和注册，很多功能将无法使用')
                         .position('top right')
-                        .hideDelay(3000)
+                        .hideDelay(2000)
                     );
                 };
             });

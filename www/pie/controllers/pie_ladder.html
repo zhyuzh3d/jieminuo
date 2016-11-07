@@ -24,6 +24,16 @@
 
             <md-button class="md-raised md-accent" ng-click='openJoinDialog()' aria-label='a'>我要打榜</md-button>
 
+            <a target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=58ad3b270131f9c54e630dcc74909a01cce567d60cb636d767c15cea9c35505c"  class="md-primary md-button"  aria-label='a' style='padding:0 12px;vertical-align:middle' ng-hide='!$root.mdMedia("gt-sm")'>
+                <span class="fa fa-qq fa-lg"></span>
+                <span>加交流群</span>
+            </a>
+
+            <div class="pull-right" ng-show='!hasLogin' style="line-height:48px;display:inline-block">
+                <a href="http://www.jieminuoketang.com/account/?page=acc_login" style="margin:0 8px;text-decoration:none;">登录</a>
+                <a href="http://www.jieminuoketang.com/account/?page=acc_register" style="margin:0 8px;text-decoration:none;">注册</a>
+            </div>
+
             <div class="dropdown pull-right" ng-show='hasLogin' style="margin-top:8px">
                 <button class="dropdown-toggle" id="ddmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="background:none;border:none">
                     <span>

@@ -174,9 +174,7 @@
                     data: arr,
                     type: 'scatter',
                     symbolSize: function (dt) {
-                        var size = dt[2] * 0.1;
-                        if (size > 100) size = 100;
-                        if (size < 1) size = 1;
+                        var size = Math.sqrt(dt[2]);
                         return size;
                     },
                     label: {
@@ -205,7 +203,7 @@
                     emphasis: {
                         show: true,
                         formatter: function (params) {
-                            return params.data[2].substr(4) + '总计' + params.data[1].toFixed(0);
+                            return params.data[2].substr(5) + '总计' + params.data[1].toFixed(0);
                         },
                         position: 'top'
                     }
@@ -411,6 +409,8 @@
                 clickOutsideToClose: true
             })
         };
+
+
 
 
         //end
