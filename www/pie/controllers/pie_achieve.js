@@ -253,7 +253,11 @@
                     max: new Date().getTime(),
                     axisLabel: {
                         formatter: function (str) {
-                            return moment(str).format('MM-DD');
+                            if ($mdMedia('gt-sm')) {
+                                return moment(str).format('MM-DD hh:mm');
+                            } else {
+                                return moment(str).format('MM-DD');
+                            }
                         },
                     },
                     splitLine: {
