@@ -125,6 +125,7 @@ _rotr.apis.acc_getMyInfo = function () {
         //检测是否存在账号ukey，
         var ukey = ctx.cookies.get('m_ukey');
         if (!ukey) throw Error('没找到您的登录信息，请重新登陆或注册.');
+        console.log('>>>cookie ukey',ukey);
 
         //登陆情况，读取用户id
         var mpkey = _rds.k.map_ukey2uid;

@@ -9,6 +9,8 @@ var _rds = {};
 _rds.start = function () {
     var cli = _rds.cli = $redis.createClient(6379, 'localhost', {});
 
+
+
     //全部key列表,所有映射map_开头,所有临时tmp_开头,所有对象直接写
     _rds.k = {
 
