@@ -132,11 +132,13 @@
                     //计算每天编码总数
                     var ymdstr = moment(date).format('YYYY-MM-DD');
                     var ymdate = new Date(ymdstr + ' ' + moment(now).format('hh:mm:ss'));
-                    if (!daysdata[ymdstr]) daysdata[ymdstr] = {
-                        date: ymdate,
-                        name: ymdstr,
-                        length: 0,
-                        changes: 0
+                    if (!daysdata[ymdstr]) {
+                        daysdata[ymdstr] = {
+                            date: ymdate,
+                            name: ymdstr,
+                            length: 0,
+                            changes: 0
+                        };
                     };
                     daysdata[ymdstr].changes += Number(his.param.changes);
                     daysdata[ymdstr].length += Number(his.param.length);
@@ -303,7 +305,7 @@
                 .hideDelay(3000)
             );
 
-            //生成图片,放在用户的share/下面
+            //生成图片,放在用户的_share/下面
             var imgdataurl = $('#codeHisChart').find('canvas')[0].toDataURL('image/png');
 
             $scope.imgdataurl = imgdataurl;

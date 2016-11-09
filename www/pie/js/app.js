@@ -63,7 +63,7 @@ var _app = {}; //最高全局变量，angular
     angular.module('app.controllers', []);
 
     //执行rootscope控制器代码，可被其他控制器调用
-    _app.run(function angularRun($rootScope, $timeout, $mdSidenav, $log, $mdMedia) {
+    _app.run(function angularRun($rootScope, $timeout, $mdSidenav, $log, $mdMedia, $mdDialog) {
 
         $rootScope._fns = _fns;
         $rootScope._cfg = _cfg;
@@ -130,6 +130,28 @@ var _app = {}; //最高全局变量，angular
         $rootScope.mdMedia = function (str) {
             var res = $mdMedia(str);
             return res;
+        };
+
+
+        //通用的分享app函数
+        $rootScope.shareApp = function (appinfo, opendialog) {
+            var fn;
+            if (opendialog !== false) {
+                fn = function (shareurl) {
+                    $rootScope.tempDialogData = {
+                        title: '我在杰米诺课堂学编程，这是我开发的APP！',
+                        url: shareurl,
+                    };
+                    $mdDialog.show({
+                        controller: 'pie_dialog_share',
+                        templateUrl: _fns.getDialogUrl('share'),
+                        parent: angular.element(document.body),
+                        clickOutsideToClose: true
+                    });
+                };
+            };
+
+            _fns.createShareAppPage($rootScope.myInfo, appinfo, fn);
         };
 
         //侧栏,默认允许固定
@@ -206,7 +228,7 @@ var _app = {}; //最高全局变量，angular
                     $rootScope.myInfo = res.data;
                     //如果地址栏中有_anonymous=true匿名登录字段，那么去掉并跳转
                     var url = location.href;
-                    if (url.indexOf('_anonymous=true')!=-1) {
+                    if (url.indexOf('_anonymous=true') != -1) {
                         location.href = url.replace('_anonymous=true', '');
                     };
 

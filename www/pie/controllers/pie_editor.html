@@ -232,7 +232,7 @@
             <!--            文件列表部分-->
             <div flex='none' id='listPart' ng-hide='hideList' style="width:240px;border-left:1px solid #DDD;overflow-y:auto;">
                 <div layout id='listMenus' style="min-width:200px;margin:12px 12px 0 12px">
-                    <div flex='none' class="md-button md-default" style="min-width:40px;min-height:32px;line-height:32px;width:48px;height:32px;padding:0" ng-click='openShare(curApp)'>
+                    <div flex='none' class="md-button md-default" style="min-width:40px;min-height:32px;line-height:32px;width:48px;height:32px;padding:0" ng-click='$root.shareApp(curApp)'>
 
                         <!--   下拉菜单-->
                         <md-menu style='padding:0'>
@@ -241,7 +241,7 @@
                                 <img id='appIconImg' ng-src={{(curApp.icon)?curApp.icon:$root._cfg.defaultIconSm}} style="width:30px;height:30px;border-radius:6px;border:1px solid #EEE">
                             </div>
                             <md-menu-content width="3" style='overflow-x: hidden;'>
-                                <div flex='none' class="md-button md-default leftmenu" ng-click='openShare(curApp)' aria-label='a' style='color:#888;'>
+                                <div flex='none' class="md-button md-default leftmenu" ng-click='$root.shareApp(curApp)' aria-label='a' style='color:#888;'>
                                     <span class='fa fa-share-alt'></span>
                                     <span>&nbsp;分享给朋友</span>
                                 </div>

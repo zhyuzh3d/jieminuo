@@ -154,6 +154,10 @@ if (!_pie) var _pie = {};
             id: 1,
             url: 'http://www.jieminuoketang.com/pie/templates/share/achieve.html'
         },
+        app: {
+            id: 2,
+            url: 'http://www.jieminuoketang.com/pie/templates/share/app.html'
+        },
     };
 
 
@@ -1131,6 +1135,46 @@ if (!_pie) var _pie = {};
                     };
                 };
             });
+        });
+    };
+
+    /**
+     * 分享App，自动生成分享页面
+     * @param {object} appinfo    app信息对象
+     * @param {boolean} openDialog 生成页面后是否自动打开分享窗口
+     * @param {function} okfn       生成分享页面后的回调，应该把opendialog设置为false
+     */
+    _fns.createShareAppPage = function (userinfo, appinfo, okfn) {
+        var shareObj = {
+            app: appinfo,
+            user: userinfo,
+        };
+        //创建分享页面然后弹窗
+        _fns.createSharePage('app', shareObj, function (shareurl) {
+            //添加历史记录
+            _fns.addShareAppHis(shareurl);
+
+            if (okfn && okfn.constructor == Function) {
+                try {
+                    okfn(shareurl);
+                } catch (err) {};
+            };
+        });
+    };
+
+    /**
+     * 添加分享成就的历史记录
+     * @param {string} shareurl 分享的页面地址
+     */
+    _fns.addShareAppHis = function (shareurl) {
+        var api = _global.api('share_addShareHis');
+        var dat = {
+            type: _cfg.mgHisType.shareApp,
+            url: shareurl
+        };
+
+        $.post(api, dat, function (res) {
+            console.log('POST', api, dat, res);
         });
     };
 

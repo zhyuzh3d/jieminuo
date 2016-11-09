@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>杰米诺课堂 | 个人成就分享页</title>
+    <title>杰米诺课堂 | 我的APP分享页</title>
     <meta name="description" content="入门级的App在线编辑部署工具,zhyuzh贡献">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -28,6 +28,32 @@
 </head>
 
 <body ng-controller='bodyCtrlr'>
+    <style>
+        .appiconbox {
+            backgournd: #EEE;
+            width: 128px;
+            height: 128px;
+            border-radius: 8px;
+            border: 1px solid #DDD;
+            display: inline-block;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .appiconbox:hover {
+            box-shadow: 4px 4px 0 #EEE;
+        }
+
+        .appalias {
+            color: #00bfa5;
+            cursor: pointer;
+        }
+
+        .appalias:hover {
+            color: #00acA4
+        }
+
+    </style>
 
     <div class="container-fluid col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3" style="text-align:center">
         <div style="margin-top:24px;color:#AAA;font-size:14px">
@@ -35,18 +61,16 @@
                 <img ng-show='data.user.avatar' ng-src='{{data.user.avatar?(data.user.avatar+"-avatar32"):""}}' style='height:100%' />
             </div>
             <span ng-bind='data.user.nick' style="color:#000" ng-show='data.user.nick'></span>
-            <span>从</span>
+            <span>在</span>
             <a href="http://www.jieminuoketang.com" style="color:#ec407a">杰米诺课堂</a>
-            <span>向您分享了以下内容</span>
+            <span>开发了一个APP</span>
         </div>
 
-        <div>
-            <h1 ng-bind='data.title' ng-show='data.title'></h1>
-            <h5 ng-bind='data.subTitle' ng-show='data.subTitle'></h5>
-        </div>
+
         <div style="color:#AAA;font-size:12px">
             <span ng-bind='data.time'></span>
         </div>
+
         <div class='btn btn-danger' style="margin:12px 0 0 0;width:56px;height:56px;padding:0;border-radius:48px;" ng-click='like()' ng-disabled='hasLiked'>
             <div class="glyphicon glyphicon glyphicon-thumbs-up" style="line-height:40px;height:28px;font-size:20px"></div>
             <div style="font-size:10px;line-height:12px;margin-top:-2px;-webkit-text-size-adjust:none;" ng-bind='data.like || 0'>0</div>
@@ -57,18 +81,31 @@
             <span>人阅读</span>
         </div>
 
-        <div style="margin-top:24px">
-            <p ng-bind='data.content' style='text-align:left'></p>
+        <div style='margin:24px 0 12px 0'>
+            <div ng-hide='hasLogin'>您还没有登录杰米诺课堂，可能无法正常体验APP的完整功能</div>
+            <div ng-click='gologin()' style='color:#ec407a;margin-top:4px' ng-hide='hasLogin'>注册或登录杰米诺课堂</div>
         </div>
 
-        <div style="margin-top:24px">
-            <div ng-repeat='pic in data.pics'>
-                <a href="{{pic.url}}" ng-show='pic.url'>
-                    <img ng-src='{{pic.url}}' width="100%" style="margin-top:12px;border:1px solid #CCC;box-shadow:4px 4px  #CCC">
+        <div style='background-color:#EEE;padding:8px'>
+            <span>如果不了解APP作者(</span>
+            <span ng-bind='data.user.phone || "未知"'></span>
+            <span>)，请勿点击APP图标或链接</span>
+        </div>
+
+        <div style="width:256px;display:inline-block;padding:12px;">
+            <div>
+                <a class='appiconbox' ng-href='{{data.app.url}}'>
+                    <img ng-src='{{data.app.icon || "http://rtfiles.jieminuoketang.com/1/aaw6vsns2i5k/src/defaultIcon512.png"}}' style='width:100%;height:100%'>
                 </a>
-                <div style="font-size:12px;color:#AAA;margin:12px 0" ng-bind='pic.desc' ng-show='pic.desc'></div>
+            </div>
+            <div style="font-size:24px;margin-top:12px;">
+                <a ng-bind='data.app.alias || "未命名应用"' ng-href='{{data.app.url}}' class='appalias' style=" text-decoration: none"></a>
             </div>
         </div>
+        <div style="color:#666">应用简介</div>
+        <div ng-bind='data.app.desc || "这家伙很懒，还没添加APP描述..."' style="margin-top:12px;color:#666;text-align:left;font-size:14px;line-height:24px"></div>
+
+
 
         <hr style="width:100%;color:#AAA;margin:36px 0 4px 0">
         <div style="padding:4px 0 48px 0">
@@ -90,32 +127,59 @@
     var _app = angular.module('app', []);
     _app.controller('bodyCtrlr', function($scope) {
         $scope.data = '##shareData##';
+
         /*参考格式
-        {
+        $scope.data = {
             user: {
                 id: 1,
                 nick: 'zhyuzh',
                 avatar: 'http://files.10knet.com/Fgs0UiKM1yxLb1IqnjRYcedxwisc',
+                phone:'134******37'
             },
-            like:122,
+            app: {
+                id: 332,
+                alias: "陪聊机器人小派",
+                icon: "http://files.jieminuoketang.com/Fg2RcPOzcJgU-JHrNp7pQQBcacVD",
+                desc: "利用第三利用第三方接口实现的聊天机器人案例利用第三方接口实现的聊天机器人案例利用第三方接口实现的聊天机器人案例利用第三方接口实现的聊天机器人案例利用第三方接口实现的聊天机器人案例利用第三方接口实现的聊天机器人案例利用第三方接口实现的聊天机器人案例方接口实现的聊天机器人案例",
+                url: "http://files.jieminuoketang.com/1/au22ntesx127/",
+            },
+            like: 122,
             time: '2017-12-30 12:34:22',
-            title: '我的编程成就',
-            subTitle: '累计编码21332字符',
-            content: '因为jQuery在获得对象的时候，无论要获得的对象是否存在，都会返回jQuery对象。 所以，以往的 js 判断是否存在在jQuery是行不通的。 假设有如下代码。因为jQuery在获得对象的时候，无论要获得的对象是否存在，都会返回jQuery对象。 所以，以往的 js 判断是否存在在jQuery是行不通的。 假设有如下代码。',
-            pics: [{
-                desc: '最近7天成就',
-                url: 'http://files.jieminuoketang.com/1/iv650hyl-3lak95w95r.png'
-            }, {
-                desc: '最近7天成就',
-                url: 'http://files.jieminuoketang.com/1/iv650hyl-3lak95w95r.png'
-            }],
+            visited: 0,
         };
-        */
+                */
 
+
+
+
+        //调整标题
         if ($scope.data && $scope.data.user && $scope.data.user.nick) {
-            $('head').find('title').html('杰米诺课堂 | ' + $scope.data.user.nick + '的个人成就');
+            $('head').find('title').html('杰米诺课堂 | ' + $scope.data.user.nick + '开发的APP');
         };
 
+        //把url指向实时
+        if ($scope.data && $scope.data.app && $scope.data.app.url) {
+            $scope.data.app.url = $scope.data.app.url.replace(/^http:\/\/files/, 'http://rtfiles');
+            $scope.data.app.url += 'index.html';
+        };
+
+        //自动检测是否已经登录，没登录的给出提示？？？
+        $scope.getMyInfo = function() {
+            var api = 'http://www.jieminuoketang.com/api/acc_getMyInfo';
+            var dat = {};
+
+            $.post(api, dat, function(res) {
+                console.log('POST', api, dat, res);
+                $scope.$apply(function() {
+                    if (res.code == 1) {
+                        $scope.hasLogin = true;
+                    } else {
+                        $scope.hasLogin = false;
+                    };
+                });
+            }, 'jsonp');
+        };
+        $scope.getMyInfo();
 
 
         //获取页面点赞数和访问数
@@ -155,7 +219,8 @@
             };
 
             $scope.hasLiked = localStorage['pie_share_url_liked' + location.href];
-            //点赞
+
+            //点赞,后端会自动为已经登录用户添加likeShareUrl动作历史
             $scope.like = function() {
                 if (!$scope.hasLiked) {
                     $scope.hasLiked = true;
