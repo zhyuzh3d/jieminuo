@@ -100,6 +100,36 @@ _rotr.apis.share_likeUrl = function () {
             });
         };
 
+        //如果tarType是app且有tarId，那么增加点赞数，增加点赞app历史
+        var tarType = ctx.query.tarType || ctx.request.body.tarType;
+        var tarId = ctx.query.tarId || ctx.request.body.tarId;
+
+        //jsonp使用data地址url参数
+        var data = JSON.safeParse(decodeURIComponent(ctx.query.data));
+        if (!tarType && data && data.tarType) tarType = data.tarType;
+        if (!tarId && data && data.tarId) tarId = data.tarId;
+
+        if (uid && tarType == 'app' && tarId) {
+            //保存到mongo历史
+            _mngs.fns.addHis({
+                uid: Number(uid),
+                type: _cfg.mgHisType.likeApp,
+                tarId: Number(tarId),
+                tarType: _cfg.mgTarType.app,
+            });
+            //检查hithis是否已经点赞
+            var haslike = yield _ctnu([_rds.cli, 'sismember'], _rds.k.ladderHitHis, tarId + '-' + uid);
+
+            //如果没有点赞，那么增加hit记录,并返回新的点赞数和权重;异步增加hithis
+            var res = {};
+            if (!haslike) {
+                res.hit = yield _ctnu([_rds.cli, 'zincrby'], _rds.k.ladderHit, 1, tarId);
+                res.weight = yield _pie.ladderUpdateWeightCo(tarId);
+                _rds.cli.sadd(_rds.k.ladderHitHis, tarId + '-' + uid);
+            };
+        };
+
+
         var url = ctx.headers.referer;
 
         //根据url更新点赞数

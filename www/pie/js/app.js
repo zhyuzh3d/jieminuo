@@ -136,6 +136,7 @@ var _app = {}; //最高全局变量，angular
         //通用的分享app函数
         $rootScope.shareApp = function (appinfo, opendialog) {
             var fn;
+            if (appinfo) appinfo.pkey = undefined;//隐藏作者的私人字段
             if (opendialog !== false) {
                 fn = function (shareurl) {
                     $rootScope.tempDialogData = {

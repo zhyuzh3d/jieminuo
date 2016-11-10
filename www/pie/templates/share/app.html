@@ -87,7 +87,9 @@
         </div>
 
         <div style='background-color:#EEE;padding:8px'>
-            <span>如果不了解APP作者(</span>
+            <span>如果不了解</span>
+            <span ng-bind='data.user.nick || "未知"'></span>
+            <span>(</span>
             <span ng-bind='data.user.phone || "未知"'></span>
             <span>)，请勿点击APP图标或链接</span>
         </div>
@@ -154,7 +156,7 @@
 
         //调整标题
         if ($scope.data && $scope.data.user && $scope.data.user.nick) {
-            $('head').find('title').html('杰米诺课堂 | ' + $scope.data.user.nick + '开发的APP');
+            $('head').find('title').html('杰米诺课堂 | ' + $scope.data.user.nick + '分享的APP');
         };
 
         //把url指向实时
@@ -228,10 +230,16 @@
                     $scope.data.like += 1;
                     localStorage['pie_share_url_liked' + location.href] = true;
 
-                    //发送请求增加该地址的访问数
+                    //发送请求增加该地址的访问数;jsonp只能附加在地址参数data
                     var api = 'http://www.jieminuoketang.com/api/share_likeUrl';
                     var dat = {};
-                    $.post(api, dat, function(res) {
+                    if ($scope.data && $scope.data.app && $scope.data.app.id) {
+                        dat.tarType = 'app';
+                        dat.tarId = $scope.data.app.id;
+                    };
+                    api = api + '?data=' + encodeURIComponent(JSON.stringify(dat));
+
+                    $.get(api, function(res) {
                         console.log('POST', api, dat, res);
                     }, 'jsonp');
                 } else {
