@@ -322,7 +322,7 @@ _qn.qn_deleteFileCo = qn_deleteFileCo;
 
 function qn_deleteFileCo(fkey) {
     var co = $co(function* () {
-        var uri = $qiniu.util.urlsafeBase64Encode(cfg.BucketName + ':' + fkey);
+        var uri = $qiniu.util.urlsafeBase64Encode(_qn.cfg.BucketName + ':' + fkey);
         var optpath = '/delete/' + uri;
 
         //根据uid授权路径的token
@@ -380,7 +380,7 @@ _qn.qn_getFileInfoCo = qn_getFileInfoCo;
 
 function qn_getFileInfoCo(fkey) {
     var co = $co(function* () {
-        var uri = $qiniu.util.urlsafeBase64Encode(cfg.BucketName + ':' + fkey);
+        var uri = $qiniu.util.urlsafeBase64Encode(_qn.cfg.BucketName + ':' + fkey);
         var optpath = '/stat/' + uri;
 
         //根据uid授权路径的token
@@ -456,14 +456,14 @@ function qn_refreshFileCo(fkey) {
         };
 
         var dat = {
-            urls: [cfg.BucketDomain + fkey],
+            urls: [_qn.cfg.BucketDomain + fkey],
         };
 
         //计算token
         options.headers.Authorization = $qiniu.util.generateAccessToken(options.path, null);
         var res = yield _fns.httpReqPrms(options, dat);
 
-        res.url = cfg.BucketDomain + fkey;
+        res.url = _qn.cfg.BucketDomain + fkey;
         return res;
     });
     return co;

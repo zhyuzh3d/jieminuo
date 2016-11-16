@@ -168,6 +168,14 @@ function httpReqPrms(options, bodydata, type) {
             httpobj = $http;
         };
 
+        var str;
+        if (bodydata) {
+            var str = JSON.stringify(bodydata);
+            if (options && options.headers) {
+                options.headers['Content-Length'] = str.length;
+            };
+        };
+
         var req = httpobj.request(options, (res) => {
             if (res.statusCode != 200) {
                 rejectfn(new Error('Target server return err:' + res.statusCode));
@@ -190,10 +198,7 @@ function httpReqPrms(options, bodydata, type) {
             rejectfn(new Error('Request failed:' + e.message));
         });
 
-        if (bodydata) {
-            var str = JSON.stringify(bodydata)
-            req.write(str);
-        };
+        if (str) req.write(str);
 
         req.end();
     });

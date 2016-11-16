@@ -67,5 +67,53 @@ _rotr.apis.test = function () {
     return co;
 };
 
+/*测试接口,返回请求的数据
+ */
+_rotr.apis.test2 = function () {
+    var ctx = this;
+    var co = $co(function* () {
+
+        var code = Math.random().toString().substr(2, 8);
+        var exp = new Date().getTime() + 60000;
+
+        //生成token
+        var payload = {
+            tel: '13405045537',
+            params: [String(code), '5'],
+            tpl_id: 4243,
+            exp: exp,
+        };
+
+        var dat = {
+            jwt_access_token: $jwt.encode(payload, _xcfg.sms.secret),
+        };
+
+        var opt = {
+            //            hostname: '121.41.41.46',//test
+            //            hostname: '120.55.90.62',//
+            //            port: 4003,
+            hostname: 'sms.xmgc360.com',
+            port: 80,
+            path: '/api/send',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+
+        var res = yield _fns.httpReqPrms(opt, dat);
+        res = JSON.safeParse(res.body);
+
+        if (res.result != 0) throw Error('发送失败:' + res.errmsg);
+
+        ctx.body = __newMsg(1, 'ok');
+        return ctx;
+    });
+    return co;
+};
+
+
+
+
 //导出模块
 module.exports = _rotr;
