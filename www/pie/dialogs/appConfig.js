@@ -278,7 +278,7 @@ _fns.addDialogJs('appReset');
         $scope.updateAppExt = function () {
             var dat = {
                 appId: $scope.app.id,
-                wildDogAppSecret: $scope.app.wildDogAppSecret,
+                wildDogAppSecret: $scope.appExt.wildDogAppSecret,
             };
 
             //格式检查

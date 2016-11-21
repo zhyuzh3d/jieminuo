@@ -1054,6 +1054,10 @@
 
                     //处理编辑器
                     if (ineditor) {
+                        //保存卷动位置
+                        $scope.lsSaveEditorCfg();
+
+                        //更新数据
                         $scope.editorFile = fobj;
 
                         //显示编辑器
@@ -1076,7 +1080,11 @@
                         //强制刷新
                         setTimeout(function () {
                             if (ineditor) {
-                                $scope.editorFile.data += ' ';
+                                //恢复卷动数据
+                                _fns.applyScope($scope, function () {
+                                    $scope.editorFile.data += ' ';
+                                });
+                                $scope.lsGetSaveEditor(url, true);
                             };
                         }, 100);
 
@@ -1108,6 +1116,31 @@
             }, "html");
         };
 
+
+
+        //保存文件的编辑器鼠标位置，卷动位置的设置
+        $scope.lsSaveEditorCfg = function () {
+            if ($scope.editorFile.url) {
+                var editorCfg = {
+                    cursorPos: $scope.cmDoc.getCursor(),
+                    scrollPos: $scope.cmEditor.getScrollInfo()
+                };
+                localStorage.setItem('editorCfg-' + $scope.editorFile.url, JSON.stringify(editorCfg));
+            };
+        };
+
+        //获取文件的编辑器鼠标位置，卷动位置的设置;autoset是否自动卷动到此为止
+        $scope.lsGetSaveEditor = function (url, autoset) {
+            var editorCfg = localStorage.getItem('editorCfg-' + $scope.editorFile.url);
+
+            if (editorCfg && autoset) {
+                editorCfg = JSON.safeParse(editorCfg);
+                editorCfg.cursorPos ? $scope.cmDoc.setCursor(editorCfg.cursorPos) : null;
+                editorCfg.scrollPos ? $scope.cmEditor.scrollTo(editorCfg.scrollPos.left, editorCfg.scrollPos.top) : null;
+            };
+
+            return editorCfg;
+        };
 
 
 
@@ -1231,6 +1264,10 @@
         okfn(f,res)为保存成功后执行的函数
          */
         $scope.saveFile = function (fkey, data, okfn) {
+
+            //保存卷动位置
+            $scope.lsSaveEditorCfg();
+
             var ext = _fns.getFileExt(fkey);
             var mime = _fns.getMimeByExt(ext);
 

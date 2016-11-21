@@ -6,12 +6,12 @@ if (!_pie) {
     var _pie = {};
 };
 
-(function() {
+(function () {
     'use strict';
 
     /*获取地址栏参数
      */
-    _pie.getUrlParam = function(name) {
+    _pie.getUrlParam = function (name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
         var r = window.location.search.substr(1).match(reg);
         if (r != null) return unescape(r[2]);
@@ -22,7 +22,13 @@ if (!_pie) {
     if (_pie.forceRefresh == true || _pie.forceRefresh === undefined) {
         var ts = _pie.getUrlParam('_');
         var hst = (location.hostname == 'files.10knet.com' || location.hostname == 'files.jieminuoketang.com');
-        if (!ts && hst) location.href = location.href + '?_=' + Math.random();
+        if (!ts && hst) {
+            if (location.hostname.indexOf('&') == -1) {
+                location.href = location.href + '?_=' + Math.random();
+            } else {
+                location.href = location.href + '&_=' + Math.random();
+            };
+        };
     };
 
 
