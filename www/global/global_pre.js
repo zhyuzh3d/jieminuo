@@ -84,12 +84,12 @@ if (!_global) var _global = {};
                 if (jumptype == 1) {
                     //跳转目标，传递okUrl参数
                     var tourl = _global.hostUrl + '/account/?page=acc_login&okUrl=';
-                    tourl += encodeURI(location.href);
+                    tourl += encodeURIComponent(location.href);
                     window.location.href = tourl;
                 } else if (jumptype == 2) {
                     //跳转目标，传递okUrl参数
                     var tourl = _global.hostUrl + '/account/welcome.html?&okUrl=';
-                    tourl += encodeURI(location.href);
+                    tourl += encodeURIComponent(location.href);
                     window.location.href = tourl;
                 };
             };

@@ -178,14 +178,15 @@ if (!_xdat) var _xdat = {}; //共享变量
         var res;
         url = (url) ? url : window.location.href;
         url = String(url);
-        var parts = unescape(url).split('?');
+        //var parts = unescape(url).split('?');
+        var parts = url.split('?');
         if (parts.length > 1) {
             var arr = parts[1].split('&');
             var args = {};
             arr.forEach(function (seg, i) {
                 var segarr = seg.split('=');
                 if (segarr.length > 1) {
-                    args[segarr[0]] = segarr[1];
+                    args[segarr[0]] = decodeURIComponent(segarr[1]);
                 };
             });
             res = args;

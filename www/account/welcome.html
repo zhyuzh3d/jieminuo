@@ -87,8 +87,15 @@
         var paras = decodeURIComponent(location.search);
 
         var okurl = paras.substr(paras.indexOf('okUrl') + 6);
-        var regurl = 'http://www.jieminuoketang.com/account/?page=acc_register&' + paras.substr(1);
+        okurl=encodeURIComponent(okurl);
+        var par=paras.substr(8);
+        par=decodeURIComponent(par);
+        par=encodeURIComponent(par);
+
+        var regurl = 'http://www.jieminuoketang.com/account/?page=acc_register&okUrl=' + par;
+
         document.getElementById('regbtn').onclick = function() {
+            //console.log('par',par,paras);
             location.href = regurl;
         };
         document.getElementById('urlbtn').onclick = function() {

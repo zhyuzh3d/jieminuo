@@ -91,6 +91,7 @@
 
         //登陆
         $scope.loginByPhone = function () {
+
             var api = _global.api('acc_loginByPhone');
             var dat = {
                 phone: $scope.user.phone,
