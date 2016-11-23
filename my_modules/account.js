@@ -149,7 +149,7 @@ _rotr.apis.acc_getMyInfo = function () {
         dat.ukey = undefined;
 
         //对用户的phone字段做隐藏134******37
-        dat.phone = dat.phone.substr(0, 3) + '******' + dat.phone.substr(dat.phone.length - 2);
+        dat.phone = dat.phone.substr(0, 3) + '*****' + dat.phone.substr(dat.phone.length - 2);
 
         ctx.body = __newMsg(1, 'ok', dat);
         return ctx;
